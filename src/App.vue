@@ -1,26 +1,48 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="jobMenu">
+    <jobs-menu
+        :id="jobCategory.id"
+        :name="jobCategory.name"
+        :icon="jobCategory.icon"
+        :jobList="jobCategory.jobList"
+        v-for="jobCategory in jobsMenu" :key="jobCategory.id"></jobs-menu>
+  </div>
+  <div class="jobActions">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
+  components: {},
+  props: {
+    jobsMenu: Object,
+    jobsData: Object
+  },
+  methods: {}
 }
 </script>
 
 <style>
-#app {
+* {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background-color: #2c2f34;
 }
+
+.jobMenu {
+  width: 300px;
+  float: left
+}
+
+.jobActions {
+  display: flex;
+  justify-content: center;
+  width: calc(100% - 300px);
+  align-content: center;
+  flex-direction: column;
+}
+
 </style>
