@@ -129,20 +129,11 @@ function getDoWDoMJobIds (lvl = [
   return dowDomJobIds
 }
 
-function getJobIconUrl (jobId) {
-  if (typeof jobId === 'number') {
-    jobId = '' + jobId
-  }
-
-  return require(`@/assets/ffxiv/jobs/0621${jobId.padStart(2, '0')}_hr1.png`)
-}
-
 export {
   getTankJobIds,
   getHealerJobIds,
   getMeleeJobIds,
   getPhysicalRangeJobIds,
   getMagicalRangeJobIds,
-  getDoWDoMJobIds,
-  getJobIconUrl
+  getDoWDoMJobIds
 }

@@ -1,6 +1,5 @@
 import {
   getDoWDoMJobIds,
-  getJobIconUrl,
   getTankJobIds,
   getHealerJobIds,
   getMeleeJobIds,
@@ -8,36 +7,16 @@ import {
   getMagicalRangeJobIds
 } from '@/js/ffxiv/ffxivhelper'
 import { FFXIVJobCategories } from '@/js/ffxiv/ffxivconfigs'
-
-const XIVAPI = require('@xivapi/js')
-const xiv = new XIVAPI({
-  // private_key: '',
-  language: 'en',
-  snake_case: true
-})
-
-async function getJobData (id) {
-  return xiv.data.get('ClassJob', id)
-}
+import { getJobData } from '@/js/ffxiv/ffxivdata/ffxivdata'
 
 function getAllJobsData () {
   const allJobIds = getDoWDoMJobIds()
   const allJobData = []
-  allJobIds.forEach(function (jobId) {
+  allJobIds.forEach((jobId) => {
     allJobData.push(getJobData(jobId))
   })
 
   return Promise.all(allJobData)
-}
-
-function stripJobData (originalData, language = 'en') {
-  return {
-    id: originalData.id,
-    tag: originalData.abbreviation,
-    name: originalData.name_english,
-    icon: getJobIconUrl(originalData.id),
-    translated: originalData['name_' + language]
-  }
 }
 
 function getAllMenuData (language) {
@@ -75,4 +54,4 @@ function getAllMenuData (language) {
   ]
 }
 
-export { getAllJobsData, getAllMenuData, stripJobData }
+export { getAllJobsData, getAllMenuData }

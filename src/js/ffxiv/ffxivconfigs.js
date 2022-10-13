@@ -1,5 +1,12 @@
 // const FFXIVMAXLVL = 90
-// const FFXIVVERSION = '6.5.2.1'
+const FFXIVVERSION = '6.5.2.1'
+
+const XIVAPI = require('@xivapi/js')
+const xiv = new XIVAPI({
+  // private_key: '',
+  language: 'en',
+  snake_case: true
+})
 
 const FFXIVJobCategories = {
   tanks: {
@@ -34,4 +41,4 @@ const FFXIVJobCategories = {
   }
 }
 
-export { FFXIVJobCategories }
+export { FFXIVVERSION, FFXIVJobCategories, xiv }

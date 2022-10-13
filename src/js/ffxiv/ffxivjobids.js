@@ -123,23 +123,28 @@ FFXIVJobIds.JOBSWITHOUTSTONE = [
 ]
 
 FFXIVJobIds.isTank = function (jobId) {
-  return FFXIVJobIds.TANKS.contains(jobId)
+  jobId = jobId >> 0
+  return FFXIVJobIds.TANKS.includes(jobId)
 }
 
 FFXIVJobIds.isMelee = function (jobId) {
-  return FFXIVJobIds.MELEE.contains(jobId)
+  jobId = jobId >> 0
+  return FFXIVJobIds.MELEE.includes(jobId)
 }
 
 FFXIVJobIds.isPhysicalRanged = function (jobId) {
-  return FFXIVJobIds.PHYSICAL_RANGED.contains(jobId)
+  jobId = jobId >> 0
+  return FFXIVJobIds.PHYSICAL_RANGED.includes(jobId)
 }
 
 FFXIVJobIds.isMagicalRanged = function (jobId) {
-  return FFXIVJobIds.MAGICAL_RANGED.contains(jobId)
+  jobId = jobId >> 0
+  return FFXIVJobIds.MAGICAL_RANGED.includes(jobId)
 }
 
 FFXIVJobIds.isHealer = function (jobId) {
-  return FFXIVJobIds.HEALER.contains(jobId)
+  jobId = jobId >> 0
+  return FFXIVJobIds.HEALER.includes(jobId)
 }
 
 export { FFXIVJobIds }

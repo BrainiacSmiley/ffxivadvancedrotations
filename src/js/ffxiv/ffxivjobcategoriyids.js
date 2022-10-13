@@ -1,5 +1,4 @@
 import { FFXIVJobIds } from '@/js/ffxiv/ffxivjobids'
-import { FFXIVJobCategories } from './ffxivconfigs'
 
 const FFXIVJobCategoryIds = {
   TANK: [113, 161],
@@ -39,26 +38,26 @@ FFXIVJobCategoryIds[FFXIVJobIds.RPR] = [180]
 FFXIVJobCategoryIds[FFXIVJobIds.SGE] = [161]
 
 function getJobCategoryIds (jobId) {
-  const jobCategoryIds = FFXIVJobCategories[jobId]
+  const jobCategoryIds = [{ categoryName: 'Jobs', jobCategoryIds: FFXIVJobCategoryIds[jobId] }]
 
-  if (FFXIVJobIds.isTank()) {
-    jobCategoryIds.concat(FFXIVJobCategoryIds.TANK)
+  if (FFXIVJobIds.isTank(jobId)) {
+    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.TANK })
   }
 
-  if (FFXIVJobIds.isMelee()) {
-    jobCategoryIds.concat(FFXIVJobCategoryIds.MELEE)
+  if (FFXIVJobIds.isMelee(jobId)) {
+    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.MELEE })
   }
 
-  if (FFXIVJobIds.isPhysicalRanged()) {
-    jobCategoryIds.concat(FFXIVJobCategoryIds.PHYSICALRANGE)
+  if (FFXIVJobIds.isPhysicalRanged(jobId)) {
+    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.PHYSICALRANGE })
   }
 
-  if (FFXIVJobIds.isMagicalRanged()) {
-    jobCategoryIds.concat(FFXIVJobCategoryIds.MAGICALRANGE)
+  if (FFXIVJobIds.isMagicalRanged(jobId)) {
+    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.MAGICALRANGE })
   }
 
-  if (FFXIVJobIds.isHealer()) {
-    jobCategoryIds.concat(FFXIVJobCategoryIds.HEAL)
+  if (FFXIVJobIds.isHealer(jobId)) {
+    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.HEAL })
   }
 
   return jobCategoryIds

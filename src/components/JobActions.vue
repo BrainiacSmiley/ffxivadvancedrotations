@@ -1,18 +1,20 @@
 <template>
-  <header class="jobActionsHeader">
+    <header class="jobActionsHeader">
       <div class="jobActionsIcon" :style="{ backgroundImage: 'url(' + icon + ')' }"></div>
       <div class="jobActionsName">{{ name }}</div>
-  </header>
-  <footer class="jobActionsOverview">
-    <div class="jobActionsIcon" :style="{ backgroundImage: 'url(' + icon + ')' }"></div>
-  </footer>
+    </header>
+    <footer class="jobActionsOverview">
+      <div class="jobActionsIcon" :style="{ backgroundImage: 'url(' + icon + ')' }"></div>
+    </footer>
 </template>
 
 <script>
+import { getJobActions } from '@/js/ffxiv/ffxivjobactions'
+
 export default {
   name: 'job-actions',
   props: {
-    jobId: String,
+    jobId: Number,
     allJobsData: Object
   },
   data () {
@@ -32,7 +34,8 @@ export default {
       this.icon = actualJobData.icon
       this.name = actualJobData.name
 
-      // const jobCategoryIds =
+      const jobActions = getJobActions(jobId)
+      console.log(jobActions)
     }
   },
   watch: {
@@ -49,6 +52,7 @@ export default {
   width: 200px;
   display: block;
 }
+
 .jobActionsIcon {
   width: 64px;
   height: 64px;

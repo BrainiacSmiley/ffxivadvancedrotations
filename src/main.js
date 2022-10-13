@@ -2,16 +2,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import JobsMenu from './components/nav/JobsMenu.vue'
 import JobEntry from './components/nav/JobEntry.vue'
-import { getAllJobsData, getAllMenuData, stripJobData } from '@/js/ffxivadvancedrotations'
+import { getAllJobsData, getAllMenuData } from '@/js/ffxivadvancedrotations'
 import { createRouter, createWebHistory } from 'vue-router'
 import JobActions from './components/JobActions'
-
-// const XIVAPI = require('@xivapi/js')
-// const xiv = new XIVAPI({
-//   // private_key: '',
-//   language: 'en',
-//   snake_case: true
-// })
 
 const language = 'en'
 const allMenuData = getAllMenuData(language)
@@ -22,8 +15,7 @@ allJobDataRequests.then((allJobDataResult) => {
   console.log(allJobDataRequests)
 
   for (const jobDataResult of allJobDataResult) {
-    const stripedJobData = stripJobData(jobDataResult, language)
-    allJobsData[stripedJobData.id] = stripedJobData
+    allJobsData[jobDataResult.id] = jobDataResult
   }
 
   for (const jobCategory of allMenuData) {
