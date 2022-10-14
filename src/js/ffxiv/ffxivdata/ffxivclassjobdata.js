@@ -9,21 +9,14 @@ async function getJobData (jobId) {
 }
 
 function stripJobData (originalData, language = 'en') {
+  const iconName = originalData.name.replace(/\s+/g, '')
   return {
     id: originalData.id,
     tag: originalData.abbreviation,
     name: originalData.name_english,
-    icon: getJobIconUrl(originalData.id),
+    icon: `https://xivapi.com/cj/companion/${iconName}.png`,
     translated: originalData['name_' + language]
   }
-}
-
-function getJobIconUrl (jobId) {
-  if (typeof jobId === 'number') {
-    jobId = '' + jobId
-  }
-
-  return require(`@/assets/ffxiv/jobs/0621${jobId.padStart(2, '0')}_hr1.png`)
 }
 
 export { getJobData, stripJobData }

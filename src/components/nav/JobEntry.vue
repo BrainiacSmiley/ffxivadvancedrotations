@@ -34,6 +34,7 @@ export default {
   height: 64px;
   display: inline-block;
   transform: scale(0.6);
+  background-size: cover;
 }
 
 .jobName {
