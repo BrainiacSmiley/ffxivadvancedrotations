@@ -35,10 +35,11 @@ export default {
 }
 
 .jobTypesIcon {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   display: inline-block;
   transform: scale(0.8);
+  margin-top: 6px;
 }
 
 .jobTypesName {

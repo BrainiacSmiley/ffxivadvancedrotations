@@ -24,31 +24,31 @@ function getAllMenuData (language) {
     {
       id: 'tanks',
       name: FFXIVJobCategories.tanks[language],
-      icon: require('@/assets/ffxiv/TankIcon.png'),
+      icon: 'https://xivapi.com/cj/misc/clear_tank.png',
       jobIds: getTankJobIds()
     },
     {
       id: 'healer',
       name: FFXIVJobCategories.healer[language],
-      icon: require('@/assets/ffxiv/HealerIcon.png'),
+      icon: 'https://xivapi.com/cj/misc/clear_healer.png',
       jobIds: getHealerJobIds()
     },
     {
       id: 'mdps',
       name: FFXIVJobCategories.mdps[language],
-      icon: require('@/assets/ffxiv/MeleeIcon.png'),
+      icon: 'https://xivapi.com/cj/misc/clear_dps.png',
       jobIds: getMeleeJobIds()
     },
     {
       id: 'prdps',
       name: FFXIVJobCategories.prdps[language],
-      icon: require('@/assets/ffxiv/PhysicalRangedIcon.png'),
+      icon: 'https://xivapi.com/cj/misc/clear_ranged.png',
       jobIds: getPhysicalRangeJobIds()
     },
     {
       id: 'mrdps',
       name: FFXIVJobCategories.mrdps[language],
-      icon: require('@/assets/ffxiv/MagicalRangedIcon.png'),
+      icon: 'https://xivapi.com/cj/misc/clear_dps_magic.png',
       jobIds: getMagicalRangeJobIds()
     }
   ]
