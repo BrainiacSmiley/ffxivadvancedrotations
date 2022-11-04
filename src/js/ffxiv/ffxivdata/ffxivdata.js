@@ -1,5 +1,7 @@
 import { FFXIVVERSION } from '@/js/ffxiv/ffxivconfigs'
 import { getJobData, stripJobData } from '@/js/ffxiv/ffxivdata/ffxivclassjobdata'
+import { getJobActionsForCategoryId, stripJobCategoryData } from '@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata'
+import { getActionData, stripActionData } from '@/js/ffxiv/ffxivdata/ffxivactiondata'
 const XIVAPI = require('@xivapi/js')
 const xiv = new XIVAPI({
   // private_key: '',
@@ -21,8 +23,13 @@ async function getXIVAPIData (key, id) {
     return data
   }
 
-  // https://xivapi.com/{Action}/{25488}
-  data = await xiv.data.get(key, id)
+  if (key === 'ClassJob' || key === 'Action') {
+    // https://xivapi.com/{key}/{25488}
+    data = await xiv.data.get(key, id)
+  } else if (key === 'ClassJobCategory') {
+    data = await xiv.search('', { indexes: 'Action', filters: `ClassJobCategory.ID=${id}, IsPvP=0` })
+    data = data.results
+  }
   data = stripData(key, data)
   writeToStoredLocal(key, id, data)
   return data
@@ -37,45 +44,11 @@ async function getXIVAPIData (key, id) {
 function stripData (key, originalData) {
   if (key === 'ClassJob') {
     return stripJobData(originalData)
+  } else if (key === 'ClassJobCategory') {
+    return stripJobCategoryData(originalData)
+  } else if (key === 'Action') {
+    return stripActionData(originalData)
   }
-}
-
-/**
- *
- * @param {Number} categoryId The categoryId to get the actions for
- * @returns {Promise<object>}
- */
-async function getJobActionsForCategoryId (categoryId) {
-  let data = readFromStoredLocal('ClassJobCategory', categoryId)
-  if (data) {
-    return data
-  }
-
-  // https://xivapi.com/search?indexes=Action&filters=ClassJobCategory.ID=92,IsPvP=0
-  const res = await xiv.search('', { indexes: 'Action', filters: `ClassJobCategory.ID=${categoryId}, IsPvP=0` })
-  data = res.results
-  writeToStoredLocal('ClassJobCategory', categoryId, data)
-  return data
-}
-
-/**
- *
- * @param {Number} actionId The actionId to get the data for
- * @returns {Promise<number|string>}
- */
-async function getAction (actionId) {
-  return getXIVAPIData('Action', actionId)
-}
-
-/**
- *
- * @param {array} actionIds The actionIds to get the data for
- * @returns {Promise<number|string>}
- */
-const getActions = async (actionIds) => {
-  // https://xivapi.com/Action/25488
-  const res = await xiv.data.get('Action', { ids: actionIds })
-  return res.results
 }
 
 /**
@@ -148,4 +121,4 @@ function writeToStoredLocal (key, id, data) {
   saveXIVAPIData()
 }
 
-export { getJobData, getXIVAPIData, getJobActionsForCategoryId, getAction, getActions, clearXIVAPIData }
+export { getJobData, getJobActionsForCategoryId, getXIVAPIData, getActionData, clearXIVAPIData }

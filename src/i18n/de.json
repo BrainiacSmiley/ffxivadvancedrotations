@@ -1,0 +1,21 @@
+{
+  "categorySpell": "Zauber",
+  "categoryWeaponSkill": "Waffenfertigkeit",
+  "categoryAbility": "Talent",
+  "categoryTincture": "Arznei",
+  "castTimeInstant": "Sofort",
+  "acquired": "Erlernt",
+  "affinity": "Affinität",
+  "costTypeMP": "MP-Kosten",
+  "cast": "Aktivieren",
+  "recast": "Reaktivieren",
+  "range": "Reicht",
+  "radius": "Radius",
+  "job": "Job",
+  "role": "Rolle",
+  "tankRole": "Verteidiger",
+  "healerRole": "Heiler",
+  "meleeRole": "Nahkampfangreifer",
+  "physicalRangeRole": "Phys. Fernkämpfer",
+  "magicalRangeRole": "Mag. Fernkämpfer"
+}

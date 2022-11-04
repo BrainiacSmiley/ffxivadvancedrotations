@@ -1,0 +1,21 @@
+{
+  "categorySpell": "Spell",
+  "categoryWeaponSkill": "Weaponskill",
+  "categoryAbility": "Ability",
+  "categoryTincture": "Arznei",
+  "castTimeInstant": "Instant",
+  "acquired": "Acquired",
+  "affinity": "Affinity",
+  "costTypeMP": "MP Cost",
+  "recast": "Recast",
+  "cast": "Cast",
+  "radius": "Radius",
+  "range": "Range",
+  "job": "Job",
+  "role": "Role",
+  "tankRole": "Tank",
+  "healerRole": "Healer",
+  "meleeRole": "Melee DPS",
+  "physicalRangeRole": "Physical Ranged DPS",
+  "magicalRangeRole": "Magical Ranged DPS"
+}

@@ -1,5 +1,5 @@
 import { getJobCategoryIds } from '@/js/ffxiv/ffxivjobcategoriyids'
-import { getAction, getJobActionsForCategoryId } from '@/js/ffxiv/ffxivdata/ffxivdata'
+import { getActionData, getJobActionsForCategoryId } from '@/js/ffxiv/ffxivdata/ffxivdata'
 
 const FFXIVJobActionsToIgnore = {
   24: [25863, 25864, 28509], // WHM
@@ -21,8 +21,11 @@ const getJobActions = async (jobId) => {
       allJobActions = allJobActions.concat(await getJobActionsForCategoryId(jobCategoryId))
     }
     allJobActions = removeIgnoredJobActions(jobId, allJobActions)
-    jobCategoriesGroups.shortActions = allJobActions
-    jobCategoriesGroups.strippedActions = stripJobActions(allJobActions)
+    jobCategoriesGroups.actionIds = allJobActions
+    jobCategoriesGroups.actions = {}
+    for (const actionId of allJobActions) {
+      jobCategoriesGroups.actions[actionId] = await getActionData(actionId)
+    }
     allJobActionsInGroups.push(jobCategoriesGroups)
   }
   return allJobActionsInGroups
@@ -40,38 +43,14 @@ function removeIgnoredJobActions (jobId, jobActions) {
     return jobActions
   }
 
-  for (const actionId of jobActionsToRemove) {
-    jobActions.forEach((action, index) => {
-      if (action.id === actionId) {
+  for (const actionIdToRemove of jobActionsToRemove) {
+    jobActions.forEach((actionId, index) => {
+      if (actionId === actionIdToRemove) {
         jobActions.splice(index, 1)
       }
     })
   }
   return jobActions
 }
-
-/**
- *
- * @param {array} jobActions The job actions to strip unused data from
- * @return {array}
- */
-function stripJobActions (jobActions) {
-  for (const index in jobActions) {
-    jobActions[index] = stripJobAction(jobActions[index])
-  }
-}
-
-/**
- * @param {object} jobActionToStrip The jobAction to strip
- * @returns {object}
- */
-function stripJobAction (jobActionToStrip) {
-  console.log(jobActionToStrip)
-  const fullJobData = getAction(jobActionToStrip.id)
-  console.log(fullJobData)
-  return jobActionToStrip
-}
-
-// function formatAllJobActions () {}
 
 export { getJobActions }

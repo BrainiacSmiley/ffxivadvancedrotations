@@ -1,5 +1,9 @@
 import { FFXIVJobIds } from '@/js/ffxiv/ffxivjobids'
 
+function $t (string) {
+  return string[0].toUpperCase() + string.slice(1)
+}
+
 const FFXIVJobCategoryIds = {
   TANK: [113, 161],
   HEAL: [117, 120],
@@ -35,29 +39,29 @@ FFXIVJobCategoryIds[FFXIVJobIds.RDM] = [112]
 FFXIVJobCategoryIds[FFXIVJobIds.GNB] = [149]
 FFXIVJobCategoryIds[FFXIVJobIds.DNC] = [150]
 FFXIVJobCategoryIds[FFXIVJobIds.RPR] = [180]
-FFXIVJobCategoryIds[FFXIVJobIds.SGE] = [161]
+FFXIVJobCategoryIds[FFXIVJobIds.SGE] = [181]
 
 function getJobCategoryIds (jobId) {
-  const jobCategoryIds = [{ categoryName: 'Jobs', jobCategoryIds: FFXIVJobCategoryIds[jobId] }]
+  const jobCategoryIds = [{ categoryName: $t('job'), jobCategoryIds: FFXIVJobCategoryIds[jobId] }]
 
   if (FFXIVJobIds.isTank(jobId)) {
-    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.TANK })
+    jobCategoryIds.push({ categoryName: $t('role'), jobCategoryIds: FFXIVJobCategoryIds.TANK })
   }
 
   if (FFXIVJobIds.isMelee(jobId)) {
-    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.MELEE })
+    jobCategoryIds.push({ categoryName: $t('role'), jobCategoryIds: FFXIVJobCategoryIds.MELEE })
   }
 
   if (FFXIVJobIds.isPhysicalRanged(jobId)) {
-    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.PHYSICALRANGE })
+    jobCategoryIds.push({ categoryName: $t('role'), jobCategoryIds: FFXIVJobCategoryIds.PHYSICALRANGE })
   }
 
   if (FFXIVJobIds.isMagicalRanged(jobId)) {
-    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.MAGICALRANGE })
+    jobCategoryIds.push({ categoryName: $t('role'), jobCategoryIds: FFXIVJobCategoryIds.MAGICALRANGE })
   }
 
   if (FFXIVJobIds.isHealer(jobId)) {
-    jobCategoryIds.push({ categoryName: 'Role', jobCategoryIds: FFXIVJobCategoryIds.HEAL })
+    jobCategoryIds.push({ categoryName: $t('role'), jobCategoryIds: FFXIVJobCategoryIds.HEAL })
   }
 
   return jobCategoryIds

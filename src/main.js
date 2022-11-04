@@ -1,52 +1,62 @@
+import 'floating-vue/dist/style.css'
+import '@/css/v-popper.css'
+
 import { createApp } from 'vue'
 import App from './App.vue'
 import JobsMenu from './components/nav/JobsMenu.vue'
 import JobEntry from './components/nav/JobEntry.vue'
-import { getAllJobsData, getAllMenuData } from '@/js/ffxivadvancedrotations'
+import JobActions from './components/JobActions.vue'
+import Action from '@/components/action/Action'
+import ActionGroup from '@/components/action/ActionGroup'
 import { createRouter, createWebHistory } from 'vue-router'
-import JobActions from './components/JobActions'
+import FloatingVue from 'floating-vue'
+import { createI18n } from 'vue-i18n'
 
-const language = 'en'
-const allMenuData = getAllMenuData(language)
-const allJobDataRequests = getAllJobsData(language)
-const allJobsData = {}
-
-allJobDataRequests.then((allJobDataResult) => {
-  console.log(allJobDataRequests)
-
-  for (const jobDataResult of allJobDataResult) {
-    allJobsData[jobDataResult.id] = jobDataResult
-  }
-
-  for (const jobCategory of allMenuData) {
-    const jobsData = []
-    for (const jobId of jobCategory.jobIds) {
-      jobsData.push(
-        {
-          id: allJobsData[jobId].id,
-          icon: allJobsData[jobId].icon,
-          name: allJobsData[jobId].name
-        }
-      )
+const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  fallbackLocale: 'en',
+  localeDir: 'locales',
+  messages: {
+    en: {
+      categorySpell: 'Spell',
+      categoryWeaponSkill: 'Weaponskill',
+      categoryAbility: 'Ability',
+      castTimeInstant: 'Instant',
+      acquired: 'Acquired',
+      affinity: 'Affinity',
+      costTypeMP: 'MP Cost',
+      recast: 'Recast',
+      cast: 'Cast',
+      radius: 'Radius',
+      range: 'Range',
+      job: 'Job',
+      role: 'Role',
+      loadingJobsData: 'loading jobs data',
+      loadingActionData: 'loading job actions',
+      rotation: 'Rotation'
     }
-    jobCategory.jobList = jobsData
-    delete jobCategory.jobIds
   }
-
-  const router = createRouter({
-    history: createWebHistory(),
-    routes: [{
-      path: '/jobActions/:jobId', component: JobActions, props: true
-    }],
-    linkActiveClass: 'active'
-  })
-
-  const app = createApp(App, { jobsMenu: allMenuData, jobsData: allJobsData })
-
-  app.component('jobs-menu', JobsMenu)
-  app.component('job-entry', JobEntry)
-
-  app.use(router)
-
-  app.mount('#app')
 })
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [{
+    path: '/jobActions/:jobId', component: JobActions, props: true
+  }],
+  linkActiveClass: 'active'
+})
+
+const app = createApp(App)
+
+app.component('jobs-menu', JobsMenu)
+app.component('job-entry', JobEntry)
+app.component('job-actions', JobActions)
+app.component('action-group', ActionGroup)
+app.component('action', Action)
+
+app.use(router)
+app.use(FloatingVue)
+app.use(i18n)
+
+app.mount('#app')

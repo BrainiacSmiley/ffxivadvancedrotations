@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     changeSelectedJob (jobId) {
-      this.$router.push('/jobActions/' + jobId)
+      this.$router.push(`/jobActions/${jobId}`)
     }
   }
 }

@@ -24,7 +24,7 @@ function getTankJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLV
   return tankJobIds
 }
 
-function getHealerJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) {
+function getHealerJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) {
   let healJobIds = []
 
   // CNJ ~ WHM
@@ -47,7 +47,7 @@ function getHealerJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) {
   return healJobIds
 }
 
-function getMeleeJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) {
+function getMeleeJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) {
   let meleeJobIds = []
 
   // PGL ~ MNK
@@ -93,7 +93,7 @@ function getPhysicalRangeJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) 
   return physicalRangedJobIds
 }
 
-function getMagicalRangeJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL]) {
+function getMagicalRangeJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL/* , FFXIVMAXLVL-20 */]) {
   let magicalRangedJobIds = []
 
   // THM ~ BLM
@@ -111,20 +111,20 @@ function getMagicalRangeJobIds (lvl = [FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FF
   }
 
   magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.RDM)
-  magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.BLU)
+  // magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.BLU)
 
   return magicalRangedJobIds
 }
 
 function getDoWDoMJobIds (lvl = [
-  FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL - 10]) {
+  FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL, FFXIVMAXLVL - 20]) {
   let dowDomJobIds = []
 
   dowDomJobIds = [].concat(dowDomJobIds, getTankJobIds(lvl.slice(0, 4)))
-  dowDomJobIds = [].concat(dowDomJobIds, getHealerJobIds(lvl.slice(4, 7)))
-  dowDomJobIds = [].concat(dowDomJobIds, getMeleeJobIds(lvl.slice(7, 11)))
-  dowDomJobIds = [].concat(dowDomJobIds, getPhysicalRangeJobIds(lvl.slice(11, 14)))
-  dowDomJobIds = [].concat(dowDomJobIds, getMagicalRangeJobIds(lvl.slice(14, 18)))
+  dowDomJobIds = [].concat(dowDomJobIds, getHealerJobIds(lvl.slice(4, 8)))
+  dowDomJobIds = [].concat(dowDomJobIds, getMeleeJobIds(lvl.slice(8, 13)))
+  dowDomJobIds = [].concat(dowDomJobIds, getPhysicalRangeJobIds(lvl.slice(13, 16)))
+  dowDomJobIds = [].concat(dowDomJobIds, getMagicalRangeJobIds(lvl.slice(16, 19)))
 
   return dowDomJobIds
 }

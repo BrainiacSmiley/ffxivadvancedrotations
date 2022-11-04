@@ -15,7 +15,7 @@ function stripJobData (originalData, language = 'en') {
     tag: originalData.abbreviation,
     name: originalData.name_english,
     icon: `https://xivapi.com/cj/companion/${iconName}.png`,
-    translated: originalData['name_' + language]
+    translated: originalData[`name_${language}`]
   }
 }
 

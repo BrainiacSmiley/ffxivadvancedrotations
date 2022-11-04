@@ -1,0 +1,21 @@
+{
+  "categorySpell": "Sort",
+  "categoryWeaponSkill": "Technique d'arme",
+  "categoryAbility": "Aptitude",
+  "categoryTincture": "Médicament",
+  "castTimeInstant": "Instantané",
+  "acquired": "Obtention",
+  "affinity": "Affinité",
+  "costTypeMP": "Coût en PM",
+  "cast": "Lancement",
+  "recast": "Recharge",
+  "range": "Portée",
+  "radius": "Rayon",
+  "job": "Job",
+  "role": "Rôle",
+  "tankRole": "Tank",
+  "healerRole": "Soigneur",
+  "meleeRole": "DPS de Mêlée",
+  "physicalRangeRole": "DPS physique à distance",
+  "magicalRangeRole": "DPS magique à distance"
+}

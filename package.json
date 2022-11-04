@@ -10,17 +10,20 @@
   "dependencies": {
     "@xivapi/js": "^0.3.3",
     "core-js": "^3.6.5",
+    "floating-vue": "^2.0.0-beta.20",
     "vue": "^3.0.0",
+    "vue-i18n": "^9.3.0-beta.6",
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@intlify/eslint-plugin-vue-i18n": "^2.0.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
