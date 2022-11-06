@@ -26,7 +26,7 @@
         <div class="actionCategory"><span style="color:#b6b09a;">{{ selectedActionCategory }}</span> {{ selectedActionId }}</div>
         <div class="actionRange"><span style="color:gray;">{{ $t('range') }}</span> <span>{{ selectedActionRange }}</span></div>
         <div class="actionRadius"><span style="color:gray;">{{ $t('radius') }}</span> <span>{{ selectedActionRadius }}</span></div>
-        <div class="actionCast" :class="selectedActionCastVisible">
+        <div class="actionCast" :style="selectedActionCastVisible">
           <div style="color:#b6b09a;font-size:13px;text-align:right;">{{ $t('cast') }}</div>
           <div style="text-align:right;">{{ selectedActionCasttime }}</div>
           <div style="height: 5px;width:135px;background-color:gray;border-radius:2px;margin-top:-5px;"></div>
@@ -87,9 +87,9 @@ export default {
     },
     isJobActionSelected () {
       if (this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
-        return { display: 'inline-block' }
+        return { visibility: 'visible' }
       } else {
-        return { display: 'none' }
+        return { visibility: 'hidden' }
       }
     },
     selectedActionIcon () {
@@ -154,7 +154,7 @@ export default {
         return ''
       }
 
-      if (data.cast100ms > 0) {
+      if (data.cast100ms > 0 && this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
         return 'visibility:visible'
       } else {
         return 'visibility:hidden'
@@ -180,7 +180,7 @@ export default {
         return ''
       }
 
-      if (data.recast100ms > 0) {
+      if (data.recast100ms > 0 && this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
         return { visibility: 'visible' }
       } else {
         return { visibility: 'hidden' }
@@ -200,7 +200,7 @@ export default {
       if (typeof data === 'undefined') {
         return ''
       }
-      if (data.cost > 0) {
+      if (data.cost > 0 && this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
         return { visibility: 'visible' }
       } else {
         return { visibility: 'hidden' }
@@ -261,10 +261,15 @@ export default {
       return Number(Math.round(parseFloat(value + 'e' + decimalPlaces)) + 'e-' + decimalPlaces).toFixed(decimalPlaces)
     },
     loadJobActions (jobId) {
+      this.jobActionsNotLoaded = true
       if (typeof jobId === 'undefined') {
         return
       }
 
+      if (typeof this.$parent.$parent.jobsData[jobId] === 'undefined') {
+        this.$router.push('/')
+        return
+      }
       const actualJobData = this.$parent.$parent.jobsData[jobId]
       this.id = jobId
       this.icon = actualJobData.icon
@@ -323,7 +328,7 @@ export default {
   margin: auto;
   position: relative;
   color: white;
-  display: none;
+  display: inline-block;
   bottom: -5px;
   left: 10px;
 }

@@ -1,16 +1,36 @@
 import { getJobCategoryIds } from '@/js/ffxiv/ffxivjobcategoriyids'
 import { getActionData, getJobActionsForCategoryId } from '@/js/ffxiv/ffxivdata/ffxivdata'
+import { FFXIVJobIds } from '@/js/ffxiv/ffxivjobids'
 
-const FFXIVJobActionsToIgnore = {
-  24: [25863, 25864, 28509], // WHM
-  27: [172, 25843, 25844, 25845, 25846, 25847, 25848, 25849, 25850, 25851, 25852, 25853, 25854], // ACN
-  28: [802, 803, 805, 7438, 16544, 16548, 16550, 16551, 16547], // SCH
-  92: [2240, 2242, 2247, 2255, 2259, 2261, 2254, 2263, 16488, 3565, 2265, 2266, 2267, 2268, 2269, 2270, 2271, 25775, 25877, 25878, 25879], // NIN
-  98: [25756], // DRK
-  99: [4401, 4402, 4403, 4404, 4405, 4406, 7440, 7441, 7444, 7445, 16558], // AST
-  150: [16191, 16192, 16193, 16194, 16195, 16196], // DNC
-  161: [27524, 28119] // SGE
-}
+const FFXIVJobActionsToIgnore = {}
+FFXIVJobActionsToIgnore[FFXIVJobIds.WHM] = [25863, 25864, 28509]
+FFXIVJobActionsToIgnore[FFXIVJobIds.ACN] = [172, 25843, 25844, 25845, 25846, 25847, 25848, 25849, 25850, 25851, 25852, 25853, 25854]
+// FFXIVJobActionsToIgnore[FFXIVJobIds.SCH] = [802, 803, 805, 7438, 16544, 16548, 16550, 16551, 16547]
+FFXIVJobActionsToIgnore[FFXIVJobIds.NIN] = [2240, 2242, 2247, 2255, 2259, 2261, 2254, 2263, 16488, 3565, 2265, 2266, 2267, 2268, 2269, 2270, 2271, 25775, 25877, 25878, 25879]
+FFXIVJobActionsToIgnore[FFXIVJobIds.DRK] = [25756]
+FFXIVJobActionsToIgnore[FFXIVJobIds.AST] = [4401, 4402, 4403, 4404, 4405, 4406, 7440, 7441, 7444, 7445, 16558]
+FFXIVJobActionsToIgnore[FFXIVJobIds.DNC] = [16191, 16192, 16193, 16194, 16195, 16196]
+FFXIVJobActionsToIgnore[FFXIVJobIds.SGE] = [27524, 28119]
+
+const FFXIVJobActionsWichReplaceItself = {}
+FFXIVJobActionsWichReplaceItself[FFXIVJobIds.PLD] = [
+  [21, 3539],
+  [3542, 25746],
+  [29, 25747]
+]
+FFXIVJobActionsWichReplaceItself[FFXIVJobIds.WAR] = [
+  [49, 3549],
+  [51, 3550],
+  [3551, 25751]
+]
+FFXIVJobActionsWichReplaceItself[FFXIVJobIds.DRK] = [
+  [16466, 16469],
+  [16467, 16470]
+]
+FFXIVJobActionsWichReplaceItself[FFXIVJobIds.GNB] = [
+  [16144, 16165],
+  [16161, 25758]
+]
 
 const getJobActions = async (jobId) => {
   const allJobCategories = getJobCategoryIds(jobId)
@@ -21,11 +41,12 @@ const getJobActions = async (jobId) => {
       allJobActions = allJobActions.concat(await getJobActionsForCategoryId(jobCategoryId))
     }
     allJobActions = removeIgnoredJobActions(jobId, allJobActions)
-    jobCategoriesGroups.actionIds = allJobActions
+    // jobCategoriesGroups.actionIds = allJobActions
     jobCategoriesGroups.actions = {}
     for (const actionId of allJobActions) {
       jobCategoriesGroups.actions[actionId] = await getActionData(actionId)
     }
+    delete jobCategoriesGroups.jobCategoryIds
     allJobActionsInGroups.push(jobCategoriesGroups)
   }
   return allJobActionsInGroups
