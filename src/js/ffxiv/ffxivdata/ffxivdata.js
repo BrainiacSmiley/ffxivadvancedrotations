@@ -5,7 +5,7 @@ import { getActionData, stripActionData } from '@/js/ffxiv/ffxivdata/ffxivaction
 const XIVAPI = require('@xivapi/js')
 const xiv = new XIVAPI({
   // private_key: '',
-  language: 'en',
+  language: 'de',
   snake_case: true
 })
 const LOCAL_STORAGE_KEY_NAME = 'ffxivadvancedrotations'

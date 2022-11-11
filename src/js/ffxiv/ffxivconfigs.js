@@ -1,4 +1,4 @@
-// const FFXIVMAXLVL = 90
+const FFXIVMAXLVL = 90
 const FFXIVVERSION = '6.5.2.1'
 
 const XIVAPI = require('@xivapi/js')
@@ -41,4 +41,4 @@ const FFXIVJobCategories = {
   }
 }
 
-export { FFXIVVERSION, FFXIVJobCategories, xiv }
+export { FFXIVMAXLVL, FFXIVVERSION, FFXIVJobCategories, xiv }

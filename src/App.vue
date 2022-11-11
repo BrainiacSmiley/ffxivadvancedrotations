@@ -1,4 +1,20 @@
 <template>
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">{{ t('siteName') }}</a>
+    </div>
+    <div class="dropdown me-2">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="settings" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ t('settings.buttonLabel') }}
+      </button>
+      <div class="dropdown-menu dropdown-menu-right p-2" aria-labelledby="settings" style="background-color: #565e64;right:0;left:auto;">
+        <div class="form-check form-switch" style="background-color: #565e64">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" v-model="settingsStore.replaceLeveledUpActions">
+          <label class="form-check-label" for="flexSwitchCheckDefault" style="background-color: #565e64;color:white;">{{ t('settings.removeUpleveledActions') }}</label>
+        </div>
+      </div>
+    </div>
+  </nav>
   <div class="loadingAppIndicatorBackground" v-show="jobDataNotLoaded">
     <div class="loadingIndicatorIcon"></div>
     <div class="loadingIndicatorText">{{ t('loadingJobsData') }}</div>
@@ -19,6 +35,7 @@
 <script>
 import { getAllJobsData, getAllMenuData } from '@/js/ffxivadvancedrotations'
 import { useI18n } from 'vue-i18n'
+import { useSettingsStore } from '@/stores/settings'
 
 export default {
   name: 'App',
@@ -31,7 +48,8 @@ export default {
     return {
       jobDataNotLoaded: true,
       jobsMenu: Object,
-      jobsData: Object
+      jobsData: Object,
+      settingsStore: useSettingsStore()
     }
   },
   created () {
@@ -70,13 +88,18 @@ export default {
   background-color: #2c2f34;
 }
 
+body {
+  overflow: hidden;
+}
+
 .jobMenu {
   width: 250px;
   float: left;
   position: absolute;
-  top: 0;
+  top: 60px;
   left: 0;
   height: 100%;
+  line-height: 1;
 }
 
 .jobActions {
@@ -85,10 +108,10 @@ export default {
   align-content: center;
   flex-direction: column;
   position: absolute;
-  top: 0;
+  top: 60px;
   left: 250px;
   width: calc(100% - 250px);
-  height: 100%;
+  height: calc(100% - 60px);
 }
 
 @keyframes loadingIndicatorRotation {

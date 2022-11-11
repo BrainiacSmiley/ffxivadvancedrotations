@@ -4,8 +4,8 @@
       class="actionIcon"
       :style="{ backgroundImage: 'url(' + icon + ')' }"
       v-tooltip="name"
-      @mouseenter="changeSelectedAction(id)"
-      @mouseleave="changeSelectedAction()">
+      @mouseenter="changeSelectedAction(id)">
+<!--      @mouseleave="changeSelectedAction()">-->
     <div :class="isGCDAction"></div>
   </div>
 </template>

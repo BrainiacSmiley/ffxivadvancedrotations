@@ -57,8 +57,10 @@
 </template>
 
 <script>
-import { getJobActions } from '@/js/ffxiv/ffxivjobactions'
+import { getJobActions, getJobActionsToReplaceThroughLevel } from '@/js/ffxiv/ffxivjobactions'
 import { useI18n } from 'vue-i18n'
+import { FFXIVMAXLVL } from '@/js/ffxiv/ffxivconfigs'
+import { useSettingsStore } from '@/stores/settings'
 
 export default {
   name: 'job-actions',
@@ -78,7 +80,8 @@ export default {
       actionGroups: [],
       actualSelectedActionId: null,
       allJobActions: {},
-      jobActionsNotLoaded: true
+      jobActionsNotLoaded: true,
+      settingsStore: useSettingsStore()
     }
   },
   computed: {
@@ -212,10 +215,15 @@ export default {
         return ''
       }
 
-      if (data.costType) {
-        return this.$t('costTypeMP')
+      if (data.costType === 3) {
+        return this.$t('costType.MP')
+      } else if (data.costType === 41) {
+        return this.$t('costType.OathGauge')
+      } else if (data.costType) {
+        console.log(`Undefined costType: ${data.costType} for actionId: ${data.id}`)
+        return ''
       } else {
-        return new Error('Undefined costType')
+        return new Error(`Undefined costType: ${data.costType}`)
       }
     },
     selectedActionCosts () {
@@ -251,15 +259,30 @@ export default {
     this.loadJobActions(this.jobId)
   },
   methods: {
+    /**
+     * Returns the data for the action with the provided id
+     * @param {Number} actionId The actionId you want the data for
+     * @return {Error|object} The data for the action
+     */
     getActionData (actionId) {
-      if (typeof this.allJobActions[actionId] !== 'undefined') {
-        return this.allJobActions[actionId]
+      if (typeof this.allJobActions[actionId] === 'undefined') {
+        return new Error(`no data found for actionID:${actionId}`)
       }
+      return this.allJobActions[actionId]
     },
-    roundNumberToTwoDigits (value) {
-      const decimalPlaces = 2
+    /**
+     * Formats a number to a configurable numb
+     * @param {Number} value The value to format
+     * @param {Number} decimalPlaces The number of digits to format to
+     * @return {string} The formatted number with given number of digits
+     */
+    roundNumberToTwoDigits (value, decimalPlaces = 2) {
       return Number(Math.round(parseFloat(value + 'e' + decimalPlaces)) + 'e-' + decimalPlaces).toFixed(decimalPlaces)
     },
+    /**
+     * loads the jobActions for the given jobId
+     * @param {Number} jobId The jobId to get the actions for
+     */
     loadJobActions (jobId) {
       this.jobActionsNotLoaded = true
       if (typeof jobId === 'undefined') {
@@ -270,6 +293,7 @@ export default {
         this.$router.push('/')
         return
       }
+
       const actualJobData = this.$parent.$parent.jobsData[jobId]
       this.id = jobId
       this.icon = actualJobData.icon
@@ -277,19 +301,66 @@ export default {
 
       const jobActions = getJobActions(jobId)
       jobActions.then((jobActionsResult) => {
-        this.actionGroups = jobActionsResult
         for (const group of jobActionsResult) {
           for (const [id, action] of Object.entries(group.actions)) {
             this.allJobActions[id] = action
           }
         }
+        this.actionGroups = this.removeJobsThatSwapThroughLevelUp(jobActionsResult, jobId)
         this.jobActionsNotLoaded = false
       })
+    },
+    /**
+     *
+     * @param {array} allActionGroups The groups to remove the actions from
+     * @param {Number} jobId The jobId we want tot remove the actions for
+     * @returns {array}
+     */
+    removeJobsThatSwapThroughLevelUp (allActionGroups, jobId) {
+      if (!this.settingsStore.replaceLeveledUpActions) {
+        return allActionGroups
+      }
+
+      const actionIdsToRemove = this.getActionIdsToRemove(jobId)
+      for (const actionGroup of allActionGroups) {
+        console.log(actionGroup)
+        for (const [key, action] of Object.entries(actionGroup.actions)) {
+          if (actionIdsToRemove.includes(action.id)) {
+            delete actionGroup.actions[key]
+          }
+        }
+      }
+      return allActionGroups
+    },
+    getActionIdsToRemove (jobId) {
+      const possibleReplacedActions = getJobActionsToReplaceThroughLevel(jobId)
+      const actionIdsToReplace = []
+      let highestSpellFromGroupFound = false
+      for (const actionGroup of possibleReplacedActions) {
+        highestSpellFromGroupFound = false
+
+        for (const actionId of actionGroup) {
+          if (highestSpellFromGroupFound) {
+            actionIdsToReplace.push(actionId)
+            continue
+          }
+
+          if (this.allJobActions[actionId].level > FFXIVMAXLVL) {
+            actionIdsToReplace.push(actionId)
+          } else {
+            highestSpellFromGroupFound = true
+          }
+        }
+      }
+      return actionIdsToReplace
     }
   },
   watch: {
     jobId (newId) {
       this.loadJobActions(newId)
+    },
+    'settingsStore.replaceLeveledUpActions': function () {
+      this.loadJobActions(this.id)
     }
   }
 }
@@ -330,7 +401,8 @@ export default {
   color: white;
   display: inline-block;
   bottom: -5px;
-  left: 10px;
+  left: 0;
+  border-radius: 5px;
 }
 
 .actionIcon {
@@ -387,7 +459,7 @@ export default {
 }
 
 .actionDescription {
-  margin-top: 110px;
+  margin-top: 115px;
   margin-left: 10px;
 }
 
@@ -428,9 +500,14 @@ export default {
 legend {
   color: lightgray;
   font-size: 32px;
+  border-radius: 5px;
+  width: auto;
+  margin-left: 10px;
 }
 
 .actionGroup {
   border-radius: 5px;
+  border: 2px solid gray;
+  padding: revert;
 }
 </style>

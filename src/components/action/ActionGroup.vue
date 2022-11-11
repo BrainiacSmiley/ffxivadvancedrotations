@@ -1,7 +1,7 @@
 <template>
   <div class="groupOfActions">
     <fieldset class="actionGroup">
-      <legend>{{ categoryName }}</legend>
+      <legend>{{ categoryNameWithAmount }}</legend>
       <div class="actions">
         <action
             :id="action.id"
@@ -20,6 +20,11 @@ export default {
   props: {
     categoryName: String,
     actions: Object
+  },
+  computed: {
+    categoryNameWithAmount () {
+      return `${this.categoryName} (${Object.entries(this.actions).length})`
+    }
   }
 }
 </script>
@@ -33,9 +38,13 @@ legend {
   color: lightgray;
   font-size: 32px;
   border-radius: 5px;
+  width: auto;
+  margin-left: 10px;
 }
 
 .actionGroup {
   border-radius: 5px;
+  border: 2px solid gray;
+  padding: revert;
 }
 </style>
