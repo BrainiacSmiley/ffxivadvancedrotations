@@ -38,8 +38,8 @@ const FFXIVJobIds = {
   GNB: 37, // Gunbreaker
   DNC: 38, // Dancer
   RPR: 39, // Reaper
-  SGE: 40 // Sage
-}
+  SGE: 40, // Sage
+};
 
 FFXIVJobIds.TANKS = [
   FFXIVJobIds.GLA,
@@ -47,8 +47,8 @@ FFXIVJobIds.TANKS = [
   FFXIVJobIds.MRD,
   FFXIVJobIds.WAR,
   FFXIVJobIds.DRK,
-  FFXIVJobIds.GNB
-]
+  FFXIVJobIds.GNB,
+];
 
 FFXIVJobIds.MELEE = [
   FFXIVJobIds.PGL,
@@ -58,17 +58,21 @@ FFXIVJobIds.MELEE = [
   FFXIVJobIds.ROG,
   FFXIVJobIds.NIN,
   FFXIVJobIds.SAM,
-  FFXIVJobIds.RPR
-]
+  FFXIVJobIds.RPR,
+];
 
 FFXIVJobIds.PHYSICAL_RANGED = [
   FFXIVJobIds.ARC,
   FFXIVJobIds.BRD,
   FFXIVJobIds.MCH,
-  FFXIVJobIds.DNC
-]
+  FFXIVJobIds.DNC,
+];
 
-FFXIVJobIds.DOW = [].concat(FFXIVJobIds.TANKS, FFXIVJobIds.MELEE, FFXIVJobIds.PHYSICAL_RANGED)
+FFXIVJobIds.DOW = [].concat(
+  FFXIVJobIds.TANKS,
+  FFXIVJobIds.MELEE,
+  FFXIVJobIds.PHYSICAL_RANGED
+);
 
 FFXIVJobIds.HEALER = [
   FFXIVJobIds.CNJ,
@@ -76,18 +80,18 @@ FFXIVJobIds.HEALER = [
   FFXIVJobIds.ACN,
   FFXIVJobIds.SCH,
   FFXIVJobIds.AST,
-  FFXIVJobIds.SGE
-]
+  FFXIVJobIds.SGE,
+];
 
 FFXIVJobIds.MAGICAL_RANGED = [
   FFXIVJobIds.THM,
   FFXIVJobIds.BLM,
   FFXIVJobIds.SMN,
   FFXIVJobIds.RDM,
-  FFXIVJobIds.BLU
-]
+  FFXIVJobIds.BLU,
+];
 
-FFXIVJobIds.DOM = [].concat(FFXIVJobIds.HEALER, FFXIVJobIds.MAGICAL_RANGED)
+FFXIVJobIds.DOM = [].concat(FFXIVJobIds.HEALER, FFXIVJobIds.MAGICAL_RANGED);
 
 FFXIVJobIds.DOH = [
   FFXIVJobIds.CRP,
@@ -97,18 +101,12 @@ FFXIVJobIds.DOH = [
   FFXIVJobIds.LTW,
   FFXIVJobIds.WVR,
   FFXIVJobIds.ALC,
-  FFXIVJobIds.CUL
-]
+  FFXIVJobIds.CUL,
+];
 
-FFXIVJobIds.DOL = [
-  FFXIVJobIds.MIN,
-  FFXIVJobIds.BTN,
-  FFXIVJobIds.FSH
-]
+FFXIVJobIds.DOL = [FFXIVJobIds.MIN, FFXIVJobIds.BTN, FFXIVJobIds.FSH];
 
-FFXIVJobIds.LIMITED = [
-  FFXIVJobIds.BLU
-]
+FFXIVJobIds.LIMITED = [FFXIVJobIds.BLU];
 
 FFXIVJobIds.JOBSWITHOUTSTONE = [
   FFXIVJobIds.GLA,
@@ -119,32 +117,32 @@ FFXIVJobIds.JOBSWITHOUTSTONE = [
   FFXIVJobIds.LNC,
   FFXIVJobIds.ROG,
   FFXIVJobIds.ARC,
-  FFXIVJobIds.THM
-]
+  FFXIVJobIds.THM,
+];
 
 FFXIVJobIds.isTank = function (jobId) {
-  jobId = jobId >> 0
-  return FFXIVJobIds.TANKS.includes(jobId)
-}
+  jobId = jobId >> 0;
+  return FFXIVJobIds.TANKS.includes(jobId);
+};
 
 FFXIVJobIds.isMelee = function (jobId) {
-  jobId = jobId >> 0
-  return FFXIVJobIds.MELEE.includes(jobId)
-}
+  jobId = jobId >> 0;
+  return FFXIVJobIds.MELEE.includes(jobId);
+};
 
 FFXIVJobIds.isPhysicalRanged = function (jobId) {
-  jobId = jobId >> 0
-  return FFXIVJobIds.PHYSICAL_RANGED.includes(jobId)
-}
+  jobId = jobId >> 0;
+  return FFXIVJobIds.PHYSICAL_RANGED.includes(jobId);
+};
 
 FFXIVJobIds.isMagicalRanged = function (jobId) {
-  jobId = jobId >> 0
-  return FFXIVJobIds.MAGICAL_RANGED.includes(jobId)
-}
+  jobId = jobId >> 0;
+  return FFXIVJobIds.MAGICAL_RANGED.includes(jobId);
+};
 
 FFXIVJobIds.isHealer = function (jobId) {
-  jobId = jobId >> 0
-  return FFXIVJobIds.HEALER.includes(jobId)
-}
+  jobId = jobId >> 0;
+  return FFXIVJobIds.HEALER.includes(jobId);
+};
 
-export { FFXIVJobIds }
+export { FFXIVJobIds };

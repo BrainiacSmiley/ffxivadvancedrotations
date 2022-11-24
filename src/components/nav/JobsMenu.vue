@@ -1,28 +1,39 @@
 <template>
   <div class="jobCategory" :key="id">
     <div class="jobCategoryHeadline">
-      <div class="jobTypesIcon" :style="{ backgroundImage: 'url(' + icon + ')' }"></div>
-      <div class="jobTypesName">{{ name }}</div>
+      <div
+        class="jobTypesIcon"
+        :style="{ backgroundImage: 'url(' + icon + ')' }"
+      ></div>
+      <div class="jobTypesName">
+        {{
+          /* eslint-disable @intlify/vue-i18n/no-dynamic-keys */ $t(this.name)
+        }}
+      </div>
     </div>
     <div class="jobList" v-for="job in jobList" :key="job.id">
       <job-entry
         :id="job.id"
         :icon="job.icon"
-        :name="job.name"></job-entry>
+        :name_de="job.name_de"
+        :name_en="job.name_en"
+        :name_fr="job.name_fr"
+        :name_ja="job.name_ja"
+      ></job-entry>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'jobs-menu',
+  name: "jobs-menu",
   props: {
     id: String,
     icon: String,
     name: String,
-    jobList: Array
-  }
-}
+    jobList: Array,
+  },
+};
 </script>
 
 <style scoped>
@@ -49,5 +60,4 @@ export default {
   vertical-align: top;
   font-size: 20px;
 }
-
 </style>

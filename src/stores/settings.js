@@ -1,8 +1,6 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export const useSettingsStore = defineStore({
-  id: 'settings',
-  state: () => ({
-    replaceLeveledUpActions: true
-  })
-})
+  id: "settings",
+  state: () => ({ replaceLeveledUpActions: true }),
+});

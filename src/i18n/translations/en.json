@@ -6,7 +6,10 @@
   "castTimeInstant": "Instant",
   "acquired": "Acquired",
   "affinity": "Affinity",
-  "costTypeMP": "MP Cost",
+  "costType": {
+    "MP": "MP Cost",
+    "OathGauge": "Oath Gauge"
+  },
   "recast": "Recast",
   "cast": "Cast",
   "radius": "Radius",
@@ -17,5 +20,16 @@
   "healerRole": "Healer",
   "meleeRole": "Melee DPS",
   "physicalRangeRole": "Physical Ranged DPS",
-  "magicalRangeRole": "Magical Ranged DPS"
+  "magicalRangeRole": "Magical Ranged DPS",
+  "loadingJobsData": "loading jobs data",
+  "loadingActionData": "loading job actions",
+  "rotation": "Rotation",
+  "siteName": "FFXIVAdvancedRotations",
+  "settings": {
+    "buttonLabel": "Settings",
+    "removeUpleveledActions": "Remove upleveled replaced actions"
+  },
+  "language": {
+    "buttonLabel": "Language"
+  }
 }

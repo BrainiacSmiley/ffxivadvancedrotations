@@ -1,49 +1,48 @@
 <template>
   <div
-      :id="id"
-      class="actionIcon"
-      :style="{ backgroundImage: 'url(' + icon + ')' }"
-      v-tooltip="name"
-      @mouseenter="changeSelectedAction(id)">
-<!--      @mouseleave="changeSelectedAction()">-->
+    :id="id"
+    class="actionIcon"
+    :style="{ backgroundImage: 'url(' + icon + ')' }"
+    v-tooltip="name"
+    @mouseenter="changeSelectedAction(id)"
+  >
     <div :class="isGCDAction"></div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Action',
+  name: "ActionIcon",
   props: {
     id: Number,
     icon: String,
     name: String,
-    category: Number
+    category: Number,
   },
   computed: {
     /**
      * Checks if the actual action is a GCD or OCD action
      * @return {string}
      */
-    isGCDAction () {
+    isGCDAction() {
       if (this.category === 2 || this.category === 3) {
-        return 'actionGCD'
+        return "actionGCD";
       }
-      return 'actionOGCD'
-    }
+      return "actionOGCD";
+    },
   },
   methods: {
     /**
      * @param {Number} actionId The id of the actual selected action
      */
-    changeSelectedAction (actionId) {
-      this.$parent.$parent.actualSelectedActionId = actionId
-    }
-  }
-}
+    changeSelectedAction(actionId) {
+      this.$parent.$parent.actualSelectedActionId = actionId;
+    },
+  },
+};
 </script>
 
 <style scoped>
-
 .actionIcon {
   width: 80px;
   height: 80px;

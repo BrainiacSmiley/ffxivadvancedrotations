@@ -6,7 +6,6 @@
   "castTimeInstant": "Instantané",
   "acquired": "Obtention",
   "affinity": "Affinité",
-  "costTypeMP": "Coût en PM",
   "cast": "Lancement",
   "recast": "Recharge",
   "range": "Portée",
@@ -17,5 +16,20 @@
   "healerRole": "Soigneur",
   "meleeRole": "DPS de Mêlée",
   "physicalRangeRole": "DPS physique à distance",
-  "magicalRangeRole": "DPS magique à distance"
+  "magicalRangeRole": "DPS magique à distance",
+  "costType": {
+    "MP": "Coût en PM",
+    "OathGauge": "Oath Gauge"
+  },
+  "loadingJobsData": "loading jobs data",
+  "loadingActionData": "loading job actions",
+  "rotation": "Rotation",
+  "siteName": "FFXIVAdvancedRotations",
+  "settings": {
+    "buttonLabel": "Settings",
+    "removeUpleveledActions": "Remove upleveled replaced actions"
+  },
+  "language": {
+    "buttonLabel": "Language"
+  }
 }

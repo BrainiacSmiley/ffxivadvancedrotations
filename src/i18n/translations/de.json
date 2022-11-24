@@ -6,7 +6,6 @@
   "castTimeInstant": "Sofort",
   "acquired": "Erlernt",
   "affinity": "Affinität",
-  "costTypeMP": "MP-Kosten",
   "cast": "Aktivieren",
   "recast": "Reaktivieren",
   "range": "Reicht",
@@ -17,5 +16,20 @@
   "healerRole": "Heiler",
   "meleeRole": "Nahkampfangreifer",
   "physicalRangeRole": "Phys. Fernkämpfer",
-  "magicalRangeRole": "Mag. Fernkämpfer"
+  "magicalRangeRole": "Mag. Fernkämpfer",
+  "costType": {
+    "MP": "MP-Kosten",
+    "OathGauge": "Oath Gauge"
+  },
+  "loadingJobsData": "loading jobs data",
+  "loadingActionData": "loading job actions",
+  "rotation": "Rotation",
+  "siteName": "FFXIVAdvancedRotations",
+  "settings": {
+    "buttonLabel": "Einstellungen",
+    "removeUpleveledActions": "Hochgelevelte Fertigkeiten entfernen"
+  },
+  "language": {
+    "buttonLabel": "Sprache"
+  }
 }

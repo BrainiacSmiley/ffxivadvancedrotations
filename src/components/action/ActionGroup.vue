@@ -3,30 +3,31 @@
     <fieldset class="actionGroup">
       <legend>{{ categoryNameWithAmount }}</legend>
       <div class="actions">
-        <action
-            :id="action.id"
-            :icon="action.icon"
-            :name="action.name"
-            :category="action.action_category"
-            v-for="action in actions" :key="action.id"
-        ></action>
+        <action-icon
+          :id="action.id"
+          :icon="action.icon"
+          :name="action.name"
+          :category="action.action_category"
+          v-for="action in actions"
+          :key="action.id"
+        ></action-icon>
       </div>
     </fieldset>
   </div>
 </template>
 <script>
 export default {
-  name: 'ActionGroup',
+  name: "ActionGroup",
   props: {
     categoryName: String,
-    actions: Object
+    actions: Object,
   },
   computed: {
-    categoryNameWithAmount () {
-      return `${this.categoryName} (${Object.entries(this.actions).length})`
-    }
-  }
-}
+    categoryNameWithAmount() {
+      return `${this.categoryName} (${Object.entries(this.actions).length})`;
+    },
+  },
+};
 </script>
 
 <style scoped>

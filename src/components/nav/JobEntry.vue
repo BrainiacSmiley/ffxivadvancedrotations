@@ -1,6 +1,9 @@
 <template>
   <div class="job" :key="id" @click="changeSelectedJob(id)">
-    <div class="jobIcon" :style="{ backgroundImage: 'url(' + icon + ')' }"></div>
+    <div
+      class="jobIcon"
+      :style="{ backgroundImage: 'url(' + icon + ')' }"
+    ></div>
     <div class="jobName">{{ name }}</div>
     <div class="jobLine"></div>
   </div>
@@ -8,24 +11,32 @@
 
 <script>
 export default {
-  name: 'job-entry',
+  name: "job-entry",
   props: {
     id: Number,
     icon: String,
-    name: String
+    name_de: String,
+    name_en: String,
+    name_fr: String,
+    name_ja: String,
   },
   methods: {
-    changeSelectedJob (jobId) {
-      this.$router.push(`/jobActions/${jobId}`)
-    }
-  }
-}
+    changeSelectedJob(jobId) {
+      this.$router.push(`/${this.$parent.$i18n.locale}/jobActions/${jobId}`);
+    },
+  },
+  computed: {
+    name() {
+      return this[`name_${this.$parent.$i18n.locale}`];
+    },
+  },
+};
 </script>
 
 <style scoped>
 .job {
   margin-bottom: -38px;
-  width: 200px;
+  width: 265px;
   cursor: pointer;
 }
 
@@ -47,7 +58,7 @@ export default {
 
 .jobLine {
   height: 10px;
-  width: 130px;
+  width: 200px;
   background-color: #595b5f;
   display: inline-block;
   position: relative;

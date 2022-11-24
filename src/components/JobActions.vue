@@ -1,7 +1,7 @@
 <template>
   <div class="loadingActionsIndicatorBackground" v-show="jobActionsNotLoaded">
     <div class="loadingIndicatorIcon"></div>
-    <div class="loadingIndicatorText">{{ t('loadingActionData') }}</div>
+    <div class="loadingIndicatorText">{{ $t("loadingActionData") }}</div>
   </div>
   <header class="jobActionsHeader">
     <div class="jobActionsIcon" :style="selectedJobIcon"></div>
@@ -9,44 +9,86 @@
   </header>
   <div class="jobRotation">
     <fieldset class="actionGroup">
-      <legend>{{ t('rotation') }}</legend>
+      <legend>{{ $t("rotation") }}</legend>
     </fieldset>
   </div>
   <footer class="jobActionsOverview">
     <div class="actionGroups">
       <action-group
-          :category-name="group.categoryName"
-          :actions="group.actions"
-          v-for="group in actionGroups" :key="group.id"></action-group>
+        :category-name="group.categoryName"
+        :actions="group.actions"
+        v-for="group in actionGroups"
+        :key="group.id"
+      ></action-group>
     </div>
     <div class="actionTooltip" :style="isJobActionSelected">
       <div>
         <div class="actionIcon" :style="selectedActionIcon"></div>
         <div class="actionName">{{ selectedActionName }}</div>
-        <div class="actionCategory"><span style="color:#b6b09a;">{{ selectedActionCategory }}</span> {{ selectedActionId }}</div>
-        <div class="actionRange"><span style="color:gray;">{{ $t('range') }}</span> <span>{{ selectedActionRange }}</span></div>
-        <div class="actionRadius"><span style="color:gray;">{{ $t('radius') }}</span> <span>{{ selectedActionRadius }}</span></div>
+        <div class="actionCategory">
+          <span style="color: #b6b09a">{{ selectedActionCategory }}</span>
+          {{ selectedActionId }}
+        </div>
+        <div class="actionRange">
+          <span style="color: gray; margin-right: 5px">{{ $t("range") }}</span>
+          <span>{{ selectedActionRange }}</span>
+        </div>
+        <div class="actionRadius">
+          <span style="color: gray; margin-right: 5px">{{ $t("radius") }}</span>
+          <span>{{ selectedActionRadius }}</span>
+        </div>
         <div class="actionCast" :style="selectedActionCastVisible">
-          <div style="color:#b6b09a;font-size:13px;text-align:right;">{{ $t('cast') }}</div>
-          <div style="text-align:right;">{{ selectedActionCasttime }}</div>
-          <div style="height: 5px;width:135px;background-color:gray;border-radius:2px;margin-top:-5px;"></div>
+          <div style="color: #b6b09a; font-size: 13px; text-align: right">
+            {{ $t("cast") }}
+          </div>
+          <div style="text-align: right">{{ selectedActionCasttime }}</div>
+          <div
+            style="
+              height: 5px;
+              width: 135px;
+              background-color: gray;
+              border-radius: 2px;
+              margin-top: -5px;
+            "
+          ></div>
         </div>
         <div class="actionRecast" :style="selectedActionRecastVisible">
-          <div style="color:#b6b09a;font-size:13px;text-align:right;">{{ $t("recast") }}</div>
-          <div style="text-align:right;">{{ selectedActionRecasttime }}</div>
-          <div style="height: 5px;width:135px;background-color:gray;border-radius:2px;margin-top:-5px;"></div>
+          <div style="color: #b6b09a; font-size: 13px; text-align: right">
+            {{ $t("recast") }}
+          </div>
+          <div style="text-align: right">{{ selectedActionRecasttime }}</div>
+          <div
+            style="
+              height: 5px;
+              width: 135px;
+              background-color: gray;
+              border-radius: 2px;
+              margin-top: -5px;
+            "
+          ></div>
         </div>
         <div class="actionCost" :style="selectedActionCostVisible">
-          <div style="color:#b6b09a;font-size:13px;text-align:right;">{{ selectedActionCostsType }}</div>
-          <div style="text-align:right;">{{ selectedActionCosts }}</div>
-          <div style="height: 5px;width:135px;background-color:gray;border-radius:2px;margin-top:-5px;"></div>
+          <div style="color: #b6b09a; font-size: 13px; text-align: right">
+            {{ selectedActionCostsType }}
+          </div>
+          <div style="text-align: right">{{ selectedActionCosts }}</div>
+          <div
+            style="
+              height: 5px;
+              width: 135px;
+              background-color: gray;
+              border-radius: 2px;
+              margin-top: -5px;
+            "
+          ></div>
         </div>
       </div>
-      <div class="actionDescription" v-html="selectedActionDescription">
-      </div>
+      <div class="actionDescription" v-html="selectedActionDescription"></div>
       <div class="actionAcquired">
-        <div style="display:inline-block;width:100px;color:#b6b09a;">{{ $t('acquired') }}</div>
-        <span style="color:#5a7744">{{ selectedActionAcquiredLvl }}</span>
+        <div style="display: inline-block; width: 100px; color: #b6b09a">
+          {{ $t("acquired") }}
+        </div>
+        <span style="color: #5a7744">{{ selectedActionAcquiredLvl }}</span>
       </div>
       <!--<div class="actionAffinity">
         <span style="flex:1;width:100px;color:#b6b09a;">{{ $t('affinity') }}</span>
@@ -57,206 +99,225 @@
 </template>
 
 <script>
-import { getJobActions, getJobActionsToReplaceThroughLevel } from '@/js/ffxiv/ffxivjobactions'
-import { useI18n } from 'vue-i18n'
-import { FFXIVMAXLVL } from '@/js/ffxiv/ffxivconfigs'
-import { useSettingsStore } from '@/stores/settings'
+import {
+  getJobActions,
+  getJobActionsToReplaceThroughLevel,
+} from "@/js/ffxiv/ffxivjobactions";
+import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
+import { useSettingsStore } from "@/stores/settings";
 
 export default {
-  name: 'job-actions',
-  setup () {
-    const { t } = useI18n()
-
-    return { t }
-  },
+  name: "job-actions",
   props: {
-    jobId: String
+    locale: String,
+    jobId: String,
   },
-  data () {
+  data() {
     return {
-      id: '',
-      icon: '',
-      name: '',
+      id: "",
       actionGroups: [],
       actualSelectedActionId: null,
       allJobActions: {},
       jobActionsNotLoaded: true,
-      settingsStore: useSettingsStore()
-    }
+      settingsStore: useSettingsStore(),
+      actualJobData: {},
+    };
   },
   computed: {
-    selectedJobIcon () {
-      return { backgroundImage: `url(${this.icon})` }
+    name() {
+      return this.actualJobData[`name_${this.$parent.$i18n.locale}`];
     },
-    isJobActionSelected () {
-      if (this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
-        return { visibility: 'visible' }
+    selectedJobIcon() {
+      return { backgroundImage: `url(${this.actualJobData.icon})` };
+    },
+    isJobActionSelected() {
+      if (
+        this.actualSelectedActionId &&
+        typeof this.actualSelectedActionId !== "undefined"
+      ) {
+        return { visibility: "visible" };
       } else {
-        return { visibility: 'hidden' }
+        return { visibility: "hidden" };
       }
     },
-    selectedActionIcon () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionIcon() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return { backgroundImage: `url(${data.icon})` }
+      return { backgroundImage: `url(${data.icon})` };
     },
-    selectedActionName () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionName() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return data.name
+      return data.name;
     },
-    selectedActionId () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionId() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return ` [${data.id}]`
+      return ` [${data.id}]`;
     },
-    selectedActionCategory () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionCategory() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
       if (data.action_category === 2) {
-        return this.$t('categorySpell')
+        return this.$t("categorySpell");
       } else if (data.action_category === 3) {
-        return this.$t('categoryWeaponSkill')
+        return this.$t("categoryWeaponSkill");
       } else if (data.action_category === 4) {
-        return this.$t('categoryAbility')
+        return this.$t("categoryAbility");
       } else {
-        return new Error('undefined action_category')
+        return new Error("undefined action_category");
       }
     },
-    selectedActionRange () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionRange() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
-      let range = data.range
-      if (range === '-1') {
-        range = '3'
+      let range = data.range;
+      if (range === "-1") {
+        range = "3";
       }
-      return `${range}y`
+      return `${range}y`;
     },
-    selectedActionRadius () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionRadius() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return `${data.radius}y`
+      return `${data.radius}y`;
     },
-    selectedActionCastVisible () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionCastVisible() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
-      if (data.cast100ms > 0 && this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
-        return 'visibility:visible'
+      if (
+        data.cast100ms > 0 &&
+        this.actualSelectedActionId &&
+        typeof this.actualSelectedActionId !== "undefined"
+      ) {
+        return "visibility:visible";
       } else {
-        return 'visibility:hidden'
+        return "visibility:hidden";
       }
     },
-    selectedActionCasttime () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionCasttime() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
-      let castTime = data.cast100ms
+      let castTime = data.cast100ms;
       if (castTime === 0) {
-        return this.$t('castTimeInstant')
+        return this.$t("castTimeInstant");
       } else {
-        castTime = this.roundNumberToTwoDigits(castTime)
+        castTime = this.roundNumberToTwoDigits(castTime);
       }
-      return `${castTime}s`
+      return `${castTime}s`;
     },
-    selectedActionRecastVisible () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionRecastVisible() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
-      if (data.recast100ms > 0 && this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
-        return { visibility: 'visible' }
+      if (
+        data.recast100ms > 0 &&
+        this.actualSelectedActionId &&
+        typeof this.actualSelectedActionId !== "undefined"
+      ) {
+        return { visibility: "visible" };
       } else {
-        return { visibility: 'hidden' }
+        return { visibility: "hidden" };
       }
     },
-    selectedActionRecasttime () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionRecasttime() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
-      const recastTime = this.roundNumberToTwoDigits(data.recast100ms / 10)
-      return `${recastTime}s`
+      const recastTime = this.roundNumberToTwoDigits(data.recast100ms / 10);
+      return `${recastTime}s`;
     },
-    selectedActionCostVisible () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionCostVisible() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      if (data.cost > 0 && this.actualSelectedActionId && typeof this.actualSelectedActionId !== 'undefined') {
-        return { visibility: 'visible' }
+      if (
+        data.cost > 0 &&
+        this.actualSelectedActionId &&
+        typeof this.actualSelectedActionId !== "undefined"
+      ) {
+        return { visibility: "visible" };
       } else {
-        return { visibility: 'hidden' }
+        return { visibility: "hidden" };
       }
     },
-    selectedActionCostsType () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionCostsType() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
 
       if (data.costType === 3) {
-        return this.$t('costType.MP')
+        return this.$t("costType.MP");
       } else if (data.costType === 41) {
-        return this.$t('costType.OathGauge')
+        return this.$t("costType.OathGauge");
       } else if (data.costType) {
-        console.log(`Undefined costType: ${data.costType} for actionId: ${data.id}`)
-        return ''
+        console.log(
+          `Undefined costType: ${data.costType} for actionId: ${data.id}`
+        );
+        return "";
       } else {
-        return new Error(`Undefined costType: ${data.costType}`)
+        return new Error(`Undefined costType: ${data.costType}`);
       }
     },
-    selectedActionCosts () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionCosts() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return data.cost
+      return data.cost;
     },
-    selectedActionDescription () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionDescription() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return data.description
+      return data.description;
     },
-    selectedActionAcquiredLvl () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionAcquiredLvl() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return `Lv. ${data.class_job_level}`
+      return `Lv. ${data.class_job_level}`;
     },
-    selectedActionAffinity () {
-      const data = this.getActionData(this.actualSelectedActionId)
-      if (typeof data === 'undefined') {
-        return ''
+    selectedActionAffinity() {
+      const data = this.getActionData(this.actualSelectedActionId);
+      if (typeof data === "undefined") {
+        return "";
       }
-      return data.affinity
-    }
+      return data.affinity;
+    },
   },
-  created () {
-    this.loadJobActions(this.jobId)
+  created() {
+    console.log(`Create: ${this.jobId}`);
+    debugger;
+    this.loadJobActions(this.jobId);
   },
   methods: {
     /**
@@ -264,11 +325,11 @@ export default {
      * @param {Number} actionId The actionId you want the data for
      * @return {Error|object} The data for the action
      */
-    getActionData (actionId) {
-      if (typeof this.allJobActions[actionId] === 'undefined') {
-        return new Error(`no data found for actionID:${actionId}`)
+    getActionData(actionId) {
+      if (typeof this.allJobActions[actionId] === "undefined") {
+        return new Error(`no data found for actionID:${actionId}`);
       }
-      return this.allJobActions[actionId]
+      return this.allJobActions[actionId];
     },
     /**
      * Formats a number to a configurable numb
@@ -276,39 +337,44 @@ export default {
      * @param {Number} decimalPlaces The number of digits to format to
      * @return {string} The formatted number with given number of digits
      */
-    roundNumberToTwoDigits (value, decimalPlaces = 2) {
-      return Number(Math.round(parseFloat(value + 'e' + decimalPlaces)) + 'e-' + decimalPlaces).toFixed(decimalPlaces)
+    roundNumberToTwoDigits(value, decimalPlaces = 2) {
+      return Number(
+        Math.round(parseFloat(value + "e" + decimalPlaces)) +
+          "e-" +
+          decimalPlaces
+      ).toFixed(decimalPlaces);
     },
     /**
      * loads the jobActions for the given jobId
      * @param {Number} jobId The jobId to get the actions for
      */
-    loadJobActions (jobId) {
-      this.jobActionsNotLoaded = true
-      if (typeof jobId === 'undefined') {
-        return
+    loadJobActions(jobId) {
+      this.jobActionsNotLoaded = true;
+      if (typeof jobId === "undefined") {
+        return;
       }
 
-      if (typeof this.$parent.$parent.jobsData[jobId] === 'undefined') {
-        this.$router.push('/')
-        return
+      if (typeof this.$parent.$parent.jobsData[jobId] === "undefined") {
+        this.$router.push("/");
+        return;
       }
 
-      const actualJobData = this.$parent.$parent.jobsData[jobId]
-      this.id = jobId
-      this.icon = actualJobData.icon
-      this.name = actualJobData.name
+      this.actualJobData = this.$parent.$parent.jobsData[jobId];
+      this.id = jobId;
 
-      const jobActions = getJobActions(jobId)
+      const jobActions = getJobActions(jobId);
       jobActions.then((jobActionsResult) => {
         for (const group of jobActionsResult) {
           for (const [id, action] of Object.entries(group.actions)) {
-            this.allJobActions[id] = action
+            this.allJobActions[id] = action;
           }
         }
-        this.actionGroups = this.removeJobsThatSwapThroughLevelUp(jobActionsResult, jobId)
-        this.jobActionsNotLoaded = false
-      })
+        this.actionGroups = this.removeJobsThatSwapThroughLevelUp(
+          jobActionsResult,
+          jobId
+        );
+        this.jobActionsNotLoaded = false;
+      });
     },
     /**
      *
@@ -316,60 +382,65 @@ export default {
      * @param {Number} jobId The jobId we want tot remove the actions for
      * @returns {array}
      */
-    removeJobsThatSwapThroughLevelUp (allActionGroups, jobId) {
+    removeJobsThatSwapThroughLevelUp(allActionGroups, jobId) {
       if (!this.settingsStore.replaceLeveledUpActions) {
-        return allActionGroups
+        return allActionGroups;
       }
 
-      const actionIdsToRemove = this.getActionIdsToRemove(jobId)
+      const actionIdsToRemove = this.getActionIdsToRemove(jobId);
       for (const actionGroup of allActionGroups) {
-        console.log(actionGroup)
         for (const [key, action] of Object.entries(actionGroup.actions)) {
           if (actionIdsToRemove.includes(action.id)) {
-            delete actionGroup.actions[key]
+            delete actionGroup.actions[key];
           }
         }
       }
-      return allActionGroups
+      return allActionGroups;
     },
-    getActionIdsToRemove (jobId) {
-      const possibleReplacedActions = getJobActionsToReplaceThroughLevel(jobId)
-      const actionIdsToReplace = []
-      let highestSpellFromGroupFound = false
+    getActionIdsToRemove(jobId) {
+      const possibleReplacedActions = getJobActionsToReplaceThroughLevel(jobId);
+      const actionIdsToReplace = [];
+      if (possibleReplacedActions === null) {
+        return actionIdsToReplace;
+      }
+
+      let highestSpellFromGroupFound = false;
       for (const actionGroup of possibleReplacedActions) {
-        highestSpellFromGroupFound = false
+        highestSpellFromGroupFound = false;
 
         for (const actionId of actionGroup) {
           if (highestSpellFromGroupFound) {
-            actionIdsToReplace.push(actionId)
-            continue
+            actionIdsToReplace.push(actionId);
+            continue;
           }
 
           if (this.allJobActions[actionId].level > FFXIVMAXLVL) {
-            actionIdsToReplace.push(actionId)
+            actionIdsToReplace.push(actionId);
           } else {
-            highestSpellFromGroupFound = true
+            highestSpellFromGroupFound = true;
           }
         }
       }
-      return actionIdsToReplace
-    }
+      return actionIdsToReplace;
+    },
   },
   watch: {
-    jobId (newId) {
-      this.loadJobActions(newId)
+    jobId(newId) {
+      console.log("watch jobid");
+      this.loadJobActions(newId);
     },
-    'settingsStore.replaceLeveledUpActions': function () {
-      this.loadJobActions(this.id)
-    }
-  }
-}
+    "settingsStore.replaceLeveledUpActions": function () {
+      console.log("watch replaceLevelup");
+      this.loadJobActions(this.id);
+    },
+  },
+};
 </script>
 
 <style scoped>
 .jobActionsHeader {
   margin: auto;
-  width: 200px;
+  width: 340px;
   display: block;
 }
 
@@ -384,9 +455,9 @@ export default {
 .jobActionsName {
   color: #c2c2c2;
   display: inline-block;
-  font-size: 24px;
+  font-size: 36px;
   vertical-align: top;
-  margin-top: 18px;
+  margin-top: 4px;
 }
 
 .jobActionsOverview {

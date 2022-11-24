@@ -1,0 +1,35 @@
+{
+  "categorySpell": "?",
+  "categoryWeaponSkill": "?",
+  "categoryAbility": "?",
+  "categoryTincture": "?",
+  "castTimeInstant": "Instant",
+  "acquired": "?",
+  "affinity": "?",
+  "cast": "Cast Time",
+  "recast": "Recast Time",
+  "radius": "?",
+  "range": "?",
+  "job": "?",
+  "role": "Role",
+  "tankRole": "Tank",
+  "healerRole": "Healer",
+  "meleeRole": "Melee DPS",
+  "physicalRangeRole": "Physical Ranged DPS",
+  "magicalRangeRole": "Magical Ranged DPS",
+  "costType": {
+    "MP": "?MP",
+    "OathGauge": "Oath Gauge"
+  },
+  "loadingJobsData": "loading jobs data",
+  "loadingActionData": "loading job actions",
+  "rotation": "Rotation",
+  "siteName": "FFXIVAdvancedRotations",
+  "settings": {
+    "buttonLabel": "Settings",
+    "removeUpleveledActions": "Remove upleveled replaced actions"
+  },
+  "language": {
+    "buttonLabel": "Language"
+  }
+}
