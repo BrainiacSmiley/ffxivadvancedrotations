@@ -142,28 +142,28 @@ export default {
     },
     selectedActionIcon() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return { backgroundImage: `url(${data.icon})` };
     },
     selectedActionName() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return data.name;
     },
     selectedActionId() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return ` [${data.id}]`;
     },
     selectedActionCategory() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -179,7 +179,7 @@ export default {
     },
     selectedActionRange() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -191,14 +191,15 @@ export default {
     },
     selectedActionRadius() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
+
       return `${data.radius}y`;
     },
     selectedActionCastVisible() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -214,7 +215,7 @@ export default {
     },
     selectedActionCasttime() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -228,7 +229,7 @@ export default {
     },
     selectedActionRecastVisible() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -244,7 +245,7 @@ export default {
     },
     selectedActionRecasttime() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -253,9 +254,10 @@ export default {
     },
     selectedActionCostVisible() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
+
       if (
         data.cost > 0 &&
         this.actualSelectedActionId &&
@@ -268,7 +270,7 @@ export default {
     },
     selectedActionCostsType() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
 
@@ -287,36 +289,34 @@ export default {
     },
     selectedActionCosts() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return data.cost;
     },
     selectedActionDescription() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return data.description;
     },
     selectedActionAcquiredLvl() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return `Lv. ${data.class_job_level}`;
     },
     selectedActionAffinity() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (typeof data === "undefined") {
+      if (data === null) {
         return "";
       }
       return data.affinity;
     },
   },
   created() {
-    console.log(`Create: ${this.jobId}`);
-    debugger;
     this.loadJobActions(this.jobId);
   },
   methods: {
@@ -326,9 +326,13 @@ export default {
      * @return {Error|object} The data for the action
      */
     getActionData(actionId) {
+      if (actionId === null) {
+        return null;
+      }
       if (typeof this.allJobActions[actionId] === "undefined") {
         return new Error(`no data found for actionID:${actionId}`);
       }
+
       return this.allJobActions[actionId];
     },
     /**
@@ -426,11 +430,9 @@ export default {
   },
   watch: {
     jobId(newId) {
-      console.log("watch jobid");
       this.loadJobActions(newId);
     },
     "settingsStore.replaceLeveledUpActions": function () {
-      console.log("watch replaceLevelup");
       this.loadJobActions(this.id);
     },
   },

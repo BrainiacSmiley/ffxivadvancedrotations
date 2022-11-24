@@ -35,9 +35,6 @@ async function getXIVAPIData(key, id) {
     return data;
   }
 
-  console.log(key);
-  console.log(id);
-
   if (key === "ClassJob" || key === "Action") {
     // https://xivapi.com/{key}/{25488}
     data = await xiv.data.get(key, id);
