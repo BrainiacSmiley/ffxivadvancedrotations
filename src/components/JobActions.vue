@@ -104,13 +104,14 @@ import {
   getJobActionsToReplaceThroughLevel,
 } from "@/js/ffxiv/ffxivjobactions";
 import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
-import { useSettingsStore } from "@/stores/settings";
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 
 export default {
   name: "job-actions",
   props: {
     locale: String,
-    jobId: String,
+    jobId: Number,
   },
   data() {
     return {
@@ -119,7 +120,7 @@ export default {
       actualSelectedActionId: null,
       allJobActions: {},
       jobActionsNotLoaded: true,
-      settingsStore: useSettingsStore(),
+      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
       actualJobData: {},
     };
   },
@@ -145,21 +146,21 @@ export default {
       if (data === null) {
         return "";
       }
-      return { backgroundImage: `url(${data.icon})` };
+      return { backgroundImage: `url(${data["icon"]})` };
     },
     selectedActionName() {
       const data = this.getActionData(this.actualSelectedActionId);
       if (data === null) {
         return "";
       }
-      return data.name;
+      return data[`name_${this.$parent.$i18n.locale}`];
     },
     selectedActionId() {
       const data = this.getActionData(this.actualSelectedActionId);
       if (data === null) {
         return "";
       }
-      return ` [${data.id}]`;
+      return ` [${data["id"]}]`;
     },
     selectedActionCategory() {
       const data = this.getActionData(this.actualSelectedActionId);
@@ -167,14 +168,17 @@ export default {
         return "";
       }
 
-      if (data.action_category === 2) {
+      const actionCategory = data["action_category"];
+      if (actionCategory === 2) {
         return this.$t("categorySpell");
-      } else if (data.action_category === 3) {
+      } else if (actionCategory === 3) {
         return this.$t("categoryWeaponSkill");
-      } else if (data.action_category === 4) {
+      } else if (actionCategory === 4) {
         return this.$t("categoryAbility");
       } else {
-        return new Error("undefined action_category");
+        const errorText = `undefined action_category: ${actionCategory}`;
+        console.log(errorText);
+        return new Error(errorText);
       }
     },
     selectedActionRange() {
@@ -183,7 +187,7 @@ export default {
         return "";
       }
 
-      let range = data.range;
+      let range = data["range"];
       if (range === "-1") {
         range = "3";
       }
@@ -195,7 +199,7 @@ export default {
         return "";
       }
 
-      return `${data.radius}y`;
+      return `${data["radius"]}y`;
     },
     selectedActionCastVisible() {
       const data = this.getActionData(this.actualSelectedActionId);
@@ -204,7 +208,7 @@ export default {
       }
 
       if (
-        data.cast100ms > 0 &&
+        data["cast100ms"] > 0 &&
         this.actualSelectedActionId &&
         typeof this.actualSelectedActionId !== "undefined"
       ) {
@@ -219,7 +223,7 @@ export default {
         return "";
       }
 
-      let castTime = data.cast100ms;
+      let castTime = data["cast100ms"];
       if (castTime === 0) {
         return this.$t("castTimeInstant");
       } else {
@@ -234,7 +238,7 @@ export default {
       }
 
       if (
-        data.recast100ms > 0 &&
+        data["recast100ms"] > 0 &&
         this.actualSelectedActionId &&
         typeof this.actualSelectedActionId !== "undefined"
       ) {
@@ -249,7 +253,7 @@ export default {
         return "";
       }
 
-      const recastTime = this.roundNumberToTwoDigits(data.recast100ms / 10);
+      const recastTime = this.roundNumberToTwoDigits(data["recast100ms"] / 10);
       return `${recastTime}s`;
     },
     selectedActionCostVisible() {
@@ -259,32 +263,58 @@ export default {
       }
 
       if (
-        data.cost > 0 &&
+        data["cost"] > 0 &&
         this.actualSelectedActionId &&
         typeof this.actualSelectedActionId !== "undefined"
       ) {
-        return { visibility: "visible" };
-      } else {
-        return { visibility: "hidden" };
+        if (data["costType"] === 3) {
+          return { visibility: "visible" };
+        }
       }
+      return { visibility: "hidden" };
     },
     selectedActionCostsType() {
       const data = this.getActionData(this.actualSelectedActionId);
       if (data === null) {
         return "";
       }
-
-      if (data.costType === 3) {
+      const costType = data["costType"];
+      const costTypesToIgnore = [2, 4, 10, 57, 58, 70, 71, 76]; //Spell Effects to be Consumed
+      const errorText = `Undefined costType: ${costType} for actionId: ${data["id"]}`;
+      if (costTypesToIgnore.includes(costType)) {
+        return "";
+      }
+      if (costType === 3) {
         return this.$t("costType.MP");
-      } else if (data.costType === 41) {
+      } else if (costType === 22) {
+        return this.$t("costType.BeastGauge");
+      } else if (costType === 23) {
+        return this.$t("costType.Polyglot");
+      } else if (costType === 25) {
+        return this.$t("costType.BloodGauge");
+      } else if (costType === 30) {
+        return this.$t("costType.AetherflowGauge");
+      } else if (costType === 41) {
         return this.$t("costType.OathGauge");
-      } else if (data.costType) {
-        console.log(
-          `Undefined costType: ${data.costType} for actionId: ${data.id}`
-        );
+      } else if (costType === 55) {
+        return this.$t("costType.Cartridge");
+      } else if (costType === 56) {
+        return this.$t("costType.HealingGauge");
+      } else if (costType === 68) {
+        return this.$t("costType.Addersgall");
+      } else if (costType === 69) {
+        return this.$t("costType.Addersting");
+      } else if (costType === 72) {
+        return this.$t("costType.FireAttunement");
+      } else if (costType === 73) {
+        return this.$t("costType.EarthAttunement");
+      } else if (costType === 74) {
+        return this.$t("costType.WindAttunement");
+      } else if (costType) {
+        console.log(errorText);
         return "";
       } else {
-        return new Error(`Undefined costType: ${data.costType}`);
+        return new Error(errorText);
       }
     },
     selectedActionCosts() {
@@ -292,28 +322,38 @@ export default {
       if (data === null) {
         return "";
       }
-      return data.cost;
+
+      let cost = data["cost"];
+      if (this.jobId === FFXIVJobIds.PLD) {
+        cost *= 50;
+      } else if (
+        FFXIVJobIds.isHealer(this.jobId) ||
+        FFXIVJobIds.isMagicalRanged(this.jobId)
+      ) {
+        cost *= 100;
+      }
+      return cost;
     },
     selectedActionDescription() {
       const data = this.getActionData(this.actualSelectedActionId);
       if (data === null) {
         return "";
       }
-      return data.description;
+      return data[`description_${this.$parent.$i18n.locale}`];
     },
     selectedActionAcquiredLvl() {
       const data = this.getActionData(this.actualSelectedActionId);
       if (data === null) {
         return "";
       }
-      return `Lv. ${data.class_job_level}`;
+      return `Lv. ${data["class_job_level"]}`;
     },
     selectedActionAffinity() {
       const data = this.getActionData(this.actualSelectedActionId);
       if (data === null) {
         return "";
       }
-      return data.affinity;
+      return data["affinity"];
     },
   },
   created() {
@@ -358,12 +398,12 @@ export default {
         return;
       }
 
-      if (typeof this.$parent.$parent.jobsData[jobId] === "undefined") {
-        this.$router.push("/");
+      if (typeof this.$parent.$parent["jobsData"][jobId] === "undefined") {
+        this.$router["push"]("/");
         return;
       }
 
-      this.actualJobData = this.$parent.$parent.jobsData[jobId];
+      this.actualJobData = this.$parent.$parent["jobsData"][jobId];
       this.id = jobId;
 
       const jobActions = getJobActions(jobId);
@@ -387,7 +427,7 @@ export default {
      * @returns {array}
      */
     removeJobsThatSwapThroughLevelUp(allActionGroups, jobId) {
-      if (!this.settingsStore.replaceLeveledUpActions) {
+      if (!this.ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions) {
         return allActionGroups;
       }
 
@@ -432,9 +472,10 @@ export default {
     jobId(newId) {
       this.loadJobActions(newId);
     },
-    "settingsStore.replaceLeveledUpActions": function () {
-      this.loadJobActions(this.id);
-    },
+    "ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions":
+      function () {
+        this.loadJobActions(this.id);
+      },
   },
 };
 </script>

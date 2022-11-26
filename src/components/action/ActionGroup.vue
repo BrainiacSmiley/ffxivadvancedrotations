@@ -24,7 +24,10 @@ export default {
   },
   computed: {
     categoryNameWithAmount() {
-      return `${this.categoryName} (${Object.entries(this.actions).length})`;
+      // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
+      return `${this.$t(this.categoryName)} (${
+        Object.entries(this.actions).length
+      })`;
     },
   },
 };

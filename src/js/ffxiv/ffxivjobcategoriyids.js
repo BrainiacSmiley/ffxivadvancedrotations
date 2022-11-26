@@ -1,9 +1,5 @@
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 
-function $t(string) {
-  return string[0].toUpperCase() + string.slice(1);
-}
-
 const FFXIVJobCategoryIds = {
   TANK: [113, 161],
   HEAL: [117, 120],
@@ -43,40 +39,40 @@ FFXIVJobCategoryIds[FFXIVJobIds.SGE] = [181];
 
 function getJobCategoryIds(jobId) {
   const jobCategoryIds = [
-    { categoryName: $t("job"), jobCategoryIds: FFXIVJobCategoryIds[jobId] },
+    { categoryName: "job", jobCategoryIds: FFXIVJobCategoryIds[jobId] },
   ];
 
   if (FFXIVJobIds.isTank(jobId)) {
     jobCategoryIds.push({
-      categoryName: $t("role"),
+      categoryName: "role",
       jobCategoryIds: FFXIVJobCategoryIds.TANK,
     });
   }
 
   if (FFXIVJobIds.isMelee(jobId)) {
     jobCategoryIds.push({
-      categoryName: $t("role"),
+      categoryName: "role",
       jobCategoryIds: FFXIVJobCategoryIds.MELEE,
     });
   }
 
   if (FFXIVJobIds.isPhysicalRanged(jobId)) {
     jobCategoryIds.push({
-      categoryName: $t("role"),
+      categoryName: "role",
       jobCategoryIds: FFXIVJobCategoryIds.PHYSICALRANGE,
     });
   }
 
   if (FFXIVJobIds.isMagicalRanged(jobId)) {
     jobCategoryIds.push({
-      categoryName: $t("role"),
+      categoryName: "role",
       jobCategoryIds: FFXIVJobCategoryIds.MAGICALRANGE,
     });
   }
 
   if (FFXIVJobIds.isHealer(jobId)) {
     jobCategoryIds.push({
-      categoryName: $t("role"),
+      categoryName: "role",
       jobCategoryIds: FFXIVJobCategoryIds.HEAL,
     });
   }

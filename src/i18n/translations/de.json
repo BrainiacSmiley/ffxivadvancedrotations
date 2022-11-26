@@ -19,7 +19,18 @@
   "magicalRangeRole": "Mag. Fernkämpfer",
   "costType": {
     "MP": "MP-Kosten",
-    "OathGauge": "Oath Gauge"
+    "OathGauge": "Oath Gauge",
+    "BeastGauge": "Beast Gauge",
+    "BloodGauge": "Blood Gauge",
+    "Cartridge": "Cartridge",
+    "HealingGauge": "Healing Gauge",
+    "AetherflowGauge": "Aetherflow Gauge",
+    "Addersgall": "Addersgall",
+    "Addersting": "Addersting",
+    "Polyglot": "Polyglot",
+    "FireAttunement": "Fire Attunement",
+    "EarthAttunement": "Earth Attunement",
+    "WindAttunement": "Wind Attunement"
   },
   "loadingJobsData": "loading jobs data",
   "loadingActionData": "loading job actions",

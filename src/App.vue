@@ -24,7 +24,9 @@
             class="form-check-input"
             type="checkbox"
             id="flexSwitchCheckDefault"
-            v-model="settingsStore.replaceLeveledUpActions"
+            v-model="
+              ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions
+            "
           />
           <label
             class="form-check-label"
@@ -64,7 +66,7 @@
 
 <script>
 import { getAllJobsData, getAllMenuData } from "@/js/ffxivadvancedrotations";
-import { useSettingsStore } from "@/stores/settings";
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 
 export default {
   name: "App",
@@ -73,7 +75,7 @@ export default {
       jobDataNotLoaded: true,
       jobsMenu: Object,
       jobsData: Object,
-      settingsStore: useSettingsStore(),
+      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
     };
   },
   created() {

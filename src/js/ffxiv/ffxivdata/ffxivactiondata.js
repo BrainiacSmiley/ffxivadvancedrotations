@@ -28,21 +28,31 @@ function replaceLbWithBr(text) {
   return newText;
 }
 
-function stripActionData(originalData, language = "en") {
+function stripActionData(originalData) {
   return {
-    id: originalData.id,
-    action_category: originalData.action_category.id,
-    class_job_level: originalData.class_job_level,
-    description: replaceLbWithBr(originalData[`description_${language}`]),
-    icon: `https://xivapi.com${originalData.icon_hd}`,
-    name: originalData[`name_${language}`],
-    range: originalData.range,
-    radius: originalData.effect_range,
-    cost: originalData.primary_cost_value,
-    costType: originalData.primary_cost_type,
-    cast100ms: originalData.cast100ms,
-    recast100ms: originalData.recast100ms,
-    affinity: originalData.class_job_category[`name_${language}`],
+    id: originalData["id"],
+    action_category: originalData["action_category"]["id"],
+    class_job_level: originalData["class_job_level"],
+    description_de: replaceLbWithBr(originalData["description_de"]),
+    description_en: replaceLbWithBr(originalData["description_en"]),
+    description_fr: replaceLbWithBr(originalData["description_fr"]),
+    description_ja: replaceLbWithBr(originalData["description_ja"]),
+    description_json_de: originalData["description_json_de"],
+    description_json_en: originalData["description_json_en"],
+    description_json_fr: originalData["description_json_fr"],
+    description_json_ja: originalData["description_json_ja"],
+    icon: `https://xivapi.com${originalData["icon_hd"]}`,
+    name_de: originalData["name_de"],
+    name_en: originalData["name_en"],
+    name_fr: originalData["name_fr"],
+    name_ja: originalData["name_ja"],
+    range: originalData["range"],
+    radius: originalData["effect_range"],
+    cost: originalData["primary_cost_value"],
+    costType: originalData["primary_cost_type"],
+    cast100ms: originalData["cast100ms"],
+    recast100ms: originalData["recast100ms"],
+    affinity: originalData["class_job_category"]["name_en"],
   };
 }
 

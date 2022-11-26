@@ -11,16 +11,16 @@
         }}
       </div>
     </div>
-    <div class="jobList" v-for="job in jobList" :key="job.id">
-      <job-entry
-        :id="job.id"
-        :icon="job.icon"
-        :name_de="job.name_de"
-        :name_en="job.name_en"
-        :name_fr="job.name_fr"
-        :name_ja="job.name_ja"
-      ></job-entry>
-    </div>
+    <job-entry
+      :id="job.id"
+      :icon="job.icon"
+      :name_de="job.name_de"
+      :name_en="job.name_en"
+      :name_fr="job.name_fr"
+      :name_ja="job.name_ja"
+      v-for="job in jobList"
+      :key="job.id"
+    ></job-entry>
   </div>
 </template>
 
@@ -38,11 +38,11 @@ export default {
 
 <style scoped>
 .jobCategory {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .jobCategoryHeadline {
-  margin-bottom: -13px;
+  margin-bottom: 3px;
 }
 
 .jobTypesIcon {
@@ -50,14 +50,14 @@ export default {
   height: 32px;
   display: inline-block;
   transform: scale(0.8);
-  margin-top: 6px;
+  margin-top: -3px;
 }
 
 .jobTypesName {
   color: #989898;
   display: inline-block;
-  line-height: 46px;
+  line-height: 28px;
   vertical-align: top;
-  font-size: 20px;
+  font-size: 23px;
 }
 </style>
