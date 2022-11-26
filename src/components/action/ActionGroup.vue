@@ -1,7 +1,7 @@
 <template>
   <div class="groupOfActions">
     <fieldset class="actionGroup">
-      <legend>{{ categoryNameWithAmount }}</legend>
+      <legend>{{ categoryNameWithOrWithoutAmount }}</legend>
       <div class="actions">
         <action-icon
           :id="action.id"
@@ -23,11 +23,14 @@ export default {
     actions: Object,
   },
   computed: {
-    categoryNameWithAmount() {
+    categoryNameWithOrWithoutAmount() {
       // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
-      return `${this.$t(this.categoryName)} (${
-        Object.entries(this.actions).length
-      })`;
+      const groupName = this.$t(this.categoryName);
+      if (process.env.VUE_APP_DEBUG_VERBOSE === "true") {
+        return `${groupName} (${Object.entries(this.actions).length})`;
+      } else {
+        return groupName;
+      }
     },
   },
 };

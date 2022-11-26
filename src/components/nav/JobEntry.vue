@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     changeSelectedJob(jobId) {
-      this.ffxivAdvancedRotationsStore.selectedUIElements.jobId = jobId;
       this.$router["push"](`/${this.$parent.$i18n.locale}/jobActions/${jobId}`);
     },
   },

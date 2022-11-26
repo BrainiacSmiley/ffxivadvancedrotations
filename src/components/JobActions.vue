@@ -157,7 +157,7 @@ export default {
     },
     selectedActionId() {
       const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
+      if (data === null || process.env.VUE_APP_DEBUG_VERBOSE === "false") {
         return "";
       }
       return ` [${data["id"]}]`;
@@ -405,6 +405,7 @@ export default {
 
       this.actualJobData = this.$parent.$parent["jobsData"][jobId];
       this.id = jobId;
+      this.ffxivAdvancedRotationsStore.selectedUIElements.jobId = jobId;
 
       const jobActions = getJobActions(jobId);
       jobActions.then((jobActionsResult) => {
