@@ -292,6 +292,8 @@ export default {
         return this.$t("costType.Polyglot");
       } else if (costType === 25) {
         return this.$t("costType.BloodGauge");
+      } else if (costType === 27) {
+        return this.$t("costType.NinkiGauge");
       } else if (costType === 30) {
         return this.$t("costType.AetherflowGauge");
       } else if (costType === 41) {
