@@ -176,9 +176,9 @@ function getJobActionsToReplaceThroughLevel(jobId) {
     return null;
   }
 
-  const actionIdsWhichReplaceItself = [
-    ...FFXIVJobActionsWhichReplaceItself[jobId],
-  ];
+  const actionIdsWhichReplaceItself = JSON.parse(
+    JSON.stringify(FFXIVJobActionsWhichReplaceItself[jobId])
+  );
   for (const actionIcGroupToReverse of actionIdsWhichReplaceItself) {
     actionIcGroupToReverse.reverse();
   }
