@@ -7,7 +7,7 @@
     v-tooltip="name"
     @mouseenter="changeSelectedAction(id)"
     draggable="true"
-    @dragstart="startDrag($event, { id: id })"
+    @dragstart="startDrag($event, { id: id, position: position })"
   >
     <div :class="isGCDAction"></div>
   </div>
@@ -21,6 +21,7 @@ export default {
     icon: String,
     name: String,
     category: Number,
+    position: Number,
   },
   computed: {
     /**
@@ -49,7 +50,8 @@ export default {
     },
     startDrag(event, actionData) {
       event.dataTransfer.setData("actionId", actionData.id);
-      event.dataTransfer.setData("source", "job");
+      event.dataTransfer.setData("position", actionData.position);
+      event.dataTransfer.setData("source", "rotation");
     },
   },
 };

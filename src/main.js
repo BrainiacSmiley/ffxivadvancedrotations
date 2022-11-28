@@ -10,6 +10,7 @@ import JobsMenu from "@/components/nav/JobsMenu.vue";
 import JobEntry from "@/components/nav/JobEntry.vue";
 import JobActions from "@/components/JobActions.vue";
 import ActionIcon from "@/components/action/ActionIcon";
+import RotationActionIcon from "@/components/action/RotationActionIcon";
 import ActionGroup from "@/components/action/ActionGroup";
 import LocaleSwitcher from "@/components/nav/LocaleSwitcher";
 import FloatingVue from "floating-vue";
@@ -25,6 +26,7 @@ app.component("job-entry", JobEntry);
 app.component("job-actions", JobActions);
 app.component("action-group", ActionGroup);
 app.component("action-icon", ActionIcon);
+app.component("rotation-action-icon", RotationActionIcon);
 app.component("locale-switcher", LocaleSwitcher);
 
 app.use(router);

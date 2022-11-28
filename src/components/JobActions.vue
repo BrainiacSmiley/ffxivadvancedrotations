@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <template>
   <div class="loadingActionsIndicatorBackground" v-show="jobActionsNotLoaded">
     <div class="loadingIndicatorIcon"></div>
@@ -7,9 +8,31 @@
     <div class="jobActionsIcon" :style="selectedJobIcon"></div>
     <div class="jobActionsName">{{ name }}</div>
   </header>
-  <div class="jobRotation">
-    <fieldset class="actionGroup">
+  <div
+    class="jobRotation"
+    @drop="onDelete($event)"
+    @dragenter.prevent
+    @dragover.prevent
+  >
+    <fieldset
+      class="actionGroup"
+      @drop="onDrop($event)"
+      @dragenter.prevent
+      @dragover.prevent
+      style="min-height: 100px"
+    >
       <legend>{{ $t("rotation") }}</legend>
+      <div class="rotationActions">
+        <rotation-action-icon
+          :id="action.id"
+          :icon="action.icon"
+          :name="action.name"
+          :category="action.category"
+          :position="action.position"
+          v-for="action in actualRotation"
+          :key="action.id"
+        ></rotation-action-icon>
+      </div>
     </fieldset>
   </div>
   <footer class="jobActionsOverview">
@@ -23,7 +46,7 @@
     </div>
     <div class="actionTooltip" :style="isJobActionSelected">
       <div>
-        <div class="actionIcon" :style="selectedActionIcon"></div>
+        <div class="actionIconTooltip" :style="selectedActionIcon"></div>
         <div class="actionName">{{ selectedActionName }}</div>
         <div class="actionCategory">
           <span style="color: #b6b09a">{{ selectedActionCategory }}</span>
@@ -106,12 +129,14 @@ import {
 import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
+import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
 
 export default {
   name: "job-actions",
   props: {
     locale: String,
     jobId: Number,
+    rotation: String,
   },
   data() {
     return {
@@ -122,11 +147,13 @@ export default {
       jobActionsNotLoaded: true,
       ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
       actualJobData: {},
+      actualRotation: [],
+      savedRotation: [],
     };
   },
   computed: {
     name() {
-      return this.actualJobData[`name_${this.$parent.$i18n.locale}`];
+      return this.actualJobData[`name_${this.locale}`];
     },
     selectedJobIcon() {
       return { backgroundImage: `url(${this.actualJobData.icon})` };
@@ -153,7 +180,7 @@ export default {
       if (data === null) {
         return "";
       }
-      return data[`name_${this.$parent.$i18n.locale}`];
+      return data[`name_${this.locale}`];
     },
     selectedActionId() {
       const data = this.getActionData(this.actualSelectedActionId);
@@ -341,7 +368,7 @@ export default {
       if (data === null) {
         return "";
       }
-      return data[`description_${this.$parent.$i18n.locale}`];
+      return data[`description_${this.locale}`];
     },
     selectedActionAcquiredLvl() {
       const data = this.getActionData(this.actualSelectedActionId);
@@ -360,6 +387,7 @@ export default {
   },
   created() {
     this.loadJobActions(this.jobId);
+    this.restoreSavedRotation(this.rotation);
   },
   methods: {
     /**
@@ -408,6 +436,8 @@ export default {
       this.actualJobData = this.$parent.$parent["jobsData"][jobId];
       this.id = jobId;
       this.ffxivAdvancedRotationsStore.selectedUIElements.jobId = jobId;
+      this.actualRotation = [];
+      this.savedRotation = [];
 
       const jobActions = getJobActions(jobId);
       jobActions.then((jobActionsResult) => {
@@ -470,6 +500,67 @@ export default {
       }
       return actionIdsToReplace;
     },
+    onDrop(event) {
+      const actionId = event.dataTransfer.getData("actionId");
+      this.savedRotation.push({
+        id: actionId,
+        position: this.savedRotation.length + 1,
+      });
+      event.stopPropagation();
+    },
+    onDelete(event) {
+      if (event.dataTransfer.getData("source") === "job") {
+        return;
+      }
+      const actionId = Number.parseInt(
+        event.dataTransfer.getData("actionId"),
+        10
+      );
+      const position = Number.parseInt(
+        event.dataTransfer.getData("position"),
+        10
+      );
+      this.savedRotation = this.savedRotation.filter((action) => {
+        return action.id !== actionId && action.position !== position;
+      });
+      this.reorganizeRotationPositions();
+    },
+    reorganizeRotationPositions() {
+      if (this.savedRotation.length === 0) {
+        return;
+      }
+
+      for (const [index, action] of Object.entries(this.savedRotation)) {
+        action.position = Number.parseInt(index, 10) + 1;
+      }
+    },
+    addSavedRotationToURoute() {
+      const rotationToSave = [];
+      for (const action of this.savedRotation) {
+        rotationToSave.push(action.id);
+      }
+      const serializedSavedRotation = JSON.stringify(rotationToSave);
+      const base64SavedRotations = btoa(serializedSavedRotation);
+      const currentLocale = this.locale;
+      const newURL = `/${currentLocale}/jobActions/${this.jobId}/${base64SavedRotations}`;
+      this.$router["push"](newURL);
+    },
+    restoreSavedRotation(newBase64SavedRotations) {
+      if (newBase64SavedRotations === "") {
+        return;
+      }
+
+      const serializedSavedRotation = atob(newBase64SavedRotations);
+      const rotationToRestore = JSON.parse(serializedSavedRotation);
+      const restoredRotation = [];
+      for (const actionId of rotationToRestore) {
+        restoredRotation.push({
+          id: actionId,
+          position: restoredRotation.length + 1,
+        });
+      }
+      this.savedRotation = restoredRotation;
+    },
   },
   watch: {
     jobId(newId) {
@@ -479,6 +570,30 @@ export default {
       function () {
         this.loadJobActions(this.id);
       },
+    savedRotation: {
+      deep: true,
+      handler(newRotation) {
+        if (newRotation.length === 0) {
+          this.actualRotation = [];
+        }
+
+        const actualRotation = [];
+        for (const action of newRotation) {
+          // eslint-disable-next-line vue/no-async-in-computed-properties
+          getActionData(action.id).then((actionData) => {
+            actualRotation.push({
+              id: actionData.id,
+              name: actionData[`name_${this.locale}`],
+              icon: actionData.icon,
+              category: actionData.action_category,
+              position: action.position,
+            });
+            this.actualRotation = actualRotation;
+            this.addSavedRotationToURoute();
+          });
+        }
+      },
+    },
   },
 };
 </script>
@@ -522,7 +637,7 @@ export default {
   border-radius: 5px;
 }
 
-.actionIcon {
+.actionIconTooltip {
   width: 80px;
   height: 80px;
   position: absolute;
@@ -626,5 +741,11 @@ legend {
   border-radius: 5px;
   border: 2px solid gray;
   padding: revert;
+}
+
+.rotationActions {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
 }
 </style>

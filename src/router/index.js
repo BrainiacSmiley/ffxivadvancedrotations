@@ -46,14 +46,18 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: "/",
-      redirect: `/${DEFAULT_LOCALE}`,
+      name: "jobActions",
+      path: "/:locale/jobActions/:jobId/:rotation?",
+      component: JobActions,
+      props: castParams({
+        locale: "String",
+        jobId: "Number",
+        rotation: "String",
+      }),
     },
     {
-      name: "jobActions",
-      path: "/:locale/jobActions/:jobId",
-      component: JobActions,
-      props: castParams({ locale: "String", jobId: "Number" }),
+      path: "/",
+      redirect: `/${DEFAULT_LOCALE}`,
     },
     {
       path: "/:locale",
