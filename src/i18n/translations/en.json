@@ -39,9 +39,10 @@
   "siteName": "FFXIVAdvancedRotations",
   "settings": {
     "buttonLabel": "Settings",
-    "removeUpleveledActions": "Remove upleveled replaced actions"
+    "removeUpleveledActions": "remove upleveled replaced actions"
   },
   "language": {
     "buttonLabel": "Language"
-  }
+  },
+  "deleteActualRotation": "delete actual rotation"
 }

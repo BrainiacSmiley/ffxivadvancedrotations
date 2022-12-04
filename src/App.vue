@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <a class="navbar-brand" href="#">{{ $t("siteName") }}</a>
     </div>
-    <locale-switcher></locale-switcher>
+    <LocaleSwitcher></LocaleSwitcher>
     <div class="dropdown me-2">
       <button
         class="btn btn-secondary dropdown-toggle"
@@ -50,14 +50,14 @@
     <div class="loadingIndicatorText">{{ $t("loadingJobsData") }}</div>
   </div>
   <div class="jobMenu">
-    <jobs-menu
+    <JobsMenu
       :id="jobCategory.id"
       :name="jobCategory.name"
       :icon="jobCategory.icon"
       :jobList="jobCategory.jobList"
       v-for="jobCategory in jobsMenu"
       :key="jobCategory.id"
-    ></jobs-menu>
+    ></JobsMenu>
   </div>
   <div class="jobActions">
     <router-view></router-view>
@@ -67,9 +67,15 @@
 <script>
 import { getAllJobsData, getAllMenuData } from "@/js/ffxivadvancedrotations";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import LocaleSwitcher from "@/components/nav/LocaleSwitcher";
+import JobsMenu from "@/components/nav/JobsMenu.vue";
 
 export default {
   name: "App",
+  components: {
+    LocaleSwitcher,
+    JobsMenu,
+  },
   data: function () {
     return {
       jobDataNotLoaded: true,
@@ -159,7 +165,7 @@ body {
   left: 50%;
   margin-left: -54px;
   background-position-x: 0;
-  background-image: url("assets/common_loading_rotate.png");
+  background-image: url("assets/pics/common_loading_rotate.png");
   background-color: transparent;
   animation: loadingIndicatorRotation 1s steps(12) infinite;
 }

@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
   <div class="loadingActionsIndicatorBackground" v-show="jobActionsNotLoaded">
     <div class="loadingIndicatorIcon"></div>
@@ -8,36 +7,66 @@
     <div class="jobActionsIcon" :style="selectedJobIcon"></div>
     <div class="jobActionsName">{{ name }}</div>
   </header>
-  <div
-    class="jobRotation"
-    @drop="onDelete($event)"
-    @dragenter.prevent
-    @dragover.prevent
-  >
-    <fieldset
-      class="actionGroup"
-      @drop="onDrop($event)"
-      @dragenter.prevent
-      @dragover.prevent
-      style="min-height: 100px"
-    >
+  <div class="jobRotation">
+    <fieldset class="actionGroup" style="min-height: 100px">
       <legend>{{ $t("rotation") }}</legend>
+      <draggable
+        v-model="jobActionsToDelete"
+        :item-key="id"
+        :group="{ name: 'actualRotation' }"
+        @onStart="onDelete"
+        @onAdd="onDelete"
+        @onRemove="onDelete"
+        @onUpdate="onDelete"
+        @onEnd="onDelete"
+        @onChoose="onDelete"
+        @onUnchoose="onDelete"
+        @onSort="onDelete"
+        @onFilter="onDelete"
+        @onClone="onDelete"
+      >
+        <template #header>
+          <span
+            class="material-symbols-outlined deleteRotationIcon"
+            v-tooltip="$t('deleteActualRotation')"
+            @click="deleteActualRotation"
+          >
+            delete
+          </span>
+        </template>
+        <template #item="{ element }">
+          <RotationActionIcon
+            :id="element.id"
+            :icon="element.icon"
+            :name="element.name"
+            :category="element.category"
+            :position="element.position"
+          ></RotationActionIcon>
+        </template>
+      </draggable>
       <div class="rotationActions">
-        <rotation-action-icon
-          :id="action.id"
-          :icon="action.icon"
-          :name="action.name"
-          :category="action.category"
-          :position="action.position"
-          v-for="action in actualRotation"
-          :key="action.id"
-        ></rotation-action-icon>
+        <draggable
+          v-model="actualRotation"
+          item-key="id"
+          :sort="true"
+          :group="{ name: 'actualRotation', put: true }"
+        >
+          <template #item="{ element }">
+            <RotationActionIcon
+              :id="element.id"
+              :icon="element.icon"
+              :name="element.name"
+              :category="element.category"
+            ></RotationActionIcon>
+          </template>
+        </draggable>
       </div>
     </fieldset>
   </div>
   <footer class="jobActionsOverview">
     <div class="actionGroups">
       <action-group
+        :locale="locale"
         :category-name="group.categoryName"
         :actions="group.actions"
         v-for="group in actionGroups"
@@ -130,9 +159,17 @@ import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
+import ActionGroup from "@/components/action/ActionGroup";
+import RotationActionIcon from "@/components/action/RotationActionIcon";
+import draggable from "vuedraggable";
 
 export default {
   name: "job-actions",
+  components: {
+    ActionGroup,
+    RotationActionIcon,
+    draggable,
+  },
   props: {
     locale: String,
     jobId: Number,
@@ -148,7 +185,7 @@ export default {
       ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
       actualJobData: {},
       actualRotation: [],
-      savedRotation: [],
+      jobActionsToDelete: [],
     };
   },
   computed: {
@@ -500,30 +537,24 @@ export default {
       }
       return actionIdsToReplace;
     },
-    onDrop(event) {
-      const actionId = event.dataTransfer.getData("actionId");
-      this.savedRotation.push({
-        id: actionId,
-        position: this.savedRotation.length + 1,
-      });
-      event.stopPropagation();
-    },
-    onDelete(event) {
-      if (event.dataTransfer.getData("source") === "job") {
-        return;
-      }
-      const actionId = Number.parseInt(
-        event.dataTransfer.getData("actionId"),
-        10
-      );
-      const position = Number.parseInt(
-        event.dataTransfer.getData("position"),
-        10
-      );
-      this.savedRotation = this.savedRotation.filter((action) => {
-        return action.id !== actionId && action.position !== position;
-      });
-      this.reorganizeRotationPositions();
+    onDelete(evt) {
+      console.log(evt);
+      console.log(evt.from);
+      // if (event.dataTransfer.getData("source") === "job") {
+      //   return;
+      // }
+      // const actionId = Number.parseInt(
+      //   event.dataTransfer.getData("actionId"),
+      //   10
+      // );
+      // const position = Number.parseInt(
+      //   event.dataTransfer.getData("position"),
+      //   10
+      // );
+      // this.savedRotation = this.savedRotation.filter((action) => {
+      //   return action.id !== actionId && action.position !== position;
+      // });
+      // this.reorganizeRotationPositions();
     },
     reorganizeRotationPositions() {
       if (this.savedRotation.length === 0) {
@@ -561,6 +592,9 @@ export default {
       }
       this.savedRotation = restoredRotation;
     },
+    deleteActualRotation() {
+      this.actualRotation = [];
+    },
   },
   watch: {
     jobId(newId) {
@@ -570,6 +604,10 @@ export default {
       function () {
         this.loadJobActions(this.id);
       },
+    "ffxivAdvancedRotationsStore.selectedUIElements.actionId": function () {
+      this.actualSelectedActionId =
+        this.ffxivAdvancedRotationsStore.selectedUIElements.actionId;
+    },
     savedRotation: {
       deep: true,
       handler(newRotation) {
@@ -581,12 +619,13 @@ export default {
         for (const action of newRotation) {
           // eslint-disable-next-line vue/no-async-in-computed-properties
           getActionData(action.id).then((actionData) => {
+            debugger;
             actualRotation.push({
               id: actionData.id,
               name: actionData[`name_${this.locale}`],
               icon: actionData.icon,
               category: actionData.action_category,
-              position: action.position,
+              position: actualRotation.length + 1,
             });
             this.actualRotation = actualRotation;
             this.addSavedRotationToURoute();
@@ -714,7 +753,7 @@ export default {
 
 .jobRotation {
   width: 1944px;
-  height: 750px;
+  height: 100%;
   margin: auto;
 }
 
@@ -741,11 +780,41 @@ legend {
   border-radius: 5px;
   border: 2px solid gray;
   padding: revert;
+  position: relative;
 }
 
 .rotationActions {
+  width: calc(100% - 70px);
+  min-height: 50px;
+}
+
+.rotationActions > div {
+  width: 100%;
+  min-height: 50px;
   display: flex;
   align-items: flex-start;
   flex-direction: row;
+}
+
+.deleteRotationIcon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 42px;
+}
+
+.deleteRotationIcon:hover {
+  color: lightgray;
+}
+.deleteDropZone {
+  height: 100%;
+}
+
+div:has(.deleteRotationIcon):not(.jobRotation) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 60px;
 }
 </style>

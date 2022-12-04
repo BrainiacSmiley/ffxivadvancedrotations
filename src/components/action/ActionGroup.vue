@@ -3,24 +3,69 @@
     <fieldset class="actionGroup">
       <legend>{{ categoryNameWithOrWithoutAmount }}</legend>
       <div class="actions">
-        <action-icon
-          :id="action.id"
-          :icon="action.icon"
-          :name="action.name"
-          :category="action.action_category"
-          v-for="action in actions"
-          :key="action.id"
-        ></action-icon>
+        <draggable
+          v-model="jobActions"
+          item-key="id"
+          :group="{ name: this.categoryName, pull: 'clone', put: false }"
+          :sort="false"
+        >
+          <template #item="{ element }">
+            <ActionIcon
+              :id="element.id"
+              :icon="element.icon"
+              :name="element.name"
+              :category="element.category"
+              :key="element.id"
+            ></ActionIcon>
+          </template>
+        </draggable>
       </div>
     </fieldset>
   </div>
 </template>
 <script>
+import draggable from "vuedraggable";
+import ActionIcon from "@/components/action/ActionIcon";
+
 export default {
   name: "ActionGroup",
+  components: {
+    draggable,
+    ActionIcon,
+  },
+  data() {
+    return {
+      jobActions: [],
+    };
+  },
   props: {
-    categoryName: String,
-    actions: Object,
+    locale: { type: String, default: "en" },
+    categoryName: { type: String, required: true },
+    actions: { type: Object, required: true },
+  },
+  created() {
+    this.convertPropsToValue("actions");
+  },
+  methods: {
+    convertPropsToValue(propName) {
+      for (const action of Object.entries(this[propName])) {
+        this.jobActions.push({
+          id: action[1].id,
+          icon: action[1].icon,
+          name: action[1][`name_${this.locale}`],
+          category: action[1].action_category,
+        });
+      }
+    },
+  },
+  watched: {
+    actions: {
+      deep: true,
+      handler() {
+        console.log("watched actions");
+        this.convertPropsToValue("actions");
+      },
+    },
   },
   computed: {
     categoryNameWithOrWithoutAmount() {

@@ -11,7 +11,7 @@
         }}
       </div>
     </div>
-    <job-entry
+    <JobEntry
       :id="job.id"
       :icon="job.icon"
       :name_de="job.name_de"
@@ -20,13 +20,18 @@
       :name_ja="job.name_ja"
       v-for="job in jobList"
       :key="job.id"
-    ></job-entry>
+    ></JobEntry>
   </div>
 </template>
 
 <script>
+import JobEntry from "@/components/nav/JobEntry.vue";
+
 export default {
   name: "jobs-menu",
+  components: {
+    JobEntry,
+  },
   props: {
     id: String,
     icon: String,

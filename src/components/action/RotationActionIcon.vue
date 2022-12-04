@@ -6,16 +6,22 @@
     :style="{ backgroundImage: 'url(' + icon + ')' }"
     v-tooltip="name"
     @mouseenter="changeSelectedAction(id)"
-    draggable="true"
-    @dragstart="startDrag($event, { id: id, position: position })"
+    @mouseleave="changeSelectedAction(null)"
   >
     <div :class="isGCDAction"></div>
   </div>
 </template>
 
 <script>
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+
 export default {
   name: "ActionIcon",
+  data() {
+    return {
+      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
+    };
+  },
   props: {
     id: Number,
     icon: String,
@@ -46,12 +52,7 @@ export default {
      * @param {Number} actionId The id of the actual selected action
      */
     changeSelectedAction(actionId) {
-      this.$parent.$parent.actualSelectedActionId = actionId;
-    },
-    startDrag(event, actionData) {
-      event.dataTransfer.setData("actionId", actionData.id);
-      event.dataTransfer.setData("position", actionData.position);
-      event.dataTransfer.setData("source", "rotation");
+      this.ffxivAdvancedRotationsStore.selectedUIElements.actionId = actionId;
     },
   },
 };
@@ -75,7 +76,7 @@ export default {
   width: 108px;
   height: 108px;
   transform: scale(0.3);
-  background-image: url("../../assets/common_loading_rotate05.png");
+  background-image: url("../../assets/pics/common_loading_rotate05.png");
   background-color: transparent;
   margin-top: 28px;
   margin-left: -54px;
@@ -85,7 +86,7 @@ export default {
   display: none;
 }
 
-.rotationActions > .rotaActionOGCD {
+.rotationActions .rotaActionOGCD {
   transform: scale(0.5);
   margin-top: 9px;
   margin-left: 0;
@@ -93,6 +94,6 @@ export default {
   margin-right: -30px;
 }
 
-.rotationActions > .rotaActionGCD {
+.rotationActions .rotaActionGCD {
 }
 </style>
