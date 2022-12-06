@@ -1,8 +1,13 @@
 <template>
-  <div class="job" :class="selected" :key="id" @click="changeSelectedJob(id)">
+  <div
+    class="job"
+    :class="selected"
+    :key="jobId"
+    @click="changeSelectedJob(jobId)"
+  >
     <div
       class="jobIcon"
-      :style="{ backgroundImage: 'url(' + icon + ')' }"
+      :style="{ backgroundImage: 'url(' + data.icon + ')' }"
     ></div>
     <div class="jobName">{{ name }}</div>
     <div class="jobLine"></div>
@@ -11,16 +16,18 @@
 
 <script>
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivdata";
 
 export default {
-  name: "job-entry",
+  async setup(props) {
+    const data = await getJobData(props.jobId);
+    return {
+      data,
+    };
+  },
+  name: "JobEntry",
   props: {
-    id: Number,
-    icon: String,
-    name_de: String,
-    name_en: String,
-    name_fr: String,
-    name_ja: String,
+    jobId: { type: Number, required: true },
   },
   data() {
     return {
@@ -34,11 +41,11 @@ export default {
   },
   computed: {
     name() {
-      return this[`name_${this.$parent.$i18n.locale}`];
+      return this.data[`name_${this.$parent.$i18n.locale}`];
     },
     selected() {
       return this.ffxivAdvancedRotationsStore.selectedUIElements.jobId ===
-        this.id
+        this.jobId
         ? "selected"
         : "";
     },
