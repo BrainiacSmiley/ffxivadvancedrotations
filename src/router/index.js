@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { setLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from "@/i18n/";
-import NewsVersion from "@/components/NewsVersion";
-import JobActions from "@/components/JobActions";
+import NewsVersion from "@/components/views/NewsVersion.vue";
+import JobActions from "@/components/views/JobActions.vue";
 
 const castParams = (casts) => {
   return (route) => {

@@ -46,7 +46,7 @@ body {
   position: absolute;
   top: 60px;
   left: 270px;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 270px);
+  height: calc(100% - 60px);
 }
 </style>

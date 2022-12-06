@@ -1,174 +1,108 @@
 <template>
-  <div class="loadingActionsIndicatorBackground" v-show="jobActionsNotLoaded">
-    <div class="loadingIndicatorIcon"></div>
-    <div class="loadingIndicatorText">{{ $t("loadingActionData") }}</div>
-  </div>
-  <header class="jobActionsHeader">
-    <div class="jobActionsIcon" :style="selectedJobIcon"></div>
-    <div class="jobActionsName">{{ name }}</div>
-  </header>
-  <div class="jobRotation">
-    <fieldset class="actionGroup" style="min-height: 100px">
-      <legend>{{ $t("rotation") }}</legend>
-      <draggable
-        v-model="jobActionsToDelete"
-        :item-key="id"
-        :group="{ name: 'actualRotation' }"
-        @onStart="onDelete"
-        @onAdd="onDelete"
-        @onRemove="onDelete"
-        @onUpdate="onDelete"
-        @onEnd="onDelete"
-        @onChoose="onDelete"
-        @onUnchoose="onDelete"
-        @onSort="onDelete"
-        @onFilter="onDelete"
-        @onClone="onDelete"
-      >
-        <template #header>
-          <span
-            class="material-symbols-outlined deleteRotationIcon"
-            v-tooltip="$t('deleteActualRotation')"
-            @click="deleteActualRotation"
-          >
-            delete
-          </span>
+  <div class="jobActions">
+    <div class="jobActionsHeader">
+      <Suspense>
+        <template #default>
+          <JobActionsHeader :jobId="jobId"></JobActionsHeader>
         </template>
-        <template #item="{ element }">
-          <RotationActionIcon
-            :id="element.id"
-            :icon="element.icon"
-            :name="element.name"
-            :category="element.category"
-            :position="element.position"
-          ></RotationActionIcon>
+        <template #fallback>
+          <JobActionsHeaderSkeleton></JobActionsHeaderSkeleton>
         </template>
-      </draggable>
-      <div class="rotationActions">
-        <draggable
-          v-model="actualRotation"
-          item-key="id"
-          :sort="true"
-          :group="{ name: 'actualRotation', put: true }"
-        >
-          <template #item="{ element }">
-            <RotationActionIcon
-              :id="element.id"
-              :icon="element.icon"
-              :name="element.name"
-              :category="element.category"
-            ></RotationActionIcon>
-          </template>
-        </draggable>
-      </div>
-    </fieldset>
+      </Suspense>
+    </div>
   </div>
-  <footer class="jobActionsOverview">
-    <div class="actionGroups">
-      <action-group
-        :locale="locale"
-        :category-name="group.categoryName"
-        :actions="group.actions"
-        v-for="group in actionGroups"
-        :key="group.id"
-      ></action-group>
-    </div>
-    <div class="actionTooltip" :style="isJobActionSelected">
-      <div>
-        <div class="actionIconTooltip" :style="selectedActionIcon"></div>
-        <div class="actionName">{{ selectedActionName }}</div>
-        <div class="actionCategory">
-          <span style="color: #b6b09a">{{ selectedActionCategory }}</span>
-          {{ selectedActionId }}
-        </div>
-        <div class="actionRange">
-          <span style="color: gray; margin-right: 5px">{{ $t("range") }}</span>
-          <span>{{ selectedActionRange }}</span>
-        </div>
-        <div class="actionRadius">
-          <span style="color: gray; margin-right: 5px">{{ $t("radius") }}</span>
-          <span>{{ selectedActionRadius }}</span>
-        </div>
-        <div class="actionCast" :style="selectedActionCastVisible">
-          <div style="color: #b6b09a; font-size: 13px; text-align: right">
-            {{ $t("cast") }}
-          </div>
-          <div style="text-align: right">{{ selectedActionCasttime }}</div>
-          <div
-            style="
-              height: 5px;
-              width: 135px;
-              background-color: gray;
-              border-radius: 2px;
-              margin-top: -5px;
-            "
-          ></div>
-        </div>
-        <div class="actionRecast" :style="selectedActionRecastVisible">
-          <div style="color: #b6b09a; font-size: 13px; text-align: right">
-            {{ $t("recast") }}
-          </div>
-          <div style="text-align: right">{{ selectedActionRecasttime }}</div>
-          <div
-            style="
-              height: 5px;
-              width: 135px;
-              background-color: gray;
-              border-radius: 2px;
-              margin-top: -5px;
-            "
-          ></div>
-        </div>
-        <div class="actionCost" :style="selectedActionCostVisible">
-          <div style="color: #b6b09a; font-size: 13px; text-align: right">
-            {{ selectedActionCostsType }}
-          </div>
-          <div style="text-align: right">{{ selectedActionCosts }}</div>
-          <div
-            style="
-              height: 5px;
-              width: 135px;
-              background-color: gray;
-              border-radius: 2px;
-              margin-top: -5px;
-            "
-          ></div>
-        </div>
-      </div>
-      <div class="actionDescription" v-html="selectedActionDescription"></div>
-      <div class="actionAcquired">
-        <div style="display: inline-block; width: 100px; color: #b6b09a">
-          {{ $t("acquired") }}
-        </div>
-        <span style="color: #5a7744">{{ selectedActionAcquiredLvl }}</span>
-      </div>
-      <!--<div class="actionAffinity">
-        <span style="flex:1;width:100px;color:#b6b09a;">{{ $t('affinity') }}</span>
-        <span style="flex:1;margin-left:-229px;}">{{ selectedActionAffinity }}</span>
-      </div>-->
-    </div>
-  </footer>
+  <!--  <div class="jobRotation">-->
+  <!--    <fieldset class="actionGroup" style="min-height: 100px">-->
+  <!--      <legend>{{ $t("rotation") }}</legend>-->
+  <!--      <draggable-->
+  <!--        v-model="jobActionsToDelete"-->
+  <!--        :item-key="id"-->
+  <!--        :group="{ name: 'actualRotation' }"-->
+  <!--        @onStart="onDelete"-->
+  <!--        @onAdd="onDelete"-->
+  <!--        @onRemove="onDelete"-->
+  <!--        @onUpdate="onDelete"-->
+  <!--        @onEnd="onDelete"-->
+  <!--        @onChoose="onDelete"-->
+  <!--        @onUnchoose="onDelete"-->
+  <!--        @onSort="onDelete"-->
+  <!--        @onFilter="onDelete"-->
+  <!--        @onClone="onDelete"-->
+  <!--      >-->
+  <!--        <template #header>-->
+  <!--          <span-->
+  <!--            class="material-symbols-outlined deleteRotationIcon"-->
+  <!--            v-tooltip="$t('deleteActualRotation')"-->
+  <!--            @click="deleteActualRotation"-->
+  <!--          >-->
+  <!--            delete-->
+  <!--          </span>-->
+  <!--        </template>-->
+  <!--        <template #item="{ element }">-->
+  <!--          <RotationActionIcon-->
+  <!--            :id="element.id"-->
+  <!--            :icon="element.icon"-->
+  <!--            :name="element.name"-->
+  <!--            :category="element.category"-->
+  <!--            :position="element.position"-->
+  <!--          ></RotationActionIcon>-->
+  <!--        </template>-->
+  <!--      </draggable>-->
+  <!--      <div class="rotationActions">-->
+  <!--        <draggable-->
+  <!--          v-model="actualRotation"-->
+  <!--          item-key="id"-->
+  <!--          :sort="true"-->
+  <!--          :group="{ name: 'actualRotation', put: true }"-->
+  <!--        >-->
+  <!--          <template #item="{ element }">-->
+  <!--            <RotationActionIcon-->
+  <!--              :id="element.id"-->
+  <!--              :icon="element.icon"-->
+  <!--              :name="element.name"-->
+  <!--              :category="element.category"-->
+  <!--            ></RotationActionIcon>-->
+  <!--          </template>-->
+  <!--        </draggable>-->
+  <!--      </div>-->
+  <!--    </fieldset>-->
+  <!--  </div>-->
+  <!--  <footer class="jobActionsOverview">-->
+  <!--    <div class="actionGroups">-->
+  <!--      <action-group-->
+  <!--        :locale="locale"-->
+  <!--        :category-name="group.categoryName"-->
+  <!--        :actions="group.actions"-->
+  <!--        v-for="group in actionGroups"-->
+  <!--        :key="group.id"-->
+  <!--      ></action-group>-->
+  <!--    </div>-->
+  <!--  </footer>-->
 </template>
 
 <script>
 import {
-  getJobActions,
+  // getJobActions,
   getJobActionsToReplaceThroughLevel,
 } from "@/js/ffxiv/ffxivjobactions";
 import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
-import ActionGroup from "@/components/action/ActionGroup";
-import RotationActionIcon from "@/components/action/RotationActionIcon";
-import draggable from "vuedraggable";
+// import ActionGroup from "@/components/action/ActionGroup.vue";
+// import RotationActionIcon from "@/components/action/RotationActionIcon.vue";
+import JobActionsHeader from "@/components/jobActions/JobActionsHeader.vue";
+import JobActionsHeaderSkeleton from "@/components/jobActions/JobActionsHeaderSkeleton.vue";
+// import draggable from "vuedraggable";
 
 export default {
   name: "job-actions",
   components: {
-    ActionGroup,
-    RotationActionIcon,
-    draggable,
+    // ActionGroup,
+    // RotationActionIcon,
+    JobActionsHeader,
+    JobActionsHeaderSkeleton,
+    // draggable,
   },
   props: {
     locale: String,
@@ -460,35 +394,37 @@ export default {
      * @param {Number} jobId The jobId to get the actions for
      */
     loadJobActions(jobId) {
-      this.jobActionsNotLoaded = true;
-      if (typeof jobId === "undefined") {
-        return;
-      }
-
-      if (typeof this.$parent.$parent["jobsData"][jobId] === "undefined") {
-        this.$router["push"]("/");
-        return;
-      }
-
-      this.actualJobData = this.$parent.$parent["jobsData"][jobId];
-      this.id = jobId;
-      this.ffxivAdvancedRotationsStore.selectedUIElements.jobId = jobId;
-      this.actualRotation = [];
-      this.savedRotation = [];
-
-      const jobActions = getJobActions(jobId);
-      jobActions.then((jobActionsResult) => {
-        for (const group of jobActionsResult) {
-          for (const [id, action] of Object.entries(group.actions)) {
-            this.allJobActions[id] = action;
-          }
-        }
-        this.actionGroups = this.removeJobsThatSwapThroughLevelUp(
-          jobActionsResult,
-          jobId
-        );
-        this.jobActionsNotLoaded = false;
-      });
+      console.log(jobId);
+      return;
+      // this.jobActionsNotLoaded = true;
+      // if (typeof jobId === "undefined") {
+      //   return;
+      // }
+      //
+      // if (typeof this.$parent.$parent["jobsData"][jobId] === "undefined") {
+      //   this.$router["push"]("/");
+      //   return;
+      // }
+      //
+      // this.actualJobData = this.$parent.$parent["jobsData"][jobId];
+      // this.id = jobId;
+      // this.ffxivAdvancedRotationsStore.selectedUIElements.jobId = jobId;
+      // this.actualRotation = [];
+      // this.savedRotation = [];
+      //
+      // const jobActions = getJobActions(jobId);
+      // jobActions.then((jobActionsResult) => {
+      //   for (const group of jobActionsResult) {
+      //     for (const [id, action] of Object.entries(group.actions)) {
+      //       this.allJobActions[id] = action;
+      //     }
+      //   }
+      //   this.actionGroups = this.removeJobsThatSwapThroughLevelUp(
+      //     jobActionsResult,
+      //     jobId
+      //   );
+      //   this.jobActionsNotLoaded = false;
+      // });
     },
     /**
      *
@@ -638,28 +574,6 @@ export default {
 </script>
 
 <style scoped>
-.jobActionsHeader {
-  margin: auto;
-  width: 340px;
-  display: block;
-}
-
-.jobActionsIcon {
-  width: 64px;
-  height: 64px;
-  display: inline-block;
-  transform: scale(0.6);
-  background-size: cover;
-}
-
-.jobActionsName {
-  color: #c2c2c2;
-  display: inline-block;
-  font-size: 36px;
-  vertical-align: top;
-  margin-top: 4px;
-}
-
 .jobActionsOverview {
   margin: auto;
 }

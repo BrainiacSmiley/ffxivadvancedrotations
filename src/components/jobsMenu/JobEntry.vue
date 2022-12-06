@@ -17,6 +17,7 @@
 <script>
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivdata";
+import { getLocale } from "@/i18n";
 
 export default {
   async setup(props) {
@@ -36,12 +37,14 @@ export default {
   },
   methods: {
     changeSelectedJob(jobId) {
-      this.$router["push"](`/${this.$parent.$i18n.locale}/jobActions/${jobId}`);
+      const locale = getLocale();
+      this.$router["push"](`/${locale}/jobActions/${jobId}`);
     },
   },
   computed: {
     name() {
-      return this.data[`name_${this.$parent.$i18n.locale}`];
+      const locale = getLocale();
+      return this.data[`name_${locale}`];
     },
     selected() {
       return this.ffxivAdvancedRotationsStore.selectedUIElements.jobId ===
