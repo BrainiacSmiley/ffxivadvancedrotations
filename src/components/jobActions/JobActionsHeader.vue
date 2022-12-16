@@ -6,25 +6,13 @@
 </template>
 
 <script>
-// import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
+import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
 import { getLocale } from "@/i18n";
-
-const getData = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  return {
-    icon: "https://xivapi.com/cj/companion/machinist.png",
-    id: 31,
-    name_de: "Maschinist",
-    name_en: "Machinist",
-    name_fr: "Machiniste",
-    name_ja: "機工士",
-  };
-};
+import { ref } from "vue";
 
 export default {
   async setup(props) {
-    // const data = await getJobData(props.jobId);
-    const data = await getData(props.jobId);
+    let data = ref(await getJobData(props.jobId));
     return {
       data,
     };
@@ -42,6 +30,16 @@ export default {
       return { backgroundImage: `url(${this.data["icon"]})` };
     },
   },
+  watch: {
+    jobId: {
+      deep: true,
+      handler(newJobId) {
+        getJobData(newJobId).then((newData) => {
+          this.data = newData;
+        });
+      },
+    },
+  },
 };
 </script>
 
@@ -49,6 +47,7 @@ export default {
 .jobActionsHeader {
   margin: auto;
   width: 340px;
+  justify-self: flex-start;
 }
 
 .jobActionsIcon {

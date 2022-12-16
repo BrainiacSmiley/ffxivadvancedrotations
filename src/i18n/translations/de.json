@@ -1,22 +1,7 @@
 {
-  "categorySpell": "Zauber",
-  "categoryWeaponSkill": "Waffenfertigkeit",
-  "categoryAbility": "Talent",
-  "categoryTincture": "Arznei",
   "castTimeInstant": "Sofort",
   "acquired": "Erlernt",
   "affinity": "Affinität",
-  "cast": "Aktivieren",
-  "recast": "Reaktivieren",
-  "range": "Reicht",
-  "radius": "Radius",
-  "job": "Job",
-  "role": "Rolle",
-  "tankRole": "Verteidiger",
-  "healerRole": "Heiler",
-  "meleeRole": "Nahkampfangreifer",
-  "physicalRangeRole": "Phys. Fernkämpfer",
-  "magicalRangeRole": "Mag. Fernkämpfer",
   "costType": {
     "MP": "MP-Kosten",
     "OathGauge": "Oath Gauge",
@@ -33,8 +18,21 @@
     "EarthAttunement": "Earth Attunement",
     "WindAttunement": "Wind Attunement"
   },
-  "loadingJobsData": "loading jobs data",
-  "loadingActionData": "loading job actions",
+  "cast": "Aktivieren",
+  "recast": "Reaktivieren",
+  "s": "sek",
+  "range": "Reicht",
+  "radius": "Radius",
+  "actionGroupNames": {
+    "job": "Job",
+    "role": "Rolle",
+    "tincture": "Limit Break / Tinkturen"
+  },
+  "tankRole": "Verteidiger",
+  "healerRole": "Heiler",
+  "meleeRole": "Nahkampfangreifer",
+  "physicalRangeRole": "Phys. Fernkämpfer",
+  "magicalRangeRole": "Mag. Fernkämpfer",
   "rotation": "Rotation",
   "siteName": "FFXIVAdvancedRotations",
   "settings": {
@@ -43,5 +41,6 @@
   },
   "language": {
     "buttonLabel": "Sprache"
-  }
+  },
+  "deleteActualRotation": "Aktuelle Rotation löschen"
 }

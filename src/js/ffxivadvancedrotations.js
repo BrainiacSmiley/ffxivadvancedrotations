@@ -7,7 +7,7 @@ import {
   getMagicalRangeJobIds,
 } from "@/js/ffxiv/ffxivhelper";
 import { FFXIVJobCategories } from "@/js/ffxiv/ffxivconfigs";
-import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivdata";
+import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
 
 function getAllJobsData() {
   const allJobIds = getDoWDoMJobIds();

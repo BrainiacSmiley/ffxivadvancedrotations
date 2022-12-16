@@ -4,6 +4,7 @@ import "@/css/v-popper.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap";
 import "mdb-ui-kit/css/mdb.min.css";
+import "@/css/ffxivadvancedrotations.css";
 
 import App from "@/App.vue";
 import FloatingVue from "floating-vue";

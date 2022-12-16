@@ -1,7 +1,7 @@
 <template>
   <div
     :id="id"
-    class="actionIcon"
+    class="itemIcon"
     :class="isRotaGCDAction"
     :style="{ backgroundImage: 'url(' + icon + ')' }"
     v-tooltip="name"
@@ -60,7 +60,7 @@ export default {
 
 <!--suppress CssUnusedSymbol -->
 <style scoped>
-.actionIcon {
+.itemIcon {
   width: 80px;
   height: 80px;
   transform: scale(0.8);
@@ -68,7 +68,7 @@ export default {
   display: inline-block;
 }
 
-.actionIcon:hover {
+.itemIcon:hover {
   border: solid white 3px;
 }
 
@@ -76,7 +76,7 @@ export default {
   width: 108px;
   height: 108px;
   transform: scale(0.3);
-  background-image: url("../../assets/pics/common_loading_rotate05.png");
+  background-image: url("@/assets/pics/common_loading_rotate05.png");
   background-color: transparent;
   margin-top: 28px;
   margin-left: -54px;

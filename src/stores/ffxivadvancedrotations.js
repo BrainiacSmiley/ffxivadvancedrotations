@@ -8,7 +8,10 @@ export const useFFXIVAdvancedRotationsStore = defineStore({
     },
     selectedUIElements: {
       jobId: 0,
-      actionId: 0,
+      selectedIdForTooltip: {
+        id: 0,
+        type: null,
+      },
     },
   }),
 });
