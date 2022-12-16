@@ -16,7 +16,7 @@
 
 <script>
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
-import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivdata";
+import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
 import { getLocale } from "@/i18n";
 
 export default {
@@ -62,6 +62,7 @@ export default {
   cursor: pointer;
   height: 46px;
   margin-bottom: 2px;
+  position: relative;
 }
 
 .jobIcon {
@@ -70,15 +71,16 @@ export default {
   display: inline-block;
   transform: scale(0.6);
   background-size: cover;
-  margin-top: -9px;
+  position: absolute;
+  top: -9px;
 }
 
 .jobName {
   color: #c2c2c2;
-  display: inline-block;
   font-size: 21px;
-  vertical-align: top;
-  margin-top: 4px;
+  position: absolute;
+  top: 4px;
+  left: 65px;
 }
 
 .jobLine {
@@ -86,8 +88,8 @@ export default {
   width: 200px;
   background-color: #595b5f;
   display: inline-block;
-  position: relative;
-  top: -33px;
+  position: absolute;
+  top: 28px;
   left: 62px;
 }
 

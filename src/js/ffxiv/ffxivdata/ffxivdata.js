@@ -1,16 +1,10 @@
+// noinspection AllyPlainJsInspection
+
 import { FFXIVVERSION } from "@/js/ffxiv/ffxivconfigs";
-import {
-  getJobData,
-  stripJobData,
-} from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
-import {
-  getJobActionsForCategoryId,
-  stripJobCategoryData,
-} from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
-import {
-  getActionData,
-  stripActionData,
-} from "@/js/ffxiv/ffxivdata/ffxivactiondata";
+import { stripJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
+import { stripJobCategoryData } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
+import { stripActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
+import { stripItemData } from "@/js/ffxiv/ffxivdata/ffxivitemdata";
 import { getLocale } from "@/i18n";
 const XIVAPILocale = getLocale();
 
@@ -35,7 +29,7 @@ async function getXIVAPIData(key, id) {
     return data;
   }
 
-  if (key === "ClassJob" || key === "Action") {
+  if (key === "ClassJob" || key === "Action" || key === "Item") {
     // https://xivapi.com/{key}/{25488}
     data = await xiv.data.get(key, id);
   } else if (key === "ClassJobCategory") {
@@ -63,6 +57,8 @@ function stripData(key, originalData) {
     return stripJobCategoryData(originalData);
   } else if (key === "Action") {
     return stripActionData(originalData);
+  } else if (key === "Item") {
+    return stripItemData(originalData);
   }
 }
 
@@ -136,10 +132,4 @@ function writeToStoredLocal(key, id, data) {
   saveXIVAPIData();
 }
 
-export {
-  getJobData,
-  getJobActionsForCategoryId,
-  getXIVAPIData,
-  getActionData,
-  clearXIVAPIData,
-};
+export { getXIVAPIData, clearXIVAPIData };

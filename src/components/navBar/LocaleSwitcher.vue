@@ -36,11 +36,11 @@ export default {
         return;
       }
 
-      const currentPath = this.$route.path;
+      const currentPath = this.$route["path"];
       const allLocalePattern = Object.keys(SUPPORTED_LOCALES).join("|");
       const localeRegex = new RegExp(`\\/([${allLocalePattern}]{2})`, "g");
       const newRoute = currentPath.replace(localeRegex, `/${newLocale}`);
-      this.$router.push(newRoute);
+      this.$router["push"](newRoute);
     },
   },
   computed: {

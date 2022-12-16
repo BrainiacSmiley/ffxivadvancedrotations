@@ -3,12 +3,24 @@
     <div class="jobActionsHeader">
       <Suspense>
         <template #default>
-          <JobActionsHeader :jobId="jobId"></JobActionsHeader>
+          <JobActionsHeader :job-id="jobId" />
         </template>
         <template #fallback>
-          <JobActionsHeaderSkeleton></JobActionsHeaderSkeleton>
+          <JobActionsHeaderSkeleton />
         </template>
       </Suspense>
+    </div>
+    <div style="width: 100%; height: 100%"></div>
+    <div class="jobActionsOverview">
+      <Suspense>
+        <template #default>
+          <JobActionsGroups :job-id="jobId" />
+        </template>
+        <template #fallback>
+          <div>Loading...</div>
+        </template>
+      </Suspense>
+      <JobActionsTooltip />
     </div>
   </div>
   <!--  <div class="jobRotation">-->
@@ -67,39 +79,25 @@
   <!--      </div>-->
   <!--    </fieldset>-->
   <!--  </div>-->
-  <!--  <footer class="jobActionsOverview">-->
-  <!--    <div class="actionGroups">-->
-  <!--      <action-group-->
-  <!--        :locale="locale"-->
-  <!--        :category-name="group.categoryName"-->
-  <!--        :actions="group.actions"-->
-  <!--        v-for="group in actionGroups"-->
-  <!--        :key="group.id"-->
-  <!--      ></action-group>-->
-  <!--    </div>-->
-  <!--  </footer>-->
 </template>
 
 <script>
-import {
-  // getJobActions,
-  getJobActionsToReplaceThroughLevel,
-} from "@/js/ffxiv/ffxivjobactions";
+import { getJobActionsToReplaceThroughLevel } from "@/js/ffxiv/ffxivjobactions";
 import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
-import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
-// import ActionGroup from "@/components/action/ActionGroup.vue";
-// import RotationActionIcon from "@/components/action/RotationActionIcon.vue";
 import JobActionsHeader from "@/components/jobActions/JobActionsHeader.vue";
 import JobActionsHeaderSkeleton from "@/components/jobActions/JobActionsHeaderSkeleton.vue";
+import JobActionsGroups from "@/components/jobActions/JobActionsGroups.vue";
+import JobActionsTooltip from "@/components/jobActions/JobActionsTooltip.vue";
+import { setJobId } from "@/composables/jobId";
 // import draggable from "vuedraggable";
 
 export default {
   name: "job-actions",
   components: {
-    // ActionGroup,
-    // RotationActionIcon,
+    JobActionsTooltip,
+    JobActionsGroups,
     JobActionsHeader,
     JobActionsHeaderSkeleton,
     // draggable,
@@ -111,320 +109,27 @@ export default {
   },
   data() {
     return {
-      id: "",
-      actionGroups: [],
-      actualSelectedActionId: null,
-      allJobActions: {},
-      jobActionsNotLoaded: true,
       ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
-      actualJobData: {},
       actualRotation: [],
       jobActionsToDelete: [],
     };
   },
-  computed: {
-    name() {
-      return this.actualJobData[`name_${this.locale}`];
-    },
-    selectedJobIcon() {
-      return { backgroundImage: `url(${this.actualJobData.icon})` };
-    },
-    isJobActionSelected() {
-      if (
-        this.actualSelectedActionId &&
-        typeof this.actualSelectedActionId !== "undefined"
-      ) {
-        return { visibility: "visible" };
-      } else {
-        return { visibility: "hidden" };
-      }
-    },
-    selectedActionIcon() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-      return { backgroundImage: `url(${data["icon"]})` };
-    },
-    selectedActionName() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-      return data[`name_${this.locale}`];
-    },
-    selectedActionId() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null || process.env.VUE_APP_DEBUG_VERBOSE === "false") {
-        return "";
-      }
-      return ` [${data["id"]}]`;
-    },
-    selectedActionCategory() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      const actionCategory = data["action_category"];
-      if (actionCategory === 2) {
-        return this.$t("categorySpell");
-      } else if (actionCategory === 3) {
-        return this.$t("categoryWeaponSkill");
-      } else if (actionCategory === 4) {
-        return this.$t("categoryAbility");
-      } else {
-        const errorText = `undefined action_category: ${actionCategory}`;
-        console.log(errorText);
-        return new Error(errorText);
-      }
-    },
-    selectedActionRange() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      let range = data["range"];
-      if (range === "-1") {
-        range = "3";
-      }
-      return `${range}y`;
-    },
-    selectedActionRadius() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      return `${data["radius"]}y`;
-    },
-    selectedActionCastVisible() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      if (
-        data["cast100ms"] > 0 &&
-        this.actualSelectedActionId &&
-        typeof this.actualSelectedActionId !== "undefined"
-      ) {
-        return "visibility:visible";
-      } else {
-        return "visibility:hidden";
-      }
-    },
-    selectedActionCasttime() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      let castTime = data["cast100ms"];
-      if (castTime === 0) {
-        return this.$t("castTimeInstant");
-      } else {
-        castTime = this.roundNumberToTwoDigits(castTime);
-      }
-      return `${castTime}s`;
-    },
-    selectedActionRecastVisible() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      if (
-        data["recast100ms"] > 0 &&
-        this.actualSelectedActionId &&
-        typeof this.actualSelectedActionId !== "undefined"
-      ) {
-        return { visibility: "visible" };
-      } else {
-        return { visibility: "hidden" };
-      }
-    },
-    selectedActionRecasttime() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      const recastTime = this.roundNumberToTwoDigits(data["recast100ms"] / 10);
-      return `${recastTime}s`;
-    },
-    selectedActionCostVisible() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      if (
-        data["cost"] > 0 &&
-        this.actualSelectedActionId &&
-        typeof this.actualSelectedActionId !== "undefined"
-      ) {
-        if (data["costType"] === 3) {
-          return { visibility: "visible" };
-        }
-      }
-      return { visibility: "hidden" };
-    },
-    selectedActionCostsType() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-      const costType = data["costType"];
-      const costTypesToIgnore = [2, 4, 10, 57, 58, 70, 71, 76]; //Spell Effects to be Consumed
-      const errorText = `Undefined costType: ${costType} for actionId: ${data["id"]}`;
-      if (costTypesToIgnore.includes(costType)) {
-        return "";
-      }
-      if (costType === 3) {
-        return this.$t("costType.MP");
-      } else if (costType === 22) {
-        return this.$t("costType.BeastGauge");
-      } else if (costType === 23) {
-        return this.$t("costType.Polyglot");
-      } else if (costType === 25) {
-        return this.$t("costType.BloodGauge");
-      } else if (costType === 27) {
-        return this.$t("costType.NinkiGauge");
-      } else if (costType === 30) {
-        return this.$t("costType.AetherflowGauge");
-      } else if (costType === 41) {
-        return this.$t("costType.OathGauge");
-      } else if (costType === 55) {
-        return this.$t("costType.Cartridge");
-      } else if (costType === 56) {
-        return this.$t("costType.HealingGauge");
-      } else if (costType === 68) {
-        return this.$t("costType.Addersgall");
-      } else if (costType === 69) {
-        return this.$t("costType.Addersting");
-      } else if (costType === 72) {
-        return this.$t("costType.FireAttunement");
-      } else if (costType === 73) {
-        return this.$t("costType.EarthAttunement");
-      } else if (costType === 74) {
-        return this.$t("costType.WindAttunement");
-      } else if (costType) {
-        console.log(errorText);
-        return "";
-      } else {
-        return new Error(errorText);
-      }
-    },
-    selectedActionCosts() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-
-      let cost = data["cost"];
-      if (this.jobId === FFXIVJobIds.PLD) {
-        cost *= 50;
-      } else if (
-        FFXIVJobIds.isHealer(this.jobId) ||
-        FFXIVJobIds.isMagicalRanged(this.jobId)
-      ) {
-        cost *= 100;
-      }
-      return cost;
-    },
-    selectedActionDescription() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-      return data[`description_${this.locale}`];
-    },
-    selectedActionAcquiredLvl() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-      return `Lv. ${data["class_job_level"]}`;
-    },
-    selectedActionAffinity() {
-      const data = this.getActionData(this.actualSelectedActionId);
-      if (data === null) {
-        return "";
-      }
-      return data["affinity"];
-    },
-  },
   created() {
     this.loadJobActions(this.jobId);
-    this.restoreSavedRotation(this.rotation);
+    //this.restoreSavedRotation(this.rotation);
   },
   methods: {
-    /**
-     * Returns the data for the action with the provided id
-     * @param {Number} actionId The actionId you want the data for
-     * @return {Error|object} The data for the action
-     */
-    getActionData(actionId) {
-      if (actionId === null) {
-        return null;
-      }
-      if (typeof this.allJobActions[actionId] === "undefined") {
-        return new Error(`no data found for actionID:${actionId}`);
-      }
-
-      return this.allJobActions[actionId];
-    },
-    /**
-     * Formats a number to a configurable numb
-     * @param {Number} value The value to format
-     * @param {Number} decimalPlaces The number of digits to format to
-     * @return {string} The formatted number with given number of digits
-     */
-    roundNumberToTwoDigits(value, decimalPlaces = 2) {
-      return Number(
-        Math.round(parseFloat(value + "e" + decimalPlaces)) +
-          "e-" +
-          decimalPlaces
-      ).toFixed(decimalPlaces);
-    },
     /**
      * loads the jobActions for the given jobId
      * @param {Number} jobId The jobId to get the actions for
      */
     loadJobActions(jobId) {
-      console.log(jobId);
-      return;
-      // this.jobActionsNotLoaded = true;
-      // if (typeof jobId === "undefined") {
-      //   return;
-      // }
-      //
-      // if (typeof this.$parent.$parent["jobsData"][jobId] === "undefined") {
-      //   this.$router["push"]("/");
-      //   return;
-      // }
-      //
-      // this.actualJobData = this.$parent.$parent["jobsData"][jobId];
-      // this.id = jobId;
-      // this.ffxivAdvancedRotationsStore.selectedUIElements.jobId = jobId;
-      // this.actualRotation = [];
-      // this.savedRotation = [];
-      //
-      // const jobActions = getJobActions(jobId);
-      // jobActions.then((jobActionsResult) => {
-      //   for (const group of jobActionsResult) {
-      //     for (const [id, action] of Object.entries(group.actions)) {
-      //       this.allJobActions[id] = action;
-      //     }
-      //   }
-      //   this.actionGroups = this.removeJobsThatSwapThroughLevelUp(
-      //     jobActionsResult,
-      //     jobId
-      //   );
-      //   this.jobActionsNotLoaded = false;
-      // });
+      console.log("loadJobAction");
+      if (typeof jobId === "undefined") {
+        return;
+      }
+
+      setJobId(jobId);
     },
     /**
      *
@@ -534,6 +239,7 @@ export default {
   },
   watch: {
     jobId(newId) {
+      console.log("new job Id");
       this.loadJobActions(newId);
     },
     "ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions":
@@ -541,8 +247,10 @@ export default {
         this.loadJobActions(this.id);
       },
     "ffxivAdvancedRotationsStore.selectedUIElements.actionId": function () {
+      console.log("store watch");
+
       this.actualSelectedActionId =
-        this.ffxivAdvancedRotationsStore.selectedUIElements.actionId;
+        this.ffxivAdvancedRotationsStore.selectedUIElements.selectedIdForTooltip.id;
     },
     savedRotation: {
       deep: true,
@@ -560,7 +268,7 @@ export default {
               id: actionData.id,
               name: actionData[`name_${this.locale}`],
               icon: actionData.icon,
-              category: actionData.action_category,
+              gcd: actionData.cooldown_group === 58,
               position: actualRotation.length + 1,
             });
             this.actualRotation = actualRotation;
@@ -574,95 +282,26 @@ export default {
 </script>
 
 <style scoped>
-.jobActionsOverview {
-  margin: auto;
-}
-
-.actionTooltip {
-  width: 440px;
-  border: 2px solid gray;
-  margin: auto;
-  position: relative;
-  color: white;
-  display: inline-block;
-  bottom: -5px;
-  left: 0;
-  border-radius: 5px;
-}
-
-.actionIconTooltip {
-  width: 80px;
-  height: 80px;
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  transform: scale(0.6);
-}
-
-.actionName {
-  position: absolute;
-  top: 10px;
-  left: 65px;
-  font-size: 20px;
-  color: #e2e2e2;
-}
-
-.actionCategory {
-  position: absolute;
-  top: 40px;
-  left: 65px;
-}
-
-.actionRange {
-  position: absolute;
-  top: 40px;
-  left: 200px;
-}
-
-.actionRadius {
-  position: absolute;
-  top: 40px;
-  left: 320px;
-}
-
-.actionCast {
-  position: absolute;
-  top: 70px;
-  left: 10px;
-}
-
-.actionRecast {
-  position: absolute;
-  top: 70px;
-  left: 152px;
-}
-
-.actionCost {
-  position: absolute;
-  top: 70px;
-  left: 295px;
-}
-
-.actionDescription {
-  margin-top: 115px;
-  margin-left: 10px;
-}
-
-.actionAcquired {
-  margin-top: 5px;
-  margin-left: 10px;
-  margin-bottom: 5px;
-}
-
-.actionAffinity {
-  margin-left: 10px;
-  margin-bottom: 5px;
+.jobActions {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
-.actionGroups {
-  width: 1500px;
-  display: inline-block;
+.jobActionsOverview {
+  position: relative;
+  bottom: 0;
+  left: 50%;
+  margin-left: -980px;
+  width: 1960px;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 1fr 440px;
+  grid-template-rows: 1fr 135px;
+  align-items: end;
+  justify-self: flex-end;
+  margin-bottom: 15px;
 }
 
 .jobRotation {
@@ -680,21 +319,6 @@ export default {
   top: 0;
   left: 0;
   z-index: 100000;
-}
-
-legend {
-  color: lightgray;
-  font-size: 32px;
-  border-radius: 5px;
-  width: auto;
-  margin-left: 10px;
-}
-
-.actionGroup {
-  border-radius: 5px;
-  border: 2px solid gray;
-  padding: revert;
-  position: relative;
 }
 
 .rotationActions {

@@ -1,8 +1,6 @@
 import { getJobCategoryIds } from "@/js/ffxiv/ffxivjobcategoriyids";
-import {
-  getActionData,
-  getJobActionsForCategoryId,
-} from "@/js/ffxiv/ffxivdata/ffxivdata";
+import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
+import { getJobActionsForCategoryId } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 
 const FFXIVJobActionsToIgnore = {};

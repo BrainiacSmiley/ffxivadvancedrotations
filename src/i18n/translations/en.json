@@ -1,8 +1,4 @@
 {
-  "categorySpell": "Spell",
-  "categoryWeaponSkill": "Weaponskill",
-  "categoryAbility": "Ability",
-  "categoryTincture": "Arznei",
   "castTimeInstant": "Instant",
   "acquired": "Acquired",
   "affinity": "Affinity",
@@ -22,19 +18,23 @@
     "EarthAttunement": "Earth Attunement",
     "WindAttunement": "Wind Attunement"
   },
-  "recast": "Recast",
   "cast": "Cast",
+  "recast": "Recast",
+  "s": "s",
   "radius": "Radius",
   "range": "Range",
-  "job": "Job",
-  "role": "Role",
+  "itemEffects": "Effects",
+  "MaxEffectText": "Max",
+  "actionGroupNames": {
+    "job": "Job",
+    "role": "Role",
+    "tincture": "Limit Break / Tinctures"
+  },
   "tankRole": "Tank",
   "healerRole": "Healer",
   "meleeRole": "Melee DPS",
   "physicalRangeRole": "Physical Ranged DPS",
   "magicalRangeRole": "Magical Ranged DPS",
-  "loadingJobsData": "loading jobs data",
-  "loadingActionData": "loading job actions",
   "rotation": "Rotation",
   "siteName": "FFXIVAdvancedRotations",
   "settings": {

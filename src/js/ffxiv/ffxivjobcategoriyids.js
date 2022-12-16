@@ -37,45 +37,102 @@ FFXIVJobCategoryIds[FFXIVJobIds.DNC] = [150];
 FFXIVJobCategoryIds[FFXIVJobIds.RPR] = [180];
 FFXIVJobCategoryIds[FFXIVJobIds.SGE] = [181];
 
+const FFXIVLimitBreakIds = {
+  3: {},
+};
+FFXIVLimitBreakIds[3][FFXIVJobIds.GLA] = [199];
+FFXIVLimitBreakIds[3][FFXIVJobIds.PLD] = [199];
+FFXIVLimitBreakIds[3][FFXIVJobIds.MRD] = [4240];
+FFXIVLimitBreakIds[3][FFXIVJobIds.WAR] = [4240];
+FFXIVLimitBreakIds[3][FFXIVJobIds.DRK] = [4241];
+FFXIVLimitBreakIds[3][FFXIVJobIds.GNB] = [17105];
+FFXIVLimitBreakIds[3][FFXIVJobIds.CNJ] = [208];
+FFXIVLimitBreakIds[3][FFXIVJobIds.WHM] = [208];
+FFXIVLimitBreakIds[3][FFXIVJobIds.SCH] = [4247];
+FFXIVLimitBreakIds[3][FFXIVJobIds.AST] = [4248];
+FFXIVLimitBreakIds[3][FFXIVJobIds.SGE] = [24859];
+FFXIVLimitBreakIds[3][FFXIVJobIds.PGL] = [202];
+FFXIVLimitBreakIds[3][FFXIVJobIds.MNK] = [202];
+FFXIVLimitBreakIds[3][FFXIVJobIds.LNC] = [4242];
+FFXIVLimitBreakIds[3][FFXIVJobIds.DRG] = [4242];
+FFXIVLimitBreakIds[3][FFXIVJobIds.ROG] = [4243];
+FFXIVLimitBreakIds[3][FFXIVJobIds.NIN] = [4243];
+FFXIVLimitBreakIds[3][FFXIVJobIds.SAM] = [7861];
+FFXIVLimitBreakIds[3][FFXIVJobIds.RPR] = [24858];
+FFXIVLimitBreakIds[3][FFXIVJobIds.ARC] = [4244];
+FFXIVLimitBreakIds[3][FFXIVJobIds.BRD] = [4244];
+FFXIVLimitBreakIds[3][FFXIVJobIds.MCH] = [4245];
+FFXIVLimitBreakIds[3][FFXIVJobIds.DNC] = [17106];
+FFXIVLimitBreakIds[3][FFXIVJobIds.THM] = [205];
+FFXIVLimitBreakIds[3][FFXIVJobIds.BLM] = [205];
+FFXIVLimitBreakIds[3][FFXIVJobIds.ACN] = [4246];
+FFXIVLimitBreakIds[3][FFXIVJobIds.SMN] = [4246];
+FFXIVLimitBreakIds[3][FFXIVJobIds.RDM] = [7862];
+
+// FFXIVLimitBreakIds[FFXIVJobIds.BLU] = []
+
 function getJobCategoryIds(jobId) {
   const jobCategoryIds = [
-    { categoryName: "job", jobCategoryIds: FFXIVJobCategoryIds[jobId] },
+    {
+      categoryName: "actionGroupNames.job",
+      ids: {
+        jobCategoryIds: FFXIVJobCategoryIds[jobId],
+      },
+    },
   ];
 
   if (FFXIVJobIds.isTank(jobId)) {
     jobCategoryIds.push({
-      categoryName: "role",
-      jobCategoryIds: FFXIVJobCategoryIds.TANK,
+      categoryName: "actionGroupNames.role",
+      ids: {
+        jobCategoryIds: FFXIVJobCategoryIds.TANK,
+      },
     });
   }
 
   if (FFXIVJobIds.isMelee(jobId)) {
     jobCategoryIds.push({
-      categoryName: "role",
-      jobCategoryIds: FFXIVJobCategoryIds.MELEE,
+      categoryName: "actionGroupNames.role",
+      ids: {
+        jobCategoryIds: FFXIVJobCategoryIds.MELEE,
+      },
     });
   }
 
   if (FFXIVJobIds.isPhysicalRanged(jobId)) {
     jobCategoryIds.push({
-      categoryName: "role",
-      jobCategoryIds: FFXIVJobCategoryIds.PHYSICALRANGE,
+      categoryName: "actionGroupNames.role",
+      ids: {
+        jobCategoryIds: FFXIVJobCategoryIds.PHYSICALRANGE,
+      },
     });
   }
 
   if (FFXIVJobIds.isMagicalRanged(jobId)) {
     jobCategoryIds.push({
-      categoryName: "role",
-      jobCategoryIds: FFXIVJobCategoryIds.MAGICALRANGE,
+      categoryName: "actionGroupNames.role",
+      ids: {
+        jobCategoryIds: FFXIVJobCategoryIds.MAGICALRANGE,
+      },
     });
   }
 
   if (FFXIVJobIds.isHealer(jobId)) {
     jobCategoryIds.push({
-      categoryName: "role",
-      jobCategoryIds: FFXIVJobCategoryIds.HEAL,
+      categoryName: "actionGroupNames.role",
+      ids: {
+        jobCategoryIds: FFXIVJobCategoryIds.HEAL,
+      },
     });
   }
+
+  jobCategoryIds.push({
+    categoryName: "actionGroupNames.tincture",
+    ids: {
+      actionIds: FFXIVLimitBreakIds[3][jobId],
+      itemIds: [37840, 37841, 37842, 37843, 37844],
+    },
+  });
 
   return jobCategoryIds;
 }
