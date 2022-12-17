@@ -93,6 +93,18 @@ export default {
     isItemHQ() {
       return this.type === "item";
     },
+    isFood() {
+      return (
+        typeof this.data["item_category"] !== "undefined" &&
+        this.data["item_category"] === 44
+      );
+    },
+    isLimitBreak() {
+      return this.data["action_category_name_en"] === "Limit Break";
+    },
+    isAction() {
+      return this.type === "action";
+    },
   },
   computed: {
     getAcquiredIcon() {
@@ -110,7 +122,7 @@ export default {
       }
     },
     isEntryVisible() {
-      if (this.type === "action") {
+      if (this.isAction() && !this.isLimitBreak()) {
         return "visibility:visible";
       } else {
         return "display:none";
@@ -186,11 +198,8 @@ export default {
         return false;
       }
 
-      return (
-        (typeof this.data["item_category"] !== "undefined" &&
-          this.data["item_category"] === 44) ||
-        this.type === "action"
-      );
+      debugger;
+      return this.isFood() || (this.isAction() && !this.isLimitBreak());
     },
     selectedActionCastVisible() {
       if (this.data === null) {
