@@ -198,7 +198,6 @@ export default {
         return false;
       }
 
-      debugger;
       return this.isFood() || (this.isAction() && !this.isLimitBreak());
     },
     selectedActionCastVisible() {
