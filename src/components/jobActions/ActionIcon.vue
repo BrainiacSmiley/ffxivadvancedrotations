@@ -1,7 +1,7 @@
 <template>
   <div
     :id="actionId"
-    class="itemIcon"
+    class="actionIcon"
     :style="{ backgroundImage: 'url(' + icon + ')' }"
     v-tooltip="name"
     @mouseenter="changeSelectedAction(actionId)"
@@ -60,7 +60,7 @@ export default {
 
 <!--suppress CssUnusedSymbol -->
 <style scoped>
-.itemIcon {
+.actionIcon {
   width: 80px;
   height: 80px;
   transform: scale(0.8);
@@ -70,7 +70,11 @@ export default {
   background-size: contain;
 }
 
-.itemIcon:hover {
+.actionIcon[style*="background"] {
+  background-color: transparent;
+}
+
+.actionIcon:hover {
   border: solid white 3px;
 }
 
