@@ -26,7 +26,13 @@
   "actionGroupNames": {
     "job": "?",
     "role": "Role",
-    "tincture": "?Limit Break / Tinctures"
+    "tincture": "?Limit Break / Tinctures",
+    "special": {
+      "ninjutsu": "?Ninjutsu",
+      "taijutsu":  "?Taijutsu",
+      "summonSkills":  "?Summon Skills",
+      "stepSkills": "?Step Skills"
+    }
   },
   "tankRole": "Tank",
   "healerRole": "Healer",

@@ -14,15 +14,12 @@ import { getJobActionsForCategoryId } from "@/js/ffxiv/ffxivdata/ffxivclassjobca
 import { getJobCategoryIds } from "@/js/ffxiv/ffxivjobcategoriyids";
 import JobActionsGroup from "@/components/jobActions/JobActionsGroup.vue";
 import { ref } from "vue";
-import {
-  getReplaceLeveledUpActions,
-  getSortActionsByAcquiredLevel,
-} from "@/composables/settings";
+import { getReplaceLeveledUpActions } from "@/composables/settings";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import {
   removeIgnoredJobActions,
-  sortByAcquiredLvlAscending,
-  sortByIdAscending,
+  sortActionIds,
+  splitJobActionsIntoGeneralAndSpecialGroup,
 } from "@/js/ffxiv/ffxivjobactions";
 
 export default {
@@ -42,11 +39,6 @@ export default {
         }
         delete actionGroup.ids.jobCategoryIds;
         actionIds = removeIgnoredJobActions(props.jobId, actionIds);
-        if (getSortActionsByAcquiredLevel()) {
-          await sortByAcquiredLvlAscending(actionIds);
-        } else {
-          await sortByIdAscending(actionIds);
-        }
         actionGroup.ids.actionIds = [...actionIds].filter(Boolean);
         actionGroups[actionGroups.indexOf(actionGroup)] = actionGroup;
       }
@@ -62,6 +54,13 @@ export default {
           jobId
         );
       }
+      const splittedJobGroup = splitJobActionsIntoGeneralAndSpecialGroup(
+        actionGroups[0],
+        jobId
+      );
+      actionGroups.splice(0, 1);
+      actionGroups = [].concat(splittedJobGroup, actionGroups);
+      await sortActionIds(actionGroups);
       return actionGroups;
     }
 

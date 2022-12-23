@@ -8,9 +8,6 @@ export function setReplaceLeveledUpActions(newState) {
   useFFXIVAdvancedRotationsStore().settings.replaceLeveledUpActions = newState;
 }
 export function getSortActionsByAcquiredLevel() {
-  console.log(
-    useFFXIVAdvancedRotationsStore().settings.sortActionsByAcquiredLevel
-  );
   return useFFXIVAdvancedRotationsStore().settings.sortActionsByAcquiredLevel;
 }
 

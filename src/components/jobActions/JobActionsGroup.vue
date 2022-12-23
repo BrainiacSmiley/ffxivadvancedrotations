@@ -1,6 +1,6 @@
 <template>
   <div class="groupOfActions">
-    <fieldset class="actionGroup" :class="gridClass">
+    <fieldset class="actionGroup" :class="gridWidthClass">
       <legend>{{ categoryNameWithOrWithoutAmount }}</legend>
       <div class="actions">
         <ActionIcon
@@ -78,8 +78,11 @@ export default {
       });
       return actionIds;
     },
-    gridClass() {
-      if (this.categoryName === "actionGroupNames.job") {
+    gridWidthClass() {
+      if (
+        this.categoryName === "actionGroupNames.job" ||
+        this.categoryName.indexOf("actionGroupNames.special.") === 0
+      ) {
         return "fullGroupWidth";
       } else if (
         this.categoryName === "actionGroupNames.role" ||
@@ -120,7 +123,6 @@ export default {
 
 .halfGroupWidth {
   width: 708px;
-  grid-row: 2;
 }
 
 legend {

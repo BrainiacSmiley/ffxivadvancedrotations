@@ -16,6 +16,7 @@ async function removeJobsThatSwapThroughLevelUp(allActionGroups, jobId) {
         delete actionGroup.ids.actionIds[key];
       }
     }
+    actionGroup.ids.actionIds = actionGroup.ids.actionIds.filter(Boolean);
   }
   return allActionGroups;
 }

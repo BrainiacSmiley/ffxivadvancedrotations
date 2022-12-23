@@ -1,5 +1,6 @@
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
+import { getSortActionsByAcquiredLevel } from "@/composables/settings";
 
 const FFXIVJobActionsToIgnore = {};
 FFXIVJobActionsToIgnore[FFXIVJobIds.WHM] = [25863, 25864, 28509];
@@ -118,6 +119,58 @@ FFXIVJobActionsWhichReplaceItself[FFXIVJobIds.RDM] = [
   [7507, 25856],
 ];
 
+const FFXIVJobActionsInSpecialGroups = {};
+FFXIVJobActionsInSpecialGroups[FFXIVJobIds.NIN] = {
+  categoryName: "actionGroupNames.special.ninjutsu",
+  ids: {
+    actionIds: [
+      2272, 16491, 16492, 18873, 18876, 18877, 18878, 18879, 18880, 18881,
+    ],
+  },
+};
+FFXIVJobActionsInSpecialGroups[FFXIVJobIds.SAM] = {
+  categoryName: "actionGroupNames.special.taijutsu",
+  ids: {
+    actionIds: [7487, 7488, 7489, 16484, 16485, 16486],
+  },
+};
+FFXIVJobActionsInSpecialGroups[FFXIVJobIds.SCH] = {
+  categoryName: "actionGroupNames.special.summonSkills",
+  ids: {
+    actionIds: [7437, 7869, 16537, 16538, 16543, 16546],
+  },
+};
+FFXIVJobActionsInSpecialGroups[FFXIVJobIds.DNC] = {
+  categoryName: "actionGroupNames.special.stepSkills",
+  ids: {
+    actionIds: [15999, 16000, 16001, 16002],
+  },
+};
+
+function getSpecialActionGroup(jobId) {
+  if (typeof FFXIVJobActionsInSpecialGroups[jobId] === "undefined") {
+    return null;
+  }
+
+  return FFXIVJobActionsInSpecialGroups[jobId];
+}
+
+function splitJobActionsIntoGeneralAndSpecialGroup(jobActionsGroup, jobId) {
+  if (typeof FFXIVJobActionsInSpecialGroups[jobId] === "undefined") {
+    return jobActionsGroup;
+  }
+
+  const specialGroup = getSpecialActionGroup(jobId);
+  jobActionsGroup.ids.actionIds.forEach((actionId, index) => {
+    if (specialGroup.ids.actionIds.includes(actionId)) {
+      jobActionsGroup.ids.actionIds.splice(index, 1);
+    }
+  });
+  // jobActionsGroup.ids.actionIds = jobActionsGroup.ids.actionIds.filter(Boolean);
+
+  return [].concat(jobActionsGroup, specialGroup);
+}
+
 /**
  *
  * @param {number} jobId      The jobId we want to remove ignored Actions
@@ -189,7 +242,7 @@ async function sortByAcquiredLvlAscending(jobActions) {
  * Sort the job actions ascending by id.
  * @param {Array} jobActions The job actions to sort
  */
-async function sortByIdAscending(jobActions) {
+function sortByIdAscending(jobActions) {
   jobActions.sort((actionId1, actionId2) => {
     if (actionId1 < actionId2) {
       return -1;
@@ -199,9 +252,23 @@ async function sortByIdAscending(jobActions) {
   });
 }
 
+async function sortActionIds(actionGroups) {
+  for (const actionGroup of actionGroups) {
+    if (typeof actionGroup.ids.actionIds !== "object") {
+      continue;
+    }
+
+    if (getSortActionsByAcquiredLevel()) {
+      await sortByAcquiredLvlAscending(actionGroup.ids.actionIds);
+    } else {
+      sortByIdAscending(actionGroup.ids.actionIds);
+    }
+  }
+}
+
 export {
   removeIgnoredJobActions,
   getJobActionsToReplaceThroughLevel,
-  sortByAcquiredLvlAscending,
-  sortByIdAscending,
+  splitJobActionsIntoGeneralAndSpecialGroup,
+  sortActionIds,
 };
