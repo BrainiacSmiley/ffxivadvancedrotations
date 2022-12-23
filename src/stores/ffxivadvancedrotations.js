@@ -5,6 +5,7 @@ export const useFFXIVAdvancedRotationsStore = defineStore({
   state: () => ({
     settings: {
       replaceLeveledUpActions: true,
+      sortActionsByAcquiredLevel: true,
     },
     selectedUIElements: {
       jobId: 0,

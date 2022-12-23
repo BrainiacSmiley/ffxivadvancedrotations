@@ -1,7 +1,5 @@
-import { getJobCategoryIds } from "@/js/ffxiv/ffxivjobcategoriyids";
-import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
-import { getJobActionsForCategoryId } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
+import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
 
 const FFXIVJobActionsToIgnore = {};
 FFXIVJobActionsToIgnore[FFXIVJobIds.WHM] = [25863, 25864, 28509];
@@ -122,33 +120,6 @@ FFXIVJobActionsWhichReplaceItself[FFXIVJobIds.RDM] = [
 
 /**
  *
- * @param {Number} jobId The jobId to get the actions for
- * @returns {Promise<*[]>}
- */
-const getJobActions = async (jobId) => {
-  const allJobCategories = getJobCategoryIds(jobId);
-  const allJobActionsInGroups = [];
-  for (const jobCategoriesGroups of allJobCategories) {
-    let allJobActions = [];
-    for (const jobCategoryId of jobCategoriesGroups.jobCategoryIds) {
-      allJobActions = allJobActions.concat(
-        await getJobActionsForCategoryId(jobCategoryId)
-      );
-    }
-    allJobActions = removeIgnoredJobActions(jobId, allJobActions);
-    // jobCategoriesGroups.actionIds = allJobActions
-    jobCategoriesGroups.actions = {};
-    for (const actionId of allJobActions) {
-      jobCategoriesGroups.actions[actionId] = await getActionData(actionId);
-    }
-    delete jobCategoriesGroups.jobCategoryIds;
-    allJobActionsInGroups.push(jobCategoriesGroups);
-  }
-  return allJobActionsInGroups;
-};
-
-/**
- *
  * @param {number} jobId      The jobId we want to remove ignored Actions
  * @param {array} jobActions  The jobActions which contain the to remove actions
  * @returns {array}
@@ -183,4 +154,54 @@ function getJobActionsToReplaceThroughLevel(jobId) {
   return actionIdsWhichReplaceItself;
 }
 
-export { getJobActions, getJobActionsToReplaceThroughLevel };
+/**
+ * Sort the job actions ascending by acquired lvl.
+ * @param {Array} jobActions The job actions to sort
+ */
+async function sortByAcquiredLvlAscending(jobActions) {
+  const actionsData = await Promise.all(
+    jobActions.map((actionId) => getActionData(actionId))
+  );
+  jobActions.sort((actionId1, actionId2) => {
+    const actionData1 = actionsData.find(
+      (actionData) => actionData.id === actionId1
+    );
+    const actionData2 = actionsData.find(
+      (actionData) => actionData.id === actionId2
+    );
+    if (actionData1["class_job_level"] < actionData2["class_job_level"]) {
+      return -1;
+    } else if (
+      actionData1["class_job_level"] === actionData2["class_job_level"]
+    ) {
+      if (actionId1 < actionId2) {
+        return -1;
+      } else {
+        return 1;
+      }
+    } else {
+      return 1;
+    }
+  });
+}
+
+/**
+ * Sort the job actions ascending by id.
+ * @param {Array} jobActions The job actions to sort
+ */
+async function sortByIdAscending(jobActions) {
+  jobActions.sort((actionId1, actionId2) => {
+    if (actionId1 < actionId2) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+}
+
+export {
+  removeIgnoredJobActions,
+  getJobActionsToReplaceThroughLevel,
+  sortByAcquiredLvlAscending,
+  sortByIdAscending,
+};

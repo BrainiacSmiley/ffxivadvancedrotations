@@ -82,8 +82,6 @@
 </template>
 
 <script>
-import { getJobActionsToReplaceThroughLevel } from "@/js/ffxiv/ffxivjobactions";
-import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
 import JobActionsHeader from "@/components/jobActions/JobActionsHeader.vue";
@@ -115,68 +113,12 @@ export default {
     };
   },
   created() {
-    this.loadJobActions(this.jobId);
+    this.storeJobId(this.jobId);
     //this.restoreSavedRotation(this.rotation);
   },
   methods: {
-    /**
-     * loads the jobActions for the given jobId
-     * @param {Number} jobId The jobId to get the actions for
-     */
-    loadJobActions(jobId) {
-      console.log("loadJobAction");
-      if (typeof jobId === "undefined") {
-        return;
-      }
-
+    storeJobId(jobId) {
       setJobId(jobId);
-    },
-    /**
-     *
-     * @param {array} allActionGroups The groups to remove the actions from
-     * @param {Number} jobId The jobId we want tot remove the actions for
-     * @returns {array}
-     */
-    removeJobsThatSwapThroughLevelUp(allActionGroups, jobId) {
-      if (!this.ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions) {
-        return allActionGroups;
-      }
-
-      const actionIdsToRemove = this.getActionIdsToRemove(jobId);
-      for (const actionGroup of allActionGroups) {
-        for (const [key, action] of Object.entries(actionGroup.actions)) {
-          if (actionIdsToRemove.includes(action.id)) {
-            delete actionGroup.actions[key];
-          }
-        }
-      }
-      return allActionGroups;
-    },
-    getActionIdsToRemove(jobId) {
-      const possibleReplacedActions = getJobActionsToReplaceThroughLevel(jobId);
-      const actionIdsToReplace = [];
-      if (possibleReplacedActions === null) {
-        return actionIdsToReplace;
-      }
-
-      let highestSpellFromGroupFound = false;
-      for (const actionGroup of possibleReplacedActions) {
-        highestSpellFromGroupFound = false;
-
-        for (const actionId of actionGroup) {
-          if (highestSpellFromGroupFound) {
-            actionIdsToReplace.push(actionId);
-            continue;
-          }
-
-          if (this.allJobActions[actionId].level > FFXIVMAXLVL) {
-            actionIdsToReplace.push(actionId);
-          } else {
-            highestSpellFromGroupFound = true;
-          }
-        }
-      }
-      return actionIdsToReplace;
     },
     onDelete(evt) {
       console.log(evt);
@@ -239,18 +181,7 @@ export default {
   },
   watch: {
     jobId(newId) {
-      console.log("new job Id");
-      this.loadJobActions(newId);
-    },
-    "ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions":
-      function () {
-        this.loadJobActions(this.id);
-      },
-    "ffxivAdvancedRotationsStore.selectedUIElements.actionId": function () {
-      console.log("store watch");
-
-      this.actualSelectedActionId =
-        this.ffxivAdvancedRotationsStore.selectedUIElements.selectedIdForTooltip.id;
+      this.storeJobId(newId);
     },
     savedRotation: {
       deep: true,

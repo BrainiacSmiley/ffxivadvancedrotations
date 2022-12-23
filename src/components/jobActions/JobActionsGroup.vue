@@ -114,12 +114,12 @@ export default {
 }
 
 .fullGroupWidth {
-  width: 1500px;
+  width: 1468px;
   grid-column: 2 span;
 }
 
 .halfGroupWidth {
-  width: 735px;
+  width: 708px;
   grid-row: 2;
 }
 

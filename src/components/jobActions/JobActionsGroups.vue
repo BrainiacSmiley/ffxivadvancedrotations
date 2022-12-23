@@ -9,49 +9,65 @@
 </template>
 
 <script>
+import { removeJobsThatSwapThroughLevelUp } from "@/js/ffxiv/ffxivdata/ffxivactiongroups";
 import { getJobActionsForCategoryId } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
 import { getJobCategoryIds } from "@/js/ffxiv/ffxivjobcategoriyids";
 import JobActionsGroup from "@/components/jobActions/JobActionsGroup.vue";
 import { ref } from "vue";
+import {
+  getReplaceLeveledUpActions,
+  getSortActionsByAcquiredLevel,
+} from "@/composables/settings";
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import {
+  removeIgnoredJobActions,
+  sortByAcquiredLvlAscending,
+  sortByIdAscending,
+} from "@/js/ffxiv/ffxivjobactions";
 
-async function convertGroupIdsIntoActionsOrItemsIds(actionGroups) {
-  for (const actionGroup of actionGroups) {
-    if (typeof actionGroup.ids.jobCategoryIds !== "object") {
-      continue;
-    }
-
-    let actionIds = [];
-    for (const categoryId of actionGroup.ids.jobCategoryIds) {
-      const actionIdsFromCategory = await getJobActionsForCategoryId(
-        categoryId
-      );
-      actionIds = actionIds.concat(actionIdsFromCategory);
-    }
-    delete actionGroup.ids.jobCategoryIds;
-    actionGroup.ids.actionIds = actionIds;
-    actionGroups[actionGroups.indexOf(actionGroup)] = actionGroup;
-  }
-  return actionGroups;
-}
-
-function setTooltipGridColumnSpan() {
-  const numberOfGridRows =
-    document.getElementsByClassName("groupOfActions").length;
-  document.getElementsByClassName("actionTooltip")[0].style[
-    "grid-row"
-  ] = `1 / span ${numberOfGridRows - 1}`;
-}
-
-// noinspection JSUnusedGlobalSymbols
 export default {
   async setup(props) {
-    let actionGroups = getJobCategoryIds(props.jobId);
-    actionGroups = ref(
-      await convertGroupIdsIntoActionsOrItemsIds(actionGroups)
-    );
+    async function convertGroupIdsIntoActionsOrItemsIds(actionGroups) {
+      for (const actionGroup of actionGroups) {
+        if (typeof actionGroup.ids.jobCategoryIds !== "object") {
+          continue;
+        }
+
+        let actionIds = [];
+        for (const categoryId of actionGroup.ids.jobCategoryIds) {
+          const actionIdsFromCategory = await getJobActionsForCategoryId(
+            categoryId
+          );
+          actionIds = [...actionIds, ...actionIdsFromCategory];
+        }
+        delete actionGroup.ids.jobCategoryIds;
+        actionIds = removeIgnoredJobActions(props.jobId, actionIds);
+        if (getSortActionsByAcquiredLevel()) {
+          await sortByAcquiredLvlAscending(actionIds);
+        } else {
+          await sortByIdAscending(actionIds);
+        }
+        actionGroup.ids.actionIds = [...actionIds].filter(Boolean);
+        actionGroups[actionGroups.indexOf(actionGroup)] = actionGroup;
+      }
+      return actionGroups;
+    }
+
+    async function loadActionGroups(jobId) {
+      let actionGroups = getJobCategoryIds(jobId);
+      actionGroups = await convertGroupIdsIntoActionsOrItemsIds(actionGroups);
+      if (getReplaceLeveledUpActions()) {
+        actionGroups = await removeJobsThatSwapThroughLevelUp(
+          actionGroups,
+          jobId
+        );
+      }
+      return actionGroups;
+    }
 
     return {
-      actionGroups,
+      actionGroups: ref(await loadActionGroups(props.jobId)),
+      loadActionGroups,
     };
   },
   props: {
@@ -61,18 +77,42 @@ export default {
   components: {
     JobActionsGroup,
   },
+  data() {
+    return {
+      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
+    };
+  },
   mounted() {
-    setTooltipGridColumnSpan();
+    this.setTooltipGridColumnSpan();
+  },
+  methods: {
+    setTooltipGridColumnSpan() {
+      const numberOfGridRows =
+        document.getElementsByClassName("groupOfActions").length;
+      document.getElementsByClassName("actionTooltip")[0].style[
+        "grid-row"
+      ] = `1 / span ${numberOfGridRows - 1}`;
+    },
+    async reloadActionGroups(newJobId) {
+      const actionGroups = await this.loadActionGroups(newJobId);
+      this.actionGroups = null;
+      setTimeout(() => {
+        this.actionGroups = actionGroups;
+      }, 100);
+    },
   },
   watch: {
-    jobId(newJobId) {
-      let actionGroups = getJobCategoryIds(newJobId);
-      convertGroupIdsIntoActionsOrItemsIds(actionGroups).then(
-        (actionGroups) => {
-          this.actionGroups = actionGroups;
-        }
-      );
+    async jobId(newJobId) {
+      await this.reloadActionGroups(newJobId);
     },
+    "ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions":
+      async function () {
+        await this.reloadActionGroups(this.jobId);
+      },
+    "ffxivAdvancedRotationsStore.settings.sortActionsByAcquiredLevel":
+      async function () {
+        await this.reloadActionGroups(this.jobId);
+      },
   },
 };
 </script>

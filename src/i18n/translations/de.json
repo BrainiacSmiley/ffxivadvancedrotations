@@ -37,7 +37,8 @@
   "siteName": "FFXIVAdvancedRotations",
   "settings": {
     "buttonLabel": "Einstellungen",
-    "removeUpleveledActions": "Hochgelevelte Fertigkeiten entfernen"
+    "removeUpleveledActions": "Hochgelevelte Fertigkeiten entfernen",
+    "sortActionsByAcquiredLevel": "Fertigkeiten aufsteigend nach lvl sortieren"
   },
   "language": {
     "buttonLabel": "Sprache"
