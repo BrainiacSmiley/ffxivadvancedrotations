@@ -1,6 +1,6 @@
 import { getJobActionsToReplaceThroughLevel } from "@/js/ffxiv/ffxivjobactions";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
-import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
+import { getCharacterLevel } from "@/composables/settings";
 
 /**
  *
@@ -8,7 +8,7 @@ import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
  * @param {Number} jobId The jobId we want tot remove the actions for
  * @returns {Promise}
  */
-async function removeJobsThatSwapThroughLevelUp(allActionGroups, jobId) {
+async function removeActionsThatSwapThroughLevelUp(allActionGroups, jobId) {
   const actionIdsToRemove = await getActionIdsToRemove(jobId);
   for (const actionGroup of allActionGroups) {
     for (const [key, actionId] of Object.entries(actionGroup.ids.actionIds)) {
@@ -39,9 +39,7 @@ async function getActionIdsToRemove(jobId) {
       }
 
       const actionData = await getActionData(actionId);
-      if (actionData.level > FFXIVMAXLVL) {
-        actionIdsToReplace.push(actionId);
-      } else {
+      if (actionData["class_job_level"] <= getCharacterLevel()) {
         highestSpellFromGroupFound = true;
       }
     }
@@ -49,4 +47,4 @@ async function getActionIdsToRemove(jobId) {
   return actionIdsToReplace;
 }
 
-export { removeJobsThatSwapThroughLevelUp };
+export { removeActionsThatSwapThroughLevelUp };

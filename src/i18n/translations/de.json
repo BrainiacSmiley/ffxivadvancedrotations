@@ -44,10 +44,13 @@
   "settings": {
     "buttonLabel": "Einstellungen",
     "removeUpleveledActions": "Hochgelevelte Fertigkeiten entfernen",
-    "sortActionsByAcquiredLevel": "Fertigkeiten aufsteigend nach lvl sortieren"
+    "sortActionsByAcquiredLevel": "Fertigkeiten aufsteigend nach lvl sortieren",
+    "removeNotLearnedActions": "remove not learned actions",
+    "characterLevel": "Charakter Level"
   },
   "language": {
     "buttonLabel": "Sprache"
   },
-  "deleteActualRotation": "Aktuelle Rotation löschen"
+  "deleteActualRotation": "Aktuelle Rotation löschen",
+  "dbVersion": "DB-Version:"
 }

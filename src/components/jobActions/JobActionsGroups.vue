@@ -9,15 +9,19 @@
 </template>
 
 <script>
-import { removeJobsThatSwapThroughLevelUp } from "@/js/ffxiv/ffxivdata/ffxivactiongroups";
+import { removeActionsThatSwapThroughLevelUp } from "@/js/ffxiv/ffxivdata/ffxivactiongroups";
 import { getJobActionsForCategoryId } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
 import { getJobCategoryIds } from "@/js/ffxiv/ffxivjobcategoriyids";
 import JobActionsGroup from "@/components/jobActions/JobActionsGroup.vue";
 import { ref } from "vue";
-import { getReplaceLeveledUpActions } from "@/composables/settings";
+import {
+  getRemoveNotLearnedActions,
+  getReplaceLeveledUpActions,
+} from "@/composables/settings";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import {
   removeIgnoredJobActions,
+  removeNotLearnedJobActions,
   sortActionIds,
   splitJobActionsIntoGeneralAndSpecialGroup,
 } from "@/js/ffxiv/ffxivjobactions";
@@ -38,7 +42,7 @@ export default {
           actionIds = [...actionIds, ...actionIdsFromCategory];
         }
         delete actionGroup.ids.jobCategoryIds;
-        actionIds = removeIgnoredJobActions(props.jobId, actionIds);
+        removeIgnoredJobActions(props.jobId, actionIds);
         actionGroup.ids.actionIds = [...actionIds].filter(Boolean);
         actionGroups[actionGroups.indexOf(actionGroup)] = actionGroup;
       }
@@ -49,7 +53,7 @@ export default {
       let actionGroups = getJobCategoryIds(jobId);
       actionGroups = await convertGroupIdsIntoActionsOrItemsIds(actionGroups);
       if (getReplaceLeveledUpActions()) {
-        actionGroups = await removeJobsThatSwapThroughLevelUp(
+        actionGroups = await removeActionsThatSwapThroughLevelUp(
           actionGroups,
           jobId
         );
@@ -60,6 +64,9 @@ export default {
       );
       actionGroups.splice(0, 1);
       actionGroups = [].concat(splittedJobGroup, actionGroups);
+      if (getRemoveNotLearnedActions()) {
+        await removeNotLearnedJobActions(actionGroups);
+      }
       await sortActionIds(actionGroups);
       return actionGroups;
     }
@@ -112,6 +119,13 @@ export default {
       async function () {
         await this.reloadActionGroups(this.jobId);
       },
+    "ffxivAdvancedRotationsStore.settings.removeNotLearnedActions":
+      async function () {
+        await this.reloadActionGroups(this.jobId);
+      },
+    "ffxivAdvancedRotationsStore.settings.characterLevel": async function () {
+      await this.reloadActionGroups(this.jobId);
+    },
   },
 };
 </script>

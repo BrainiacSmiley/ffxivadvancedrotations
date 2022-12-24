@@ -46,10 +46,13 @@
   "settings": {
     "buttonLabel": "Settings",
     "removeUpleveledActions": "remove upleveled replaced actions",
-    "sortActionsByAcquiredLevel": "sort action by acquired level ascending"
+    "sortActionsByAcquiredLevel": "sort action by acquired level ascending",
+    "removeNotLearnedActions": "remove not learned actions",
+    "characterLevel": "Character Level"
   },
   "language": {
     "buttonLabel": "Language"
   },
-  "deleteActualRotation": "delete actual rotation"
+  "deleteActualRotation": "delete actual rotation",
+  "dbVersion": "DB-Version:"
 }

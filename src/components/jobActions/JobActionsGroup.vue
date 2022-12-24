@@ -51,7 +51,6 @@ export default {
   },
   computed: {
     actionIds() {
-      // console.log("actionIDs changed");
       if (typeof this.$props.ids.actionIds === "undefined") {
         return [];
       }
@@ -65,7 +64,6 @@ export default {
       return actionIds;
     },
     itemIds() {
-      // console.log("itemIDs changed");
       if (typeof this.$props.ids.itemIds === "undefined") {
         return [];
       }

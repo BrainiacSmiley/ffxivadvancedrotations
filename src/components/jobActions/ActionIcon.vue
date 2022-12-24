@@ -8,6 +8,7 @@
     @mouseleave="changeSelectedAction(null)"
   >
     <div class="actionGCD" v-if="isGCD" />
+    <div class="notLearnedAction" v-if="notLearned"></div>
   </div>
 </template>
 
@@ -15,6 +16,7 @@
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
 import { getLocale } from "@/i18n";
 import { setTooltipId } from "@/composables/tooltipId";
+import { getCharacterLevel } from "@/composables/settings";
 
 export default {
   async setup(props) {
@@ -45,6 +47,9 @@ export default {
      */
     isGCD() {
       return this.data["cooldown_group"] === 58;
+    },
+    notLearned() {
+      return this.data["class_job_level"] > getCharacterLevel();
     },
   },
   methods: {
@@ -100,6 +105,13 @@ export default {
   margin-right: -30px;
 }
 
-.rotationActions > .rotaActionGCD {
+.notLearnedAction {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80px;
+  height: 80px;
+  background-color: black;
+  opacity: 0.5;
 }
 </style>

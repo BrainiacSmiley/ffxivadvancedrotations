@@ -194,7 +194,6 @@ export default {
         for (const action of newRotation) {
           // eslint-disable-next-line vue/no-async-in-computed-properties
           getActionData(action.id).then((actionData) => {
-            debugger;
             actualRotation.push({
               id: actionData.id,
               name: actionData[`name_${this.locale}`],

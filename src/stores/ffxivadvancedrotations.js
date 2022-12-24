@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 
 export const useFFXIVAdvancedRotationsStore = defineStore({
   id: "ffxivadvancedrotations",
@@ -6,6 +7,8 @@ export const useFFXIVAdvancedRotationsStore = defineStore({
     settings: {
       replaceLeveledUpActions: true,
       sortActionsByAcquiredLevel: true,
+      removeNotLearnedActions: true,
+      characterLevel: FFXIVMAXLVL,
     },
     selectedUIElements: {
       jobId: 0,

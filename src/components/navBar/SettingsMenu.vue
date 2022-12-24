@@ -16,20 +16,14 @@
     >
       <div class="form-check form-switch" style="background-color: #565e64">
         <input
-          class="form-check-input"
+          class="form-check-input checkBoxSettings"
           type="checkbox"
           id="replaceLeveledUpActions"
           v-model="ffxivAdvancedRotationsStore.settings.replaceLeveledUpActions"
         />
         <label
-          class="form-check-label"
+          class="form-check-label checkSettingsDescription"
           for="replaceLeveledUpActions"
-          style="
-            background-color: #565e64;
-            color: white;
-            margin-top: -17px;
-            margin-left: 10px;
-          "
           id="replaceLeveledUpActionsLabel"
         >
           {{ $t("settings.removeUpleveledActions") }}
@@ -37,7 +31,7 @@
       </div>
       <div class="form-check form-switch" style="background-color: #565e64">
         <input
-          class="form-check-input"
+          class="form-check-input checkBoxSettings"
           type="checkbox"
           id="sortActionsByAcquiredLevel"
           v-model="
@@ -45,18 +39,44 @@
           "
         />
         <label
-          class="form-check-label"
+          class="form-check-label checkSettingsDescription"
           for="sortActionsByAcquiredLevel"
-          style="
-            background-color: #565e64;
-            color: white;
-            margin-top: -17px;
-            margin-left: 10px;
-          "
           id="sortActionsByAcquiredLevelLabel"
         >
           {{ $t("settings.sortActionsByAcquiredLevel") }}
         </label>
+      </div>
+      <div class="form-check form-switch" style="background-color: #565e64">
+        <input
+          class="form-check-input checkBoxSettings"
+          type="checkbox"
+          id="removeNotLearnedActions"
+          v-model="ffxivAdvancedRotationsStore.settings.removeNotLearnedActions"
+        />
+        <label
+          class="form-check-label checkSettingsDescription"
+          for="removeNotLearnedActions"
+          id="removeNotLearnedActionsLabel"
+        >
+          {{ $t("settings.removeNotLearnedActions") }}
+        </label>
+      </div>
+      <div style="background-color: #565e64">
+        <label for="levelChanger" class="checkSettingsSliderDescription">
+          {{ $t("settings.characterLevel") }}
+        </label>
+        <input
+          type="range"
+          class="checkSettingsSlider"
+          :min="1"
+          :max="FFXIVMAXLVL()"
+          step="1"
+          id="levelChanger"
+          :value="getCharacterLevel()"
+          @change="setCharacterLevel($event)"
+          @input="updateCharacterLevel($event)"
+        />
+        <span class="checkSettingsSliderValue">{{ actualLevel }}</span>
       </div>
     </div>
   </div>
@@ -64,15 +84,65 @@
 
 <script>
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
+import { getCharacterLevel, setCharacterLevel } from "@/composables/settings";
 
 export default {
   name: "SettingsMenu",
+  methods: {
+    getCharacterLevel() {
+      return getCharacterLevel();
+    },
+    updateCharacterLevel(event) {
+      this.actualLevel = event.target.value >> 0;
+    },
+    setCharacterLevel(event) {
+      const newLevel = event.target.value >> 0;
+      setCharacterLevel(newLevel);
+    },
+    FFXIVMAXLVL() {
+      return FFXIVMAXLVL;
+    },
+  },
   data: function () {
     return {
       ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
+      actualLevel: getCharacterLevel(),
     };
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.checkBoxSettings {
+  margin-bottom: -17px;
+}
+
+.checkSettingsDescription {
+  background-color: #565e64;
+  color: white;
+  margin-left: 10px;
+  width: 250px;
+}
+
+.checkSettingsSliderDescription {
+  background-color: #565e64;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+.checkSettingsSlider {
+  background-color: #565e64;
+  color: white;
+  width: 89%;
+}
+
+.checkSettingsSliderValue {
+  background-color: #565e64;
+  color: white;
+  width: 10%;
+  font-size: 20px;
+  margin-left: 10px;
+}
+</style>

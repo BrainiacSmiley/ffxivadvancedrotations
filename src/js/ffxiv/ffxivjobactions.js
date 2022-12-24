@@ -1,6 +1,9 @@
 import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
 import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
-import { getSortActionsByAcquiredLevel } from "@/composables/settings";
+import {
+  getCharacterLevel,
+  getSortActionsByAcquiredLevel,
+} from "@/composables/settings";
 
 const FFXIVJobActionsToIgnore = {};
 FFXIVJobActionsToIgnore[FFXIVJobIds.WHM] = [25863, 25864, 28509];
@@ -161,12 +164,11 @@ function splitJobActionsIntoGeneralAndSpecialGroup(jobActionsGroup, jobId) {
   }
 
   const specialGroup = getSpecialActionGroup(jobId);
-  jobActionsGroup.ids.actionIds.forEach((actionId, index) => {
+  [...jobActionsGroup.ids.actionIds].forEach((actionId, index) => {
     if (specialGroup.ids.actionIds.includes(actionId)) {
       jobActionsGroup.ids.actionIds.splice(index, 1);
     }
   });
-  // jobActionsGroup.ids.actionIds = jobActionsGroup.ids.actionIds.filter(Boolean);
 
   return [].concat(jobActionsGroup, specialGroup);
 }
@@ -184,13 +186,33 @@ function removeIgnoredJobActions(jobId, jobActions) {
   }
 
   for (const actionIdToRemove of jobActionsToRemove) {
-    jobActions.forEach((actionId, index) => {
+    [...jobActions].forEach((actionId, index) => {
       if (actionId === actionIdToRemove) {
         jobActions.splice(index, 1);
       }
     });
   }
-  return jobActions;
+}
+
+async function removeNotLearnedJobActions(actionGroups) {
+  const actualLevel = getCharacterLevel();
+  for (const actionGroup of actionGroups) {
+    if (typeof actionGroup.ids.actionIds !== "object") {
+      continue;
+    }
+    const actionsData = await Promise.all(
+      actionGroup.ids.actionIds.map((actionId) => getActionData(actionId))
+    );
+    [...actionGroup.ids.actionIds].forEach((actionId) => {
+      const actionData = actionsData.find(
+        (actionData) => actionData.id === actionId
+      );
+      if (actionData["class_job_level"] > actualLevel) {
+        const index = actionGroup.ids.actionIds.indexOf(actionId);
+        actionGroup.ids.actionIds.splice(index, 1);
+      }
+    });
+  }
 }
 
 function getJobActionsToReplaceThroughLevel(jobId) {
@@ -268,6 +290,7 @@ async function sortActionIds(actionGroups) {
 
 export {
   removeIgnoredJobActions,
+  removeNotLearnedJobActions,
   getJobActionsToReplaceThroughLevel,
   splitJobActionsIntoGeneralAndSpecialGroup,
   sortActionIds,
