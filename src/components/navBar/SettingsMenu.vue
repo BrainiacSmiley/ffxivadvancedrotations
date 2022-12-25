@@ -72,9 +72,8 @@
           :max="FFXIVMAXLVL()"
           step="1"
           id="levelChanger"
-          :value="getCharacterLevel()"
-          @change="setCharacterLevel($event)"
-          @input="updateCharacterLevel($event)"
+          v-model="actualLevel"
+          @change="handleChange($event)"
         />
         <span class="checkSettingsSliderValue">{{ actualLevel }}</span>
       </div>
@@ -90,18 +89,11 @@ import { getCharacterLevel, setCharacterLevel } from "@/composables/settings";
 export default {
   name: "SettingsMenu",
   methods: {
-    getCharacterLevel() {
-      return getCharacterLevel();
-    },
-    updateCharacterLevel(event) {
-      this.actualLevel = event.target.value >> 0;
-    },
-    setCharacterLevel(event) {
-      const newLevel = event.target.value >> 0;
-      setCharacterLevel(newLevel);
-    },
     FFXIVMAXLVL() {
       return FFXIVMAXLVL;
+    },
+    handleChange(event) {
+      setCharacterLevel(event.target.value);
     },
   },
   data: function () {

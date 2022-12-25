@@ -104,7 +104,7 @@ export default {
       this.actionGroups = null;
       setTimeout(() => {
         this.actionGroups = actionGroups;
-      }, 100);
+      }, 0);
     },
   },
   watch: {
@@ -124,7 +124,9 @@ export default {
         await this.reloadActionGroups(this.jobId);
       },
     "ffxivAdvancedRotationsStore.settings.characterLevel": async function () {
-      await this.reloadActionGroups(this.jobId);
+      if (getRemoveNotLearnedActions()) {
+        await this.reloadActionGroups(this.jobId);
+      }
     },
   },
 };

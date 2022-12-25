@@ -143,4 +143,8 @@ legend {
 .actions > div {
   display: inline-block;
 }
+
+.actions {
+  min-height: 88px;
+}
 </style>
