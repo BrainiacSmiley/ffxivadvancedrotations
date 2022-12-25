@@ -279,7 +279,10 @@ export default {
       }
 
       const costType = this.data["costType"];
-      const costTypesToIgnore = [2, 4, 10, 11, 57, 58, 70, 71, 76]; //Spell Effects to be Consumed
+      const costTypesToIgnore = [
+        2, 4, 10, 11, 28, 32, 40, 53, 57, 58, 63, 70, 71, 76, 79, 81, 82, 85,
+        86,
+      ]; //Spell Effects to be Consumed
       const errorText = `Undefined costType: ${costType} for actionId: ${this.data["id"]}`;
       if (costTypesToIgnore.includes(costType)) {
         return "";
@@ -296,12 +299,30 @@ export default {
         return this.$t("costType.NinkiGauge");
       } else if (costType === 30) {
         return this.$t("costType.AetherflowGauge");
+      } else if (costType === 39) {
+        return this.$t("costType.KenkiGauge");
       } else if (costType === 41) {
         return this.$t("costType.OathGauge");
+      } else if (costType === 43) {
+        return this.$t("costType.BalanceGauge");
       } else if (costType === 55) {
         return this.$t("costType.Cartridge");
       } else if (costType === 56) {
         return this.$t("costType.HealingGauge");
+      } else if (costType === 59) {
+        return this.$t("costType.SoulVoiceGauge");
+      } else if (costType === 61) {
+        return this.$t("costType.HeatGauge");
+      } else if (costType === 62) {
+        return this.$t("costType.BatteryGauge");
+      } else if (costType === 64) {
+        return this.$t("costType.SoulGauge");
+      } else if (costType === 65) {
+        return this.$t("costType.ShroudGauge");
+      } else if (costType === 66) {
+        return this.$t("costType.LemureShroud");
+      } else if (costType === 67) {
+        return this.$t("costType.VoidShroud");
       } else if (costType === 68) {
         return this.$t("costType.Addersgall");
       } else if (costType === 69) {
@@ -312,6 +333,10 @@ export default {
         return this.$t("costType.EarthAttunement");
       } else if (costType === 74) {
         return this.$t("costType.WindAttunement");
+      } else if (costType === 75) {
+        return this.$t("costType.FirstmindFocus");
+      } else if (costType === 78) {
+        return this.$t("costType.ManaStack");
       } else if (costType) {
         console.log(errorText);
         return "";
