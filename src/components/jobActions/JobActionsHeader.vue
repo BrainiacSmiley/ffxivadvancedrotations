@@ -9,6 +9,8 @@
 import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
 import { getLocale } from "@/i18n";
 import { ref } from "vue";
+import { getCharacterLevel } from "@/composables/settings";
+import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
 
 export default {
   async setup(props) {
@@ -24,7 +26,13 @@ export default {
   computed: {
     name() {
       const locale = getLocale();
-      return this.data[`name_${locale}`];
+      const jobName = this.data[`name_${locale}`];
+      const jobLevel = getCharacterLevel();
+      const lvl =
+        getCharacterLevel() !== FFXIVMAXLVL
+          ? `${this.$t("lvl")} ${jobLevel}`
+          : this.$t("maxLvl");
+      return `${jobName} (${lvl})`;
     },
     selectedJobIcon() {
       return { backgroundImage: `url(${this.data["icon"]})` };
@@ -46,7 +54,7 @@ export default {
 <style scoped>
 .jobActionsHeader {
   margin: auto;
-  width: 340px;
+  width: fit-content;
   justify-self: flex-start;
 }
 

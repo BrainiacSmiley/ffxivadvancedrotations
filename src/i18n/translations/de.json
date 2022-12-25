@@ -52,5 +52,7 @@
     "buttonLabel": "Sprache"
   },
   "deleteActualRotation": "Aktuelle Rotation löschen",
-  "dbVersion": "DB-Version:"
+  "dbVersion": "DB-Version:",
+  "lvl": "Level",
+  "maxLvl": "Max Level"
 }
