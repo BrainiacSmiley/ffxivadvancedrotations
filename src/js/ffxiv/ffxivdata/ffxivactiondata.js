@@ -184,6 +184,10 @@ async function getActionData(actionId) {
 }
 
 function stripActionData(originalData) {
+  if (originalData["class_job_target_id"] === "-1") {
+    console.log("maybe unused action found");
+  }
+
   if (LIMITBREAKACTIONIDS.includes(originalData["id"])) {
     replaceMissingDescriptions(originalData);
   }

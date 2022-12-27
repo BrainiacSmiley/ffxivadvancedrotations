@@ -5,7 +5,7 @@ export const useFFXIVAdvancedRotationsStore = defineStore({
   id: "ffxivadvancedrotations",
   state: () => ({
     settings: {
-      replaceLeveledUpActions: true,
+      replaceLeveledUpActions: false,
       sortActionsByAcquiredLevel: true,
       removeNotLearnedActions: true,
       characterLevel: FFXIVMAXLVL,

@@ -5,8 +5,9 @@
     :style="{ backgroundImage: 'url(' + icon + ')' }"
     v-tooltip="name"
     @mouseenter="changeSelectedAction(actionId)"
-    @mouseleave="changeSelectedAction(null)"
   >
+    <!--    @mouseleave="changeSelectedAction(null)"-->
+    <!--  >-->
     <div class="actionGCD" v-if="isGCD" />
     <div class="notLearnedAction" v-if="notLearned"></div>
   </div>

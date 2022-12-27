@@ -79,6 +79,8 @@ import {
 import { getLocale } from "@/i18n";
 import { getJobId } from "@/composables/jobId";
 import { getAcquiredIcon } from "@/js/ffxiv/ffxivacquiredIcon";
+import { parseJSONDescription } from "@/js/ffxiv/ffxivdata/ffxivdatahelper";
+import { getCharacterLevel } from "@/composables/settings";
 
 export default {
   name: "JobActionsTooltip",
@@ -386,7 +388,11 @@ export default {
       }
 
       const locale = getLocale();
-      return this.data[`description_${locale}`];
+      console.log(this.data[`description_json_${locale}`]);
+      return parseJSONDescription(this.data[`description_json_${locale}`], "", {
+        class_job_id: getJobId(),
+        class_job_level: getCharacterLevel(),
+      });
     },
     selectedActionAcquiredLvl() {
       if (this.data === null) {
