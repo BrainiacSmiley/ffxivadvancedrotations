@@ -388,7 +388,6 @@ export default {
       }
 
       const locale = getLocale();
-      console.log(this.data[`description_json_${locale}`]);
       return parseJSONDescription(this.data[`description_json_${locale}`], "", {
         class_job_id: getJobId(),
         class_job_level: getCharacterLevel(),

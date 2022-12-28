@@ -164,4 +164,13 @@ function parseCondition(condition, conditions) {
   }
 }
 
-export { replaceLbWithBr, parseJSONDescription };
+/**
+ * creates deep copy of a given array
+ * @param {array} arrayToCopy
+ * @returns {array}
+ */
+function copyArray(arrayToCopy) {
+  return JSON.parse(JSON.stringify(arrayToCopy));
+}
+
+export { replaceLbWithBr, parseJSONDescription, copyArray };

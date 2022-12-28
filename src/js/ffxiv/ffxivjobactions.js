@@ -4,6 +4,7 @@ import {
   getCharacterLevel,
   getSortActionsByAcquiredLevel,
 } from "@/composables/settings";
+import { copyArray } from "@/js/ffxiv/ffxivdata/ffxivdatahelper";
 
 const FFXIVJobActionsToIgnore = {};
 FFXIVJobActionsToIgnore[FFXIVJobIds.WHM] = [25863, 25864, 28509];
@@ -169,8 +170,9 @@ function splitJobActionsIntoGeneralAndSpecialGroup(jobActionsGroup, jobId) {
   }
 
   const specialGroup = getSpecialActionGroup(jobId);
-  [...jobActionsGroup.ids.actionIds].forEach((actionId, index) => {
+  copyArray(jobActionsGroup.ids.actionIds).forEach((actionId) => {
     if (specialGroup.ids.actionIds.includes(actionId)) {
+      const index = jobActionsGroup.ids.actionIds.indexOf(actionId);
       jobActionsGroup.ids.actionIds.splice(index, 1);
     }
   });
@@ -190,13 +192,12 @@ function removeIgnoredJobActions(jobId, jobActions) {
     return jobActions;
   }
 
-  for (const actionIdToRemove of jobActionsToRemove) {
-    [...jobActions].forEach((actionId, index) => {
-      if (actionId === actionIdToRemove) {
-        jobActions.splice(index, 1);
-      }
-    });
-  }
+  copyArray(jobActions).forEach((actionId) => {
+    if (jobActionsToRemove.includes(actionId)) {
+      const index = jobActions.indexOf(actionId);
+      jobActions.splice(index, 1);
+    }
+  });
 }
 
 async function removeNotLearnedJobActions(actionGroups) {
@@ -208,7 +209,7 @@ async function removeNotLearnedJobActions(actionGroups) {
     const actionsData = await Promise.all(
       actionGroup.ids.actionIds.map((actionId) => getActionData(actionId))
     );
-    [...actionGroup.ids.actionIds].forEach((actionId) => {
+    copyArray(actionGroup.ids.actionIds).forEach((actionId) => {
       const actionData = actionsData.find(
         (actionData) => actionData.id === actionId
       );
