@@ -15,23 +15,38 @@
 import RoleGroup from "@/components/jobsMenu/RoleGroup.vue";
 import { getAllMenuData } from "@/js/ffxivadvancedrotations";
 import { FFXIVVERSION } from "@/js/ffxiv/ffxivconfigs";
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { ref } from "vue";
 
 export default {
-  methods: {
-    FFXIVVERSION() {
-      return FFXIVVERSION;
-    },
-  },
   setup() {
     const menuData = getAllMenuData();
 
     return {
-      menuData,
+      menuData: ref(menuData),
     };
   },
   name: "jobs-menu",
   components: {
     RoleGroup,
+  },
+  data() {
+    return {
+      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
+    };
+  },
+  methods: {
+    FFXIVVERSION() {
+      return FFXIVVERSION;
+    },
+  },
+  watch: {
+    "ffxivAdvancedRotationsStore.settings.characterLevel": async function () {
+      this.menuData = null;
+      setTimeout(() => {
+        this.menuData = getAllMenuData();
+      }, 0);
+    },
   },
 };
 </script>

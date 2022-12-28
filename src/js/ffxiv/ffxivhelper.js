@@ -38,9 +38,9 @@ function getHealerJobIds(
     healJobIds = [].concat(healJobIds, FFXIVJobIds.WHM);
   }
 
-  // ARC ~ SCH
+  // ACN ~ SCH
   if (lvl[1] < 30) {
-    healJobIds = [].concat(healJobIds, FFXIVJobIds.ARC);
+    healJobIds = [].concat(healJobIds, FFXIVJobIds.ACN);
   } else {
     healJobIds = [].concat(healJobIds, FFXIVJobIds.SCH);
   }
@@ -111,9 +111,9 @@ function getMagicalRangeJobIds(
     magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.BLM);
   }
 
-  // ARC ~ SMN
+  // ACN ~ SMN
   if (lvl[1] < 30) {
-    magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.ARC);
+    magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.ACN);
   } else {
     magicalRangedJobIds = [].concat(magicalRangedJobIds, FFXIVJobIds.SMN);
   }
