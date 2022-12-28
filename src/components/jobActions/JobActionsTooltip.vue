@@ -200,7 +200,14 @@ export default {
         return false;
       }
 
-      return this.isFood() || (this.isAction() && !this.isLimitBreak());
+      const noCastRecastCostVisible =
+        this.selectedActionCastVisible === "visibility:hidden" &&
+        this.selectedActionRecastVisible === "visibility:hidden" &&
+        this.selectedActionCostVisible === "visibility:hidden";
+      return (
+        this.isFood() ||
+        (this.isAction() && !this.isLimitBreak() && !noCastRecastCostVisible)
+      );
     },
     selectedActionCastVisible() {
       if (this.data === null) {
@@ -237,9 +244,9 @@ export default {
         (this.type === "action" && this.data["recast100ms"] > 0) ||
         (this.type === "item" && typeof this.data["cooldown"] !== "undefined")
       ) {
-        return { visibility: "visible" };
+        return "visibility:visible";
       } else {
-        return { visibility: "hidden" };
+        return "visibility:hidden";
       }
     },
     selectedActionRecasttime() {
@@ -270,10 +277,10 @@ export default {
 
       if (this.data["cost"] > 0) {
         if (this.data["costType"] === 3) {
-          return { visibility: "visible" };
+          return "visibility:visible";
         }
       }
-      return { visibility: "hidden" };
+      return "visibility:hidden";
     },
     selectedActionCostsType() {
       if (this.data === null) {
@@ -307,6 +314,8 @@ export default {
         return this.$t("costType.OathGauge");
       } else if (costType === 43) {
         return this.$t("costType.BalanceGauge");
+      } else if (costType === 54) {
+        return this.$t("costType.EspritGauge");
       } else if (costType === 55) {
         return this.$t("costType.Cartridge");
       } else if (costType === 56) {

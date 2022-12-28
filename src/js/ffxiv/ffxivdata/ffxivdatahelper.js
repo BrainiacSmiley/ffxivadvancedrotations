@@ -108,11 +108,15 @@ function concatDescription(description, textToAdd) {
 
 /**
  * parses the JSON description
- * @param {Array} json
+ * @param {Array|String} json
  * @param {String} description
  * @param {Object} conditions
  */
 function parseJSONDescription(json, description, conditions) {
+  if (json === "") {
+    return description;
+  }
+
   json.forEach((element) => {
     if (typeof element === "string") {
       description = replaceLbWithBr(concatDescription(description, element));
