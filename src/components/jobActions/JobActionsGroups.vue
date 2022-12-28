@@ -104,6 +104,9 @@ export default {
       this.actionGroups = null;
       setTimeout(() => {
         this.actionGroups = actionGroups;
+        this.$nextTick(() => {
+          this.setTooltipGridColumnSpan();
+        });
       }, 0);
     },
   },
