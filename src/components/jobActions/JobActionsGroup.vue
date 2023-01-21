@@ -33,13 +33,13 @@ const itemIds = computed(() => {
 
 const gridWidthClass = computed(() => {
   if (
-      categoryName.value === "actionGroupNames.job" ||
-      categoryName.value.indexOf("actionGroupNames.special.") === 0
+    categoryName.value === "actionGroupNames.job" ||
+    categoryName.value.indexOf("actionGroupNames.special.") === 0
   ) {
     return "fullGroupWidth";
   } else if (
-      categoryName.value === "actionGroupNames.role" ||
-      categoryName.value === "actionGroupNames.tincture"
+    categoryName.value === "actionGroupNames.role" ||
+    categoryName.value === "actionGroupNames.tincture"
   ) {
     return "halfGroupWidth";
   }

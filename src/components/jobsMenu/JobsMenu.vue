@@ -8,19 +8,24 @@ import _ from "lodash";
 
 let menuData = ref(getAllMenuData());
 const ffxivAdvancedRotationsStore = ref(useFFXIVAdvancedRotationsStore());
-watch(() => _.cloneDeep(ffxivAdvancedRotationsStore.value), (newValue, oldValue) => {
-  if (
+watch(
+  () => _.cloneDeep(ffxivAdvancedRotationsStore.value),
+  (newValue, oldValue) => {
+    if (
       newValue.settings.characterLevel === oldValue.settings.characterLevel ||
-      oldValue.settings.characterLevel > 29 && newValue.settings.characterLevel > 29 ||
-      oldValue.settings.characterLevel < 30 && newValue.settings.characterLevel < 30
-  ) {
-    return;
+      (oldValue.settings.characterLevel > 29 &&
+        newValue.settings.characterLevel > 29) ||
+      (oldValue.settings.characterLevel < 30 &&
+        newValue.settings.characterLevel < 30)
+    ) {
+      return;
+    }
+    menuData.value = null;
+    setTimeout(() => {
+      menuData.value = getAllMenuData();
+    }, 0);
   }
-  menuData.value = null;
-  setTimeout(() => {
-    menuData.value = getAllMenuData();
-  }, 0);
-});
+);
 </script>
 
 <template>
@@ -34,7 +39,9 @@ watch(() => _.cloneDeep(ffxivAdvancedRotationsStore.value), (newValue, oldValue)
     ></RoleGroup>
   </div>
   <!--suppress AllyHtmlVueInspection -->
-  <div class="fixed-bottom dbVersion">{{ $t("dbVersion") }} {{ FFXIVVERSION }}</div>
+  <div class="fixed-bottom dbVersion">
+    {{ $t("dbVersion") }} {{ FFXIVVERSION }}
+  </div>
 </template>
 
 <style scoped>

@@ -20,7 +20,12 @@ function deleteFromRotation(event) {
   <div class="jobsMenu p-3">
     <JobsMenu />
   </div>
-  <div class="routerPanel"  @drop="deleteFromRotation($event)"  @dragenter.prevent @dragover.prevent>
+  <div
+    class="routerPanel"
+    @drop="deleteFromRotation($event)"
+    @dragenter.prevent
+    @dragover.prevent
+  >
     <router-view />
   </div>
 </template>

@@ -22,7 +22,7 @@ const { itemId } = toRefs(props);
 let data;
 const init = async () => {
   data = await getItemData(itemId.value);
-}
+};
 await init();
 </script>
 

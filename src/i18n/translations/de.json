@@ -54,9 +54,9 @@
   "rotation": "Rotation",
   "rotationInfos": "Infos zur Rotation",
   "predefinedRotations": "gespeicherte Rotationen",
-  "#OfGcds": "# der GCD",
-  "#OfOgcds": "# der oGCD",
-  "#OfUnusedOgcds": "# der ungenutzten oGCD",
+  "#OfGcds": "# der GCD:",
+  "#OfOgcds": "# der oGCD:",
+  "#OfUnusedOgcds": "# der ungenutzten oGCD:",
   "settings": {
     "buttonLabel": "Einstellungen",
     "removeUpleveledActions": "Hochgelevelte Fertigkeiten entfernen",

@@ -56,9 +56,9 @@
   "rotation": "Rotation",
   "rotationInfos": "Rotation Infos",
   "predefinedRotations": "Predefined Rotation",
-  "#OfGcds": "# of GCD",
-  "#OfOgcds": "# of oGCD",
-  "#OfUnusedOgcds": "# of unused oGCD",
+  "#OfGcds": "# of GCD:",
+  "#OfOgcds": "# of oGCD:",
+  "#OfUnusedOgcds": "# of unused oGCD:",
   "settings": {
     "buttonLabel": "Settings",
     "removeUpleveledActions": "remove upleveled replaced actions",

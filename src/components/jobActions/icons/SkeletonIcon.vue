@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  id: { type: Number, required: true }
+  id: { type: Number, required: true },
 });
 </script>
 

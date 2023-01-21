@@ -3,9 +3,9 @@ import JobEntry from "@/components/jobsMenu/JobEntry.vue";
 import JobEntrySkeleton from "@/components/jobsMenu/JobEntrySkeleton.vue";
 
 const props = defineProps({
-  icon: { type: String, required: true, },
-  name: { type: String, required: true, },
-  jobIds: { type: Array, required: true, },
+  icon: { type: String, required: true },
+  name: { type: String, required: true },
+  jobIds: { type: Array, required: true },
 });
 </script>
 

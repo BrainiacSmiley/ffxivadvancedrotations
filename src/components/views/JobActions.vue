@@ -10,7 +10,7 @@ import JobActionsGroupSkeleton from "@/components/jobActions/JobActionsGroupSkel
 
 const props = defineProps({
   jobId: { type: Number, required: true, defaultValue: 19 },
-  rotation: { type: String, required: false },
+  rotation: { type: String, required: false, default: null },
 });
 
 const { jobId } = toRefs(props);
@@ -35,7 +35,7 @@ watch(jobId, (newJobId) => {
         <JobActionsHeaderSkeleton />
       </template>
     </Suspense>
-    <RotationPlanner :saved-rotation="rotation"/>
+    <RotationPlanner :saved-rotation="rotation" />
     <Suspense timeout="0">
       <template #default>
         <JobActionsGroups :job-id="jobId" />

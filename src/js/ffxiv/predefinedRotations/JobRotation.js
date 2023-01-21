@@ -6,7 +6,7 @@ export class JobRotation {
    * @param {Number} lvl The icon url for this rotation.
    * @param {Array } ids The ids for this rotation.
    */
-  constructor (name, icon, jobId, lvl, ids) {
+  constructor(name, icon, jobId, lvl, ids) {
     this.name = name;
     this.icon = icon;
     this.jobId = jobId;
@@ -27,7 +27,7 @@ export class JobRotation {
    * @returns {Object}
    */
   getIcon() {
-    const iconUrl = `https://xivapi.com/${this.icon}`
+    const iconUrl = `https://xivapi.com/${this.icon}`;
     return { backgroundImage: `url(${iconUrl})` };
   }
 
@@ -39,7 +39,7 @@ export class JobRotation {
     return {
       lvl: this.lvl,
       jobId: this.jobId,
-      ids: this.ids
+      ids: this.ids,
     };
   }
 }

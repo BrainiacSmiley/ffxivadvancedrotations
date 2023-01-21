@@ -27,8 +27,8 @@ const icon = computed(() => {
 
 const isRotaGCDAction = computed(() => {
   if (
-      (type.value === "action" && data["cooldown_group"] !== 58) ||
-      type.value === "item"
+    (type.value === "action" && data["cooldown_group"] !== 58) ||
+    type.value === "item"
   ) {
     return "rotaActionOGCD";
   }
@@ -45,7 +45,7 @@ const init = async () => {
   } else if (type.value === "item") {
     data = await getItemData(id.value);
   }
-}
+};
 await init();
 </script>
 

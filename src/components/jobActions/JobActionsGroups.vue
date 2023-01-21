@@ -4,14 +4,17 @@ import { getJobActionsForCategoryId } from "@/js/ffxiv/ffxivdata/ffxivclassjobca
 import { getJobCategoryIds } from "@/js/ffxiv/ffxivjobcategoriyids";
 import JobActionsGroup from "@/components/jobActions/JobActionsGroup.vue";
 import { ref, toRefs, watch } from "vue";
-import { getRemoveNotLearnedActions, getReplaceLeveledUpActions } from "@/composables/settings";
+import {
+  getRemoveNotLearnedActions,
+  getReplaceLeveledUpActions,
+} from "@/composables/settings";
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
 import _ from "lodash";
 import {
   removeIgnoredJobActions,
   removeNotLearnedJobActions,
   sortActionIds,
-  splitJobActionsIntoGeneralAndSpecialGroup
+  splitJobActionsIntoGeneralAndSpecialGroup,
 } from "@/js/ffxiv/ffxivjobactions";
 import { useEventBus } from "@vueuse/core";
 import JobActionsGroupSkeleton from "@/components/jobActions/JobActionsGroupSkeleton.vue";
@@ -31,7 +34,7 @@ async function convertGroupIdsIntoActionsOrItemsIds(actionGroups) {
     let actionIds = [];
     for (const categoryId of actionGroup.ids.jobCategoryIds) {
       const actionIdsFromCategory = await getJobActionsForCategoryId(
-          categoryId
+        categoryId
       );
       actionIds = [...actionIds, ...actionIdsFromCategory];
     }
@@ -48,13 +51,13 @@ async function loadActionGroups(jobId) {
   actionGroups = await convertGroupIdsIntoActionsOrItemsIds(actionGroups);
   if (getReplaceLeveledUpActions()) {
     actionGroups = await removeActionsThatSwapThroughLevelUp(
-        actionGroups,
-        jobId
+      actionGroups,
+      jobId
     );
   }
   const splittedJobGroup = splitJobActionsIntoGeneralAndSpecialGroup(
-      actionGroups[0],
-      jobId
+    actionGroups[0],
+    jobId
   );
   actionGroups.splice(0, 1);
   actionGroups = [].concat(splittedJobGroup, actionGroups);
@@ -87,39 +90,44 @@ watch(jobId, async (newJobId, oldJobId) => {
 });
 
 const ffxivAdvancedRotationsStore = ref(useFFXIVAdvancedRotationsStore());
-watch(() => _.cloneDeep(ffxivAdvancedRotationsStore.value), async (newValue, oldValue) => {
-  if (
-      (
-        oldValue.settings.replaceLeveledUpActions === newValue.settings.replaceLeveledUpActions &&
-        oldValue.settings.sortActionsByAcquiredLevel === newValue.settings.sortActionsByAcquiredLevel &&
-        oldValue.settings.removeNotLearnedActions === newValue.settings.removeNotLearnedActions
-      ) || (
-        oldValue.settings.characterLevel !== newValue.settings.characterLevel &&
-        getRemoveNotLearnedActions()
-      )
-  ) {
-    return;
-  }
+watch(
+  () => _.cloneDeep(ffxivAdvancedRotationsStore.value),
+  async (newValue, oldValue) => {
+    if (
+      (oldValue.settings.replaceLeveledUpActions ===
+        newValue.settings.replaceLeveledUpActions &&
+        oldValue.settings.sortActionsByAcquiredLevel ===
+          newValue.settings.sortActionsByAcquiredLevel &&
+        oldValue.settings.removeNotLearnedActions ===
+          newValue.settings.removeNotLearnedActions) ||
+      (oldValue.settings.characterLevel !== newValue.settings.characterLevel &&
+        getRemoveNotLearnedActions())
+    ) {
+      return;
+    }
 
-  await reloadActionGroups(jobId.value);
-});
+    await reloadActionGroups(jobId.value);
+  }
+);
 
 //data initialization
 let actionGroups;
 const init = async () => {
   actionGroups = ref(await loadActionGroups(props.jobId));
-}
+};
 await init();
 </script>
 
 <template>
-  <JobActionsGroup v-if="!isLoading"
-    :key="group.id"
-    :id="group.id"
-    :category-name="group.categoryName"
-    :ids="group.ids"
-    v-for="group in actionGroups"
-  />
+  <template v-if="!isLoading">
+    <JobActionsGroup
+      :key="group.id"
+      :id="group.id"
+      :category-name="group.categoryName"
+      :ids="group.ids"
+      v-for="group in actionGroups"
+    />
+  </template>
   <JobActionsGroupSkeleton v-if="isLoading" />
 </template>
 

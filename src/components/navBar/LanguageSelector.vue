@@ -26,7 +26,7 @@ function isActiveLocale(localeToCheck) {
 }
 
 function selected(localeToCheck) {
-    return isActiveLocale(localeToCheck) ? "active" : "";
+  return isActiveLocale(localeToCheck) ? "active" : "";
 }
 
 function notSelected(localeToCheck) {
@@ -48,13 +48,24 @@ function changeLocale(newLocale) {
 
 <template>
   <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle navbar-button-with-icon" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a
+      class="nav-link dropdown-toggle navbar-button-with-icon"
+      href="#"
+      role="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
       <i class="flag ms-2" :class="actualFlag" />
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
       <template v-for="locale in locales" :key="locale.code">
         <li>
-          <button type="button" class="dropdown-item d-flex align-items-center" :class="selected(locale.code)" @click="changeLocale(locale.code)">
+          <button
+            type="button"
+            class="dropdown-item d-flex align-items-center"
+            :class="selected(locale.code)"
+            @click="changeLocale(locale.code)"
+          >
             <i class="flag me-3" :class="`flag-${locale.flag}`" />
             {{ locale.name }}
             <i class="bi bi-check2 ms-3" :class="notSelected(locale.code)" />
@@ -64,6 +75,5 @@ function changeLocale(newLocale) {
     </ul>
   </li>
 </template>
-
 
 <style scoped></style>

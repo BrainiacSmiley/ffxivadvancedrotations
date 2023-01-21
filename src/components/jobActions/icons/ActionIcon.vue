@@ -6,7 +6,7 @@ import { computed, toRefs } from "vue";
 import { changeSelectedIcon, setDragData } from "@/composables/icon";
 
 const props = defineProps({
-  actionId: { type: Number, required: true }
+  actionId: { type: Number, required: true },
 });
 
 /**
@@ -36,7 +36,7 @@ const { actionId } = toRefs(props);
 let data;
 const init = async () => {
   data = await getActionData(actionId.value);
-}
+};
 await init();
 </script>
 

@@ -11,7 +11,8 @@ export function getSortActionsByAcquiredLevel() {
 }
 
 export function setSortActionsByAcquiredLevel(newState) {
-  useFFXIVAdvancedRotationsStore().settings.sortActionsByAcquiredLevel = newState;
+  useFFXIVAdvancedRotationsStore().settings.sortActionsByAcquiredLevel =
+    newState;
 }
 
 export function getCharacterLevel() {

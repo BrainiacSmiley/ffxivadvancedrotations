@@ -18,7 +18,9 @@ const name = computed(() => {
 });
 const selected = computed(() => {
   const ffxivAdvancedRotationsStore = useFFXIVAdvancedRotationsStore();
-  return ffxivAdvancedRotationsStore.selectedUIElements.jobId === props.jobId ? "btn-primary" : "btn-secondary";// "selected"
+  return ffxivAdvancedRotationsStore.selectedUIElements.jobId === props.jobId
+    ? "btn-primary"
+    : "btn-secondary"; // "selected"
 });
 
 const router = useRouter();
@@ -32,7 +34,7 @@ let data;
 const { jobId } = toRefs(props);
 const init = async () => {
   data = await getJobData(jobId.value);
-}
+};
 await init();
 </script>
 
@@ -43,10 +45,7 @@ await init();
     :key="jobId"
     @click="changeSelectedJob(jobId)"
   >
-    <div
-      class="jobIcon"
-      :style="jobIcon"
-    ></div>
+    <div class="jobIcon" :style="jobIcon"></div>
     <div class="jobName">{{ name }}</div>
     <div class="jobLine"></div>
   </div>

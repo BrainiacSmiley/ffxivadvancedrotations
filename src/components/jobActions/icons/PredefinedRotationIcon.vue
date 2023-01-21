@@ -2,17 +2,17 @@
 const props = defineProps({
   rotationId: { type: String, required: true },
   name: { type: String, required: true },
-  icon: { type: Object, required: true }
+  icon: { type: Object, required: true },
 });
 </script>
 
 <template>
   <div
-      :id="rotationId"
-      :style="icon"
-      :data-bs-title="name"
-      v-tooltip
-      class="predefinedRotationIcon"
+    :id="rotationId"
+    :style="icon"
+    :data-bs-title="name"
+    v-tooltip
+    class="predefinedRotationIcon"
   />
 </template>
 

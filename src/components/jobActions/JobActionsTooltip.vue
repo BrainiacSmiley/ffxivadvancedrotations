@@ -32,16 +32,16 @@ function isAction() {
 
 function isFood() {
   return (
-      !hasNoData() &&
-      typeof data.value["item_category"] !== "undefined" &&
-      data.value["item_category"] === 44
+    !hasNoData() &&
+    typeof data.value["item_category"] !== "undefined" &&
+    data.value["item_category"] === 44
   );
 }
 
 function isLimitBreak() {
   if (
-      hasNoData() ||
-      typeof data.value["action_category_name_en"] === "undefined"
+    hasNoData() ||
+    typeof data.value["action_category_name_en"] === "undefined"
   ) {
     return false;
   }
@@ -87,7 +87,7 @@ const selectedActionIcon = computed(() => {
   if (hasNoData()) {
     return "";
   } else {
-    return {backgroundImage: `url(${data.value["icon"]})`};
+    return { backgroundImage: `url(${data.value["icon"]})` };
   }
 });
 
@@ -128,7 +128,9 @@ const selectedActionCategory = computed(() => {
   }
 
   const locale = getLocale();
-  const key = isAction() ? `action_category_name_${locale}` : `item_category_name_${locale}`
+  const key = isAction()
+    ? `action_category_name_${locale}`
+    : `item_category_name_${locale}`;
   return data.value[key];
 });
 
@@ -158,12 +160,11 @@ const selectedActionCastRecastCostVisible = computed(() => {
   }
 
   const noCastRecastCostVisible =
-      selectedActionCastVisible.value === "visibility:hidden" &&
-      selectedActionRecastVisible.value === "visibility:hidden" &&
-      selectedActionCostVisible.value === "visibility:hidden";
+    selectedActionCastVisible.value === "visibility:hidden" &&
+    selectedActionRecastVisible.value === "visibility:hidden" &&
+    selectedActionCostVisible.value === "visibility:hidden";
   return (
-      isFood() ||
-      (isAction() && !isLimitBreak() && !noCastRecastCostVisible)
+    isFood() || (isAction() && !isLimitBreak() && !noCastRecastCostVisible)
   );
 });
 
@@ -201,8 +202,8 @@ const selectedActionRecastVisible = computed(() => {
   }
 
   if (
-      (isAction() && data.value["recast100ms"] > 0) ||
-      (isItemHQ() && typeof data.value["cooldown"] !== "undefined")
+    (isAction() && data.value["recast100ms"] > 0) ||
+    (isItemHQ() && typeof data.value["cooldown"] !== "undefined")
   ) {
     return "visibility:visible";
   } else {
@@ -218,10 +219,7 @@ const selectedActionRecasttime = computed(() => {
   let recastTime = 0;
   if (isAction() && data.value["recast100ms"] > 0) {
     recastTime = roundNumberToTwoDigits(data.value["recast100ms"] / 10);
-  } else if (
-      isItemHQ() &&
-      typeof data.value["cooldown"] !== "undefined"
-  ) {
+  } else if (isItemHQ() && typeof data.value["cooldown"] !== "undefined") {
     recastTime = data.value["cooldown"];
     if (isItemHQ()) {
       recastTime *= 0.9;
@@ -251,7 +249,9 @@ const selectedActionCostsType = computed(() => {
   }
 
   const costType = data.value["costType"];
-  const costTypesToIgnore = [ 2, 4, 10, 11, 28, 32, 40, 53, 57, 58, 63, 70, 71, 76, 79, 81, 82, 85, 86 ]; //Spell Effects to be Consumed
+  const costTypesToIgnore = [
+    2, 4, 10, 11, 28, 32, 40, 53, 57, 58, 63, 70, 71, 76, 79, 81, 82, 85, 86,
+  ]; //Spell Effects to be Consumed
   const errorText = `Undefined costType: ${costType} for actionId: ${data.value["id"]}`;
   if (costTypesToIgnore.includes(costType)) {
     return "";
@@ -325,8 +325,8 @@ const selectedActionCosts = computed(() => {
   if (getJobId() === FFXIVJobIds.PLD) {
     cost *= 50;
   } else if (
-      FFXIVJobIds.isHealer(getJobId()) ||
-      FFXIVJobIds.isMagicalRanged(getJobId())
+    FFXIVJobIds.isHealer(getJobId()) ||
+    FFXIVJobIds.isMagicalRanged(getJobId())
   ) {
     cost *= 100;
   }
@@ -360,14 +360,10 @@ const selectedActionDescription = computed(() => {
   }
 
   const locale = getLocale();
-  return parseJSONDescription(
-    data.value[`description_json_${locale}`],
-    "",
-    {
-      class_job_id: getJobId(),
-      class_job_level: getCharacterLevel(),
-    }
-  );
+  return parseJSONDescription(data.value[`description_json_${locale}`], "", {
+    class_job_id: getJobId(),
+    class_job_level: getCharacterLevel(),
+  });
 });
 
 const selectedActionAcquiredLvl = computed(() => {
@@ -388,28 +384,34 @@ const selectedActionAffinity = computed(() => {
 });
 
 const ffxivAdvancedRotationsStore = ref(useFFXIVAdvancedRotationsStore());
-watch(() => _.cloneDeep(ffxivAdvancedRotationsStore.value), async (newValue, oldValue) => {
-  if (oldValue.selectedUIElements.selectedIdForTooltip.id === newValue.selectedUIElements.selectedIdForTooltip.id) {
-    return;
-  }
+watch(
+  () => _.cloneDeep(ffxivAdvancedRotationsStore.value),
+  async (newValue, oldValue) => {
+    if (
+      oldValue.selectedUIElements.selectedIdForTooltip.id ===
+      newValue.selectedUIElements.selectedIdForTooltip.id
+    ) {
+      return;
+    }
 
-  if (newValue.selectedUIElements.selectedIdForTooltip.id === null) {
-    type.value = "";
-    data.value = {};
-    return;
+    if (newValue.selectedUIElements.selectedIdForTooltip.id === null) {
+      type.value = "";
+      data.value = {};
+      return;
+    }
+    type.value = newValue.selectedUIElements.selectedIdForTooltip.type;
+    const newId = newValue.selectedUIElements.selectedIdForTooltip.id;
+    if (isItemHQ()) {
+      getItemData(newId).then((newData) => {
+        data.value = newData;
+      });
+    } else if (isAction()) {
+      getActionData(newId).then((newData) => {
+        data.value = newData;
+      });
+    }
   }
-  type.value = newValue.selectedUIElements.selectedIdForTooltip.type;
-  const newId = newValue.selectedUIElements.selectedIdForTooltip.id;
-  if (isItemHQ()) {
-     getItemData(newId).then((newData) => {
-       data.value = newData;
-    });
-  } else if (isAction()) {
-    getActionData(newId).then((newData) => {
-      data.value = newData;
-    });
-  }
-});
+);
 </script>
 
 <template>

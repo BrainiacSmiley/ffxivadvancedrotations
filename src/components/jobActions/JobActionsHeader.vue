@@ -19,7 +19,8 @@ const name = computed(() => {
   const locale = getLocale();
   const jobName = data.value[`name_${locale}`];
   const jobLevel = getCharacterLevel();
-  const lvl = jobLevel !== FFXIVMAXLVL ? `${t("lvl")} ${jobLevel}` : t("maxLvl");
+  const lvl =
+    jobLevel !== FFXIVMAXLVL ? `${t("lvl")} ${jobLevel}` : t("maxLvl");
   return `${jobName} (${lvl})`;
 });
 
@@ -37,7 +38,7 @@ watch(jobId, (newJobId, oldJobId) => {
 let data;
 const init = async () => {
   data = ref(await getJobData(jobId.value));
-}
+};
 await init();
 </script>
 

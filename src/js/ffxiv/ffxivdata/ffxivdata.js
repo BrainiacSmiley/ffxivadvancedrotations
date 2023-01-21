@@ -20,7 +20,7 @@ let XIVAPI_DATA = { version: FFXIVVERSION, data: {} };
 
 const limiter = new Bottleneck({
   maxConcurrent: 1,
-  minTime: 100
+  minTime: 100,
 });
 
 /**

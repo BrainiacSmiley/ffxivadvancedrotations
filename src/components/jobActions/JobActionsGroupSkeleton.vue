@@ -6,22 +6,22 @@ import SkeletonIcon from "@/components/jobActions/icons/SkeletonIcon.vue";
   <fieldset class="skeletonActionGroup fullGroupWidth">
     <legend class="skeletonLegend">&nbsp;</legend>
     <div class="skeletonActions">
-      <SkeletonIcon :id="9"/>
-      <SkeletonIcon :id="15"/>
+      <SkeletonIcon :id="9" />
+      <SkeletonIcon :id="15" />
     </div>
   </fieldset>
   <fieldset class="skeletonActionGroup halfGroupWidth">
     <legend class="skeletonLegend">&nbsp;</legend>
     <div class="skeletonActions">
-      <SkeletonIcon :id="9"/>
-      <SkeletonIcon :id="15"/>
+      <SkeletonIcon :id="9" />
+      <SkeletonIcon :id="15" />
     </div>
   </fieldset>
   <fieldset class="skeletonActionGroup halfGroupWidth">
     <legend class="skeletonLegend">&nbsp;</legend>
     <div class="skeletonActions">
-      <SkeletonIcon :id="9"/>
-      <SkeletonIcon :id="15"/>
+      <SkeletonIcon :id="9" />
+      <SkeletonIcon :id="15" />
     </div>
   </fieldset>
 </template>

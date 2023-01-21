@@ -2,14 +2,16 @@
 import { computed, onMounted, ref } from "vue";
 
 const themes = [
-  { name: "light",  icon: "sun-fill" },
-  { name: "dark",  icon: "moon-stars-fill" },
-  { name: "auto",  icon: "circle-half" },
+  { name: "light", icon: "sun-fill" },
+  { name: "dark", icon: "moon-stars-fill" },
+  { name: "auto", icon: "circle-half" },
 ];
 
 let actualTheme = ref(localStorage.getItem("theme") || "dark");
 const actualThemeIcon = computed(() => {
-  const iconName = themes.find((theme) => theme.name === actualTheme.value).icon;
+  const iconName = themes.find(
+    (theme) => theme.name === actualTheme.value
+  ).icon;
   return `bi-${iconName}`;
 });
 
@@ -60,16 +62,35 @@ onMounted(() => {
 
 <template>
   <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle navbar-button-with-icon" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <a
+      class="nav-link dropdown-toggle navbar-button-with-icon"
+      href="#"
+      role="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
       <i class="bi theme-icon-active" :class="actualThemeIcon" />
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme" style="--bs-dropdown-min-width: 8rem;">
+    <ul
+      class="dropdown-menu dropdown-menu-end"
+      aria-labelledby="bd-theme"
+      style="--bs-dropdown-min-width: 8rem"
+    >
       <template v-for="theme in themes" :key="theme.name">
         <li>
-          <button type="button" class="dropdown-item d-flex align-items-center" :class="selected(theme.name)" @click="changeTheme(theme.name)">
-            <i class="bi me-2" :class="`bi-${theme.icon}`"/>
-            {{ /* eslint-disable @intlify/vue-i18n/no-dynamic-keys */ $t(`theme.${theme.name}`) }}
-            <i class="bi bi-check2 ms-2" :class="notSelected(theme.name) "/>
+          <button
+            type="button"
+            class="dropdown-item d-flex align-items-center"
+            :class="selected(theme.name)"
+            @click="changeTheme(theme.name)"
+          >
+            <i class="bi me-2" :class="`bi-${theme.icon}`" />
+            {{
+              /* eslint-disable @intlify/vue-i18n/no-dynamic-keys */ $t(
+                `theme.${theme.name}`
+              )
+            }}
+            <i class="bi bi-check2 ms-2" :class="notSelected(theme.name)" />
           </button>
         </li>
       </template>

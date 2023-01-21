@@ -1,5 +1,5 @@
 export default class Data {
-  constructor (data) {
+  constructor(data) {
     this.data = data;
   }
 
