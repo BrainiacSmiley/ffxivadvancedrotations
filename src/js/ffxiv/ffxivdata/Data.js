@@ -4,7 +4,10 @@ export default class Data {
   }
 
   isGCDAction() {
-    return this.data["cooldown_group"] && this.data["cooldown_group"] === 58;
+    return (
+      this.data["cooldown_group"] &&
+      (this.data["cooldown_group"] === 58 || this.data["cooldown_group"] === 13)
+    );
   }
 
   getId() {

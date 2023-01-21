@@ -27,7 +27,9 @@ const icon = computed(() => {
 
 const isRotaGCDAction = computed(() => {
   if (
-    (type.value === "action" && data["cooldown_group"] !== 58) ||
+    (type.value === "action" &&
+      data["cooldown_group"] !== 58 &&
+      data["cooldown_group"] !== 13) ||
     type.value === "item"
   ) {
     return "rotaActionOGCD";

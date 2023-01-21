@@ -72,6 +72,7 @@ async function loadActionGroups(jobId) {
 const numberOfGridRowsChanged = useEventBus("numberOfGridRowsChanged");
 async function reloadActionGroups(newJobId) {
   isLoading.value = true;
+  actionGroups.value = [];
   setTimeout(async () => {
     actionGroups.value = await loadActionGroups(newJobId);
     isLoading.value = false;

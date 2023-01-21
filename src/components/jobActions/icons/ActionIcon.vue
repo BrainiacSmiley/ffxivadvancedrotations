@@ -25,7 +25,7 @@ const actionIcon = computed(() => {
  * @return {boolean}
  */
 const isGCD = computed(() => {
-  return data["cooldown_group"] === 58;
+  return data["cooldown_group"] === 58 || data["cooldown_group"] === 13;
 });
 const notLearned = computed(() => {
   return data["class_job_level"] > getCharacterLevel();
