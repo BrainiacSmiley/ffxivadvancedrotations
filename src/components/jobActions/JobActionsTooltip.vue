@@ -1,8 +1,422 @@
+<script setup>
+import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { getItemData } from "@/js/ffxiv/ffxivdata/ffxivitemdata";
+import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
+import {
+  capitalizeEveryFirstLetter,
+  roundNumberToTwoDigits,
+  secondsToMinutes,
+} from "@/js/helper";
+import { getLocale } from "@/i18n";
+import { getJobId } from "@/composables/jobId";
+import { getAcquiredIcon } from "@/js/ffxiv/ffxivacquiredIcon";
+import { parseJSONDescription } from "@/js/ffxiv/ffxivdata/ffxivdatahelper";
+import { getCharacterLevel } from "@/composables/settings";
+import { computed, onMounted, ref, watch } from "vue";
+import _ from "lodash";
+import { useI18n } from "vue-i18n";
+import { useEventBus } from "@vueuse/core";
+
+const { t } = useI18n();
+
+const type = ref("");
+const data = ref({});
+
+function isItemHQ() {
+  return type.value === "item";
+}
+function isAction() {
+  return type.value === "action";
+}
+
+function isFood() {
+  return (
+      !hasNoData() &&
+      typeof data.value["item_category"] !== "undefined" &&
+      data.value["item_category"] === 44
+  );
+}
+
+function isLimitBreak() {
+  if (
+      hasNoData() ||
+      typeof data.value["action_category_name_en"] === "undefined"
+  ) {
+    return false;
+  }
+  return data.value["action_category_name_en"] === "Limit Break";
+}
+
+function hasNoData() {
+  return Object.entries(data.value).length === 0;
+}
+
+const numberOfGridRows = ref(4);
+const numberOfGridRowsChanged = useEventBus("numberOfGridRowsChanged");
+onMounted(() => {
+  numberOfGridRowsChanged.on(setNumberOfGridRows);
+});
+function setNumberOfGridRows(newNumberOfGridRows) {
+  numberOfGridRows.value = newNumberOfGridRows;
+}
+const visibilityAndGridSpawn = computed(() => {
+  const styles = {};
+  styles["visibility"] = hasNoData() ? "hidden" : "visible";
+  styles["gridRow"] = `4 / span ${numberOfGridRows.value}`;
+  return styles;
+});
+
+const getAcquiredIcons = computed(() => {
+  if (hasNoData() || isItemHQ()) {
+    return "";
+  }
+
+  return getAcquiredIcon(getJobId(), data.value["class_job_category"]);
+});
+
+const isEntryVisible = computed(() => {
+  if (isAction() && !isLimitBreak()) {
+    return "visibility:visible";
+  } else {
+    return "display:none";
+  }
+});
+
+const selectedActionIcon = computed(() => {
+  if (hasNoData()) {
+    return "";
+  } else {
+    return {backgroundImage: `url(${data.value["icon"]})`};
+  }
+});
+
+const isHQOverlayVisible = computed(() => {
+  if (isItemHQ()) {
+    return "visibility:visible";
+  } else {
+    return "display:none";
+  }
+});
+
+const selectedActionName = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  const locale = getLocale();
+  let name = data.value[`name_${locale}`];
+
+  if (isItemHQ()) {
+    const hqSymbol = "\uE03C";
+    name += ` ${hqSymbol}`;
+  }
+  return name;
+});
+
+const selectedActionId = computed(() => {
+  if (hasNoData() || import.meta.env.VITE_APP_DEBUG_VERBOSE === "false") {
+    return "";
+  }
+
+  return ` [${data.value["id"]}]`;
+});
+
+const selectedActionCategory = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  const locale = getLocale();
+  const key = isAction() ? `action_category_name_${locale}` : `item_category_name_${locale}`
+  return data.value[key];
+});
+
+const selectedActionRange = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  let range = data.value["range"];
+  if (range === "-1") {
+    range = "3";
+  }
+  return `${range}y`;
+});
+
+const selectedActionRadius = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  return `${data.value["radius"]}y`;
+});
+
+const selectedActionCastRecastCostVisible = computed(() => {
+  if (hasNoData()) {
+    return false;
+  }
+
+  const noCastRecastCostVisible =
+      selectedActionCastVisible.value === "visibility:hidden" &&
+      selectedActionRecastVisible.value === "visibility:hidden" &&
+      selectedActionCostVisible.value === "visibility:hidden";
+  return (
+      isFood() ||
+      (isAction() && !isLimitBreak() && !noCastRecastCostVisible)
+  );
+});
+
+const selectedActionCastVisible = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  if (isItemHQ()) {
+    return "display:none";
+  } else if (data.value["cast100ms"] > 0) {
+    return "visibility:visible";
+  } else {
+    return "visibility:hidden";
+  }
+});
+
+const selectedActionCasttime = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  let castTime = data.value["cast100ms"] / 10;
+  if (castTime === 0) {
+    return t("castTimeInstant");
+  } else {
+    castTime = roundNumberToTwoDigits(castTime);
+  }
+  return `${castTime}${t("s")}`;
+});
+
+const selectedActionRecastVisible = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  if (
+      (isAction() && data.value["recast100ms"] > 0) ||
+      (isItemHQ() && typeof data.value["cooldown"] !== "undefined")
+  ) {
+    return "visibility:visible";
+  } else {
+    return "visibility:hidden";
+  }
+});
+
+const selectedActionRecasttime = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  let recastTime = 0;
+  if (isAction() && data.value["recast100ms"] > 0) {
+    recastTime = roundNumberToTwoDigits(data.value["recast100ms"] / 10);
+  } else if (
+      isItemHQ() &&
+      typeof data.value["cooldown"] !== "undefined"
+  ) {
+    recastTime = data.value["cooldown"];
+    if (isItemHQ()) {
+      recastTime *= 0.9;
+    }
+    recastTime = secondsToMinutes(recastTime);
+    return `${recastTime}`;
+  }
+  return `${recastTime}${t("s")}`;
+});
+
+const selectedActionCostVisible = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  if (data.value["cost"] > 0) {
+    if (data.value["costType"] === 3) {
+      return "visibility:visible";
+    }
+  }
+  return "visibility:hidden";
+});
+
+const selectedActionCostsType = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  const costType = data.value["costType"];
+  const costTypesToIgnore = [ 2, 4, 10, 11, 28, 32, 40, 53, 57, 58, 63, 70, 71, 76, 79, 81, 82, 85, 86 ]; //Spell Effects to be Consumed
+  const errorText = `Undefined costType: ${costType} for actionId: ${data.value["id"]}`;
+  if (costTypesToIgnore.includes(costType)) {
+    return "";
+  }
+  if (costType === 3) {
+    return t("costType.MP");
+  } else if (costType === 22) {
+    return t("costType.BeastGauge");
+  } else if (costType === 23) {
+    return t("costType.Polyglot");
+  } else if (costType === 25) {
+    return t("costType.BloodGauge");
+  } else if (costType === 27) {
+    return t("costType.NinkiGauge");
+  } else if (costType === 30) {
+    return t("costType.AetherflowGauge");
+  } else if (costType === 39) {
+    return t("costType.KenkiGauge");
+  } else if (costType === 41) {
+    return t("costType.OathGauge");
+  } else if (costType === 43) {
+    return t("costType.BalanceGauge");
+  } else if (costType === 54) {
+    return t("costType.EspritGauge");
+  } else if (costType === 55) {
+    return t("costType.Cartridge");
+  } else if (costType === 56) {
+    return t("costType.HealingGauge");
+  } else if (costType === 59) {
+    return t("costType.SoulVoiceGauge");
+  } else if (costType === 61) {
+    return t("costType.HeatGauge");
+  } else if (costType === 62) {
+    return t("costType.BatteryGauge");
+  } else if (costType === 64) {
+    return t("costType.SoulGauge");
+  } else if (costType === 65) {
+    return t("costType.ShroudGauge");
+  } else if (costType === 66) {
+    return t("costType.LemureShroud");
+  } else if (costType === 67) {
+    return t("costType.VoidShroud");
+  } else if (costType === 68) {
+    return t("costType.Addersgall");
+  } else if (costType === 69) {
+    return t("costType.Addersting");
+  } else if (costType === 72) {
+    return t("costType.FireAttunement");
+  } else if (costType === 73) {
+    return t("costType.EarthAttunement");
+  } else if (costType === 74) {
+    return t("costType.WindAttunement");
+  } else if (costType === 75) {
+    return t("costType.FirstmindFocus");
+  } else if (costType === 78) {
+    return t("costType.ManaStack");
+  } else if (costType) {
+    console.error(errorText);
+    return "";
+  } else {
+    return new Error(errorText);
+  }
+});
+
+const selectedActionCosts = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  let cost = data.value["cost"];
+  if (getJobId() === FFXIVJobIds.PLD) {
+    cost *= 50;
+  } else if (
+      FFXIVJobIds.isHealer(getJobId()) ||
+      FFXIVJobIds.isMagicalRanged(getJobId())
+  ) {
+    cost *= 100;
+  }
+  return cost;
+});
+
+const selectedActionItemEffects = computed(() => {
+  if (hasNoData() || typeof data.value["bonuses"] === "undefined") {
+    return "";
+  }
+
+  let bonusEffects = "";
+  for (const [key, bonus] of Object.entries(data.value["bonuses"])) {
+    let bonusPercent = bonus["value"];
+    let bonusMax = bonus["max"];
+    const maxText = t("MaxEffectText");
+    const bonusValue = capitalizeEveryFirstLetter(key.replace("_", " "));
+    if (isItemHQ()) {
+      bonusPercent = bonus["value_hq"];
+      bonusMax = bonus["max_hq"];
+    }
+    bonusEffects += `<div>${bonusValue} +${bonusPercent}% (${maxText} ${bonusMax})</div>`;
+  }
+
+  return bonusEffects;
+});
+
+const selectedActionDescription = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  const locale = getLocale();
+  return parseJSONDescription(
+    data.value[`description_json_${locale}`],
+    "",
+    {
+      class_job_id: getJobId(),
+      class_job_level: getCharacterLevel(),
+    }
+  );
+});
+
+const selectedActionAcquiredLvl = computed(() => {
+  if (hasNoData()) {
+    return "";
+  }
+
+  return `Lv. ${data.value["class_job_level"]}`;
+});
+
+const selectedActionAffinity = computed(() => {
+  if (hasNoData() || isItemHQ()) {
+    return "";
+  }
+
+  const locale = getLocale();
+  return data.value["class_job_category"][`name_${locale}`];
+});
+
+const ffxivAdvancedRotationsStore = ref(useFFXIVAdvancedRotationsStore());
+watch(() => _.cloneDeep(ffxivAdvancedRotationsStore.value), async (newValue, oldValue) => {
+  if (oldValue.selectedUIElements.selectedIdForTooltip.id === newValue.selectedUIElements.selectedIdForTooltip.id) {
+    return;
+  }
+
+  if (newValue.selectedUIElements.selectedIdForTooltip.id === null) {
+    type.value = "";
+    data.value = {};
+    return;
+  }
+  type.value = newValue.selectedUIElements.selectedIdForTooltip.type;
+  const newId = newValue.selectedUIElements.selectedIdForTooltip.id;
+  if (isItemHQ()) {
+     getItemData(newId).then((newData) => {
+       data.value = newData;
+    });
+  } else if (isAction()) {
+    getActionData(newId).then((newData) => {
+      data.value = newData;
+    });
+  }
+});
+</script>
+
 <template>
-  <div class="actionTooltip" :style="isJobActionSelected">
+  <div class="actionTooltip" :style="visibilityAndGridSpawn">
     <div class="actionIconTooltip">
-      <div class="actionIconTooltipIcon" :style="selectedActionIcon"></div>
-      <div class="actionIconTooltipHQOverlay" :style="isHQOverlayVisible"></div>
+      <div class="actionIconTooltipIcon" :style="selectedActionIcon" />
+      <div class="actionIconTooltipHQOverlay" :style="isHQOverlayVisible" />
     </div>
     <div class="actionName">{{ selectedActionName }}</div>
     <div class="actionCategory">
@@ -42,19 +456,19 @@
           {{ selectedActionCostsType }}
         </div>
         <div class="actionCastRecastCostValue">{{ selectedActionCosts }}</div>
-        <div class="actionCastRecastCostBar"></div>
+        <div class="actionCastRecastCostBar" />
       </div>
     </div>
-    <div class="actionItemEffect" v-if="this.type === 'item'">
+    <div class="actionItemEffect" v-if="isItemHQ()">
       <span style="color: gray">{{ $t("itemEffects") }}</span>
       <div style="margin-left: 10px" v-html="selectedActionItemEffects"></div>
     </div>
-    <div class="actionDescription" v-html="selectedActionDescription"></div>
+    <div class="actionDescription" v-html="selectedActionDescription" />
     <div class="actionAcquired" :style="isEntryVisible">
       <div class="selectedActionAcquiredAffinity">{{ $t("acquired") }}</div>
       <span style="color: #5a7744">
-        <template v-for="iconURL in getAcquiredIcon" :key="iconURL">
-          <div class="selectedActionAcquiredIcon" :style="iconURL"></div>
+        <template v-for="iconURL in getAcquiredIcons" :key="iconURL">
+          <div class="selectedActionAcquiredIcon" :style="iconURL" />
         </template>
         {{ selectedActionAcquiredLvl }}
       </span>
@@ -66,383 +480,10 @@
   </div>
 </template>
 
-<script>
-import { FFXIVJobIds } from "@/js/ffxiv/ffxivjobids";
-import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
-import { getItemData } from "@/js/ffxiv/ffxivdata/ffxivitemdata";
-import { getActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
-import {
-  capitalizeEveryFirstLetter,
-  roundNumberToTwoDigits,
-  secondsToMinutes,
-} from "@/js/helper";
-import { getLocale } from "@/i18n";
-import { getJobId } from "@/composables/jobId";
-import { getAcquiredIcon } from "@/js/ffxiv/ffxivacquiredIcon";
-import { parseJSONDescription } from "@/js/ffxiv/ffxivdata/ffxivdatahelper";
-import { getCharacterLevel } from "@/composables/settings";
-
-export default {
-  name: "JobActionsTooltip",
-  data() {
-    return {
-      data: null,
-      type: null,
-      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
-    };
-  },
-  methods: {
-    isItemHQ() {
-      return this.type === "item";
-    },
-    isFood() {
-      return (
-        typeof this.data["item_category"] !== "undefined" &&
-        this.data["item_category"] === 44
-      );
-    },
-    isLimitBreak() {
-      return this.data["action_category_name_en"] === "Limit Break";
-    },
-    isAction() {
-      return this.type === "action";
-    },
-  },
-  computed: {
-    getAcquiredIcon() {
-      if (this.data === null || this.type === "item") {
-        return "";
-      }
-
-      return getAcquiredIcon(getJobId(), this.data["class_job_category"]);
-    },
-    isJobActionSelected() {
-      if (this.data !== null) {
-        return { visibility: "visible" };
-      } else {
-        return { visibility: "hidden" };
-      }
-    },
-    isEntryVisible() {
-      if (this.isAction() && !this.isLimitBreak()) {
-        return "visibility:visible";
-      } else {
-        return "display:none";
-      }
-    },
-    selectedActionIcon() {
-      if (this.data === null) {
-        return "";
-      }
-
-      return { backgroundImage: `url(${this.data["icon"]})` };
-    },
-    isHQOverlayVisible() {
-      if (this.isItemHQ()) {
-        return "visibility:visible";
-      } else {
-        return "display:none";
-      }
-    },
-    selectedActionName() {
-      if (this.data === null) {
-        return "";
-      }
-
-      const locale = getLocale();
-      let name = this.data[`name_${locale}`];
-
-      if (this.isItemHQ()) {
-        const hqSymbol = "\uE03C";
-        name += ` ${hqSymbol}`;
-      }
-      return name;
-    },
-    selectedActionId() {
-      if (this.data === null || process.env.VUE_APP_DEBUG_VERBOSE === "false") {
-        return "";
-      }
-
-      return ` [${this.data["id"]}]`;
-    },
-    selectedActionCategory() {
-      if (this.data === null) {
-        return "";
-      }
-
-      const locale = getLocale();
-      if (this.type === "action") {
-        return this.data[`action_category_name_${locale}`];
-      } else {
-        return this.data[`item_category_name_${locale}`];
-      }
-    },
-    selectedActionRange() {
-      if (this.data === null) {
-        return "";
-      }
-
-      let range = this.data["range"];
-      if (range === "-1") {
-        range = "3";
-      }
-      return `${range}y`;
-    },
-    selectedActionRadius() {
-      if (this.data === null) {
-        return "";
-      }
-
-      return `${this.data["radius"]}y`;
-    },
-    selectedActionCastRecastCostVisible() {
-      if (this.data === null) {
-        return false;
-      }
-
-      const noCastRecastCostVisible =
-        this.selectedActionCastVisible === "visibility:hidden" &&
-        this.selectedActionRecastVisible === "visibility:hidden" &&
-        this.selectedActionCostVisible === "visibility:hidden";
-      return (
-        this.isFood() ||
-        (this.isAction() && !this.isLimitBreak() && !noCastRecastCostVisible)
-      );
-    },
-    selectedActionCastVisible() {
-      if (this.data === null) {
-        return "";
-      }
-
-      if (this.type === "item") {
-        return "display:none";
-      } else if (this.data["cast100ms"] > 0) {
-        return "visibility:visible";
-      } else {
-        return "visibility:hidden";
-      }
-    },
-    selectedActionCasttime() {
-      if (this.data === null) {
-        return "";
-      }
-
-      let castTime = this.data["cast100ms"] / 10;
-      if (castTime === 0) {
-        return this.$t("castTimeInstant");
-      } else {
-        castTime = roundNumberToTwoDigits(castTime);
-      }
-      return `${castTime}${this.$t("s")}`;
-    },
-    selectedActionRecastVisible() {
-      if (this.data === null) {
-        return "";
-      }
-
-      if (
-        (this.type === "action" && this.data["recast100ms"] > 0) ||
-        (this.type === "item" && typeof this.data["cooldown"] !== "undefined")
-      ) {
-        return "visibility:visible";
-      } else {
-        return "visibility:hidden";
-      }
-    },
-    selectedActionRecasttime() {
-      if (this.data === null) {
-        return "";
-      }
-
-      let recastTime = 0;
-      if (this.type === "action" && this.data["recast100ms"] > 0) {
-        recastTime = roundNumberToTwoDigits(this.data["recast100ms"] / 10);
-      } else if (
-        this.type === "item" &&
-        typeof this.data["cooldown"] !== "undefined"
-      ) {
-        recastTime = this.data["cooldown"];
-        if (this.isItemHQ()) {
-          recastTime *= 0.9;
-        }
-        recastTime = secondsToMinutes(recastTime);
-        return `${recastTime}`;
-      }
-      return `${recastTime}${this.$t("s")}`;
-    },
-    selectedActionCostVisible() {
-      if (this.data === null) {
-        return "";
-      }
-
-      if (this.data["cost"] > 0) {
-        if (this.data["costType"] === 3) {
-          return "visibility:visible";
-        }
-      }
-      return "visibility:hidden";
-    },
-    selectedActionCostsType() {
-      if (this.data === null) {
-        return "";
-      }
-
-      const costType = this.data["costType"];
-      const costTypesToIgnore = [
-        2, 4, 10, 11, 28, 32, 40, 53, 57, 58, 63, 70, 71, 76, 79, 81, 82, 85,
-        86,
-      ]; //Spell Effects to be Consumed
-      const errorText = `Undefined costType: ${costType} for actionId: ${this.data["id"]}`;
-      if (costTypesToIgnore.includes(costType)) {
-        return "";
-      }
-      if (costType === 3) {
-        return this.$t("costType.MP");
-      } else if (costType === 22) {
-        return this.$t("costType.BeastGauge");
-      } else if (costType === 23) {
-        return this.$t("costType.Polyglot");
-      } else if (costType === 25) {
-        return this.$t("costType.BloodGauge");
-      } else if (costType === 27) {
-        return this.$t("costType.NinkiGauge");
-      } else if (costType === 30) {
-        return this.$t("costType.AetherflowGauge");
-      } else if (costType === 39) {
-        return this.$t("costType.KenkiGauge");
-      } else if (costType === 41) {
-        return this.$t("costType.OathGauge");
-      } else if (costType === 43) {
-        return this.$t("costType.BalanceGauge");
-      } else if (costType === 54) {
-        return this.$t("costType.EspritGauge");
-      } else if (costType === 55) {
-        return this.$t("costType.Cartridge");
-      } else if (costType === 56) {
-        return this.$t("costType.HealingGauge");
-      } else if (costType === 59) {
-        return this.$t("costType.SoulVoiceGauge");
-      } else if (costType === 61) {
-        return this.$t("costType.HeatGauge");
-      } else if (costType === 62) {
-        return this.$t("costType.BatteryGauge");
-      } else if (costType === 64) {
-        return this.$t("costType.SoulGauge");
-      } else if (costType === 65) {
-        return this.$t("costType.ShroudGauge");
-      } else if (costType === 66) {
-        return this.$t("costType.LemureShroud");
-      } else if (costType === 67) {
-        return this.$t("costType.VoidShroud");
-      } else if (costType === 68) {
-        return this.$t("costType.Addersgall");
-      } else if (costType === 69) {
-        return this.$t("costType.Addersting");
-      } else if (costType === 72) {
-        return this.$t("costType.FireAttunement");
-      } else if (costType === 73) {
-        return this.$t("costType.EarthAttunement");
-      } else if (costType === 74) {
-        return this.$t("costType.WindAttunement");
-      } else if (costType === 75) {
-        return this.$t("costType.FirstmindFocus");
-      } else if (costType === 78) {
-        return this.$t("costType.ManaStack");
-      } else if (costType) {
-        console.log(errorText);
-        return "";
-      } else {
-        return new Error(errorText);
-      }
-    },
-    selectedActionCosts() {
-      if (this.data === null) {
-        return "";
-      }
-
-      let cost = this.data["cost"];
-      if (getJobId() === FFXIVJobIds.PLD) {
-        cost *= 50;
-      } else if (
-        FFXIVJobIds.isHealer(getJobId()) ||
-        FFXIVJobIds.isMagicalRanged(getJobId())
-      ) {
-        cost *= 100;
-      }
-      return cost;
-    },
-    selectedActionItemEffects() {
-      if (this.data === null || typeof this.data["bonuses"] === "undefined") {
-        return "";
-      }
-
-      let bonusEffects = "";
-      for (const [key, bonus] of Object.entries(this.data["bonuses"])) {
-        let bonusPercent = bonus["value"];
-        let bonusMax = bonus["max"];
-        const maxText = this.$t("MaxEffectText");
-        const bonusValue = capitalizeEveryFirstLetter(key.replace("_", " "));
-        if (this.isItemHQ()) {
-          bonusPercent = bonus["value_hq"];
-          bonusMax = bonus["max_hq"];
-        }
-        bonusEffects += `<div>${bonusValue} +${bonusPercent}% (${maxText} ${bonusMax})</div>`;
-      }
-
-      return bonusEffects;
-    },
-    selectedActionDescription() {
-      if (this.data === null) {
-        return "";
-      }
-
-      const locale = getLocale();
-      return parseJSONDescription(this.data[`description_json_${locale}`], "", {
-        class_job_id: getJobId(),
-        class_job_level: getCharacterLevel(),
-      });
-    },
-    selectedActionAcquiredLvl() {
-      if (this.data === null) {
-        return "";
-      }
-
-      return `Lv. ${this.data["class_job_level"]}`;
-    },
-    selectedActionAffinity() {
-      if (this.data === null || this.type === "item") {
-        return "";
-      }
-
-      const locale = getLocale();
-      return this.data["class_job_category"][`name_${locale}`];
-    },
-  },
-  watch: {
-    "ffxivAdvancedRotationsStore.selectedUIElements.selectedIdForTooltip.id":
-      async function (newId) {
-        if (newId === null) {
-          this.type = null;
-          this.data = null;
-          return;
-        }
-
-        this.type =
-          this.ffxivAdvancedRotationsStore.selectedUIElements.selectedIdForTooltip.type;
-        if (this.type === "item") {
-          this.data = await getItemData(newId);
-        } else if (this.type === "action") {
-          this.data = await getActionData(newId);
-        }
-      },
-  },
-};
-</script>
-
 <style scoped>
 .actionTooltip {
   position: relative;
-  width: 470px;
+  width: var(--tooltip-width);
   border: 2px solid gray;
   color: white;
   border-radius: 5px;

@@ -1,3 +1,5 @@
+<script setup></script>
+
 <template>
   <div class="jobSkeleton">
     <div class="jobIconSkeleton"></div>
@@ -5,12 +7,6 @@
     <div class="jobLineSkeleton"></div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "JobEntrySkeleton",
-};
-</script>
 
 <style scoped>
 .jobSkeleton {

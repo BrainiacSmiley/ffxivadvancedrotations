@@ -41,9 +41,9 @@
     "tincture": "Limit Break / Tinkturen",
     "special": {
       "ninjutsu": "Ninjutsu",
-      "taijutsu":  "Taijutsu",
-      "summonSkills":  "Beschwörer Fähigkeiten",
-      "stepSkills": "Tanz Fähikeiten"
+      "taijutsu": "Taijutsu",
+      "summonSkills": "Beschwörer Fertigkeiten",
+      "stepSkills": "Tanz Fertigkeiten"
     }
   },
   "tankRole": "Verteidiger",
@@ -52,19 +52,35 @@
   "physicalRangeRole": "Phys. Fernkämpfer",
   "magicalRangeRole": "Mag. Fernkämpfer",
   "rotation": "Rotation",
-  "siteName": "FFXIVAdvancedRotations",
+  "rotationInfos": "Infos zur Rotation",
+  "predefinedRotations": "gespeicherte Rotationen",
+  "#OfGcds": "# der GCD",
+  "#OfOgcds": "# der oGCD",
+  "#OfUnusedOgcds": "# der ungenutzten oGCD",
   "settings": {
     "buttonLabel": "Einstellungen",
     "removeUpleveledActions": "Hochgelevelte Fertigkeiten entfernen",
     "sortActionsByAcquiredLevel": "Fertigkeiten aufsteigend nach lvl sortieren",
-    "removeNotLearnedActions": "remove not learned actions",
+    "removeNotLearnedActions": "Nicht gelernte Fertigkeiten entfernen",
     "characterLevel": "Charakter Level"
   },
-  "language": {
-    "buttonLabel": "Sprache"
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "auto": "Auto"
   },
-  "deleteActualRotation": "Aktuelle Rotation löschen",
   "dbVersion": "DB-Version:",
   "lvl": "Level",
-  "maxLvl": "Max Level"
+  "maxLvl": "Max Level",
+  "modal": {
+    "close": "Close",
+    "yes": "Ja",
+    "no": "Nein",
+    "ok": "ok",
+    "cancel": "abbruch",
+    "deleteActualRotation": "Aktuelle Rotation löschen?",
+    "copyActualRotation": "aktuelle Rotation in Zwischenablage kopieren",
+    "copyActualRotationPredefined": "aktuelle Rotation als abgespeicherte in die Zwischenablage kopieren",
+    "copiedSuccessful": "erfolgreich kopiert!"
+  }
 }

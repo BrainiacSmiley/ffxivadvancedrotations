@@ -1,3 +1,5 @@
+<script setup></script>
+
 <template>
   <header class="jobActionsHeaderSkeleton">
     <div class="jobActionsIconSkeleton"></div>
@@ -5,16 +7,12 @@
   </header>
 </template>
 
-<script>
-export default {
-  name: "JobActionsHeaderSkeleton",
-};
-</script>
-
 <style scoped>
 .jobActionsHeaderSkeleton {
-  margin: auto;
-  width: 340px;
+  grid-column: 3 span;
+  justify-self: center;
+  align-self: start;
+  margin-top: 15px;
 }
 
 .jobActionsIconSkeleton {

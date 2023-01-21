@@ -1,3 +1,28 @@
+<script setup>
+import RoleGroup from "@/components/jobsMenu/RoleGroup.vue";
+import { getAllMenuData } from "@/js/ffxivadvancedrotations";
+import { FFXIVVERSION } from "@/js/ffxiv/ffxivconfigs";
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { ref, watch } from "vue";
+import _ from "lodash";
+
+let menuData = ref(getAllMenuData());
+const ffxivAdvancedRotationsStore = ref(useFFXIVAdvancedRotationsStore());
+watch(() => _.cloneDeep(ffxivAdvancedRotationsStore.value), (newValue, oldValue) => {
+  if (
+      newValue.settings.characterLevel === oldValue.settings.characterLevel ||
+      oldValue.settings.characterLevel > 29 && newValue.settings.characterLevel > 29 ||
+      oldValue.settings.characterLevel < 30 && newValue.settings.characterLevel < 30
+  ) {
+    return;
+  }
+  menuData.value = null;
+  setTimeout(() => {
+    menuData.value = getAllMenuData();
+  }, 0);
+});
+</script>
+
 <template>
   <div class="jobMenu">
     <RoleGroup
@@ -8,61 +33,19 @@
       v-for="roleGroup in menuData"
     ></RoleGroup>
   </div>
-  <div class="dbVersion">{{ $t("dbVersion") }} {{ FFXIVVERSION() }}</div>
+  <!--suppress AllyHtmlVueInspection -->
+  <div class="fixed-bottom dbVersion">{{ $t("dbVersion") }} {{ FFXIVVERSION }}</div>
 </template>
-
-<script>
-import RoleGroup from "@/components/jobsMenu/RoleGroup.vue";
-import { getAllMenuData } from "@/js/ffxivadvancedrotations";
-import { FFXIVVERSION } from "@/js/ffxiv/ffxivconfigs";
-import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
-import { ref } from "vue";
-
-export default {
-  setup() {
-    const menuData = getAllMenuData();
-
-    return {
-      menuData: ref(menuData),
-    };
-  },
-  name: "jobs-menu",
-  components: {
-    RoleGroup,
-  },
-  data() {
-    return {
-      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
-    };
-  },
-  methods: {
-    FFXIVVERSION() {
-      return FFXIVVERSION;
-    },
-  },
-  watch: {
-    "ffxivAdvancedRotationsStore.settings.characterLevel": async function () {
-      this.menuData = null;
-      setTimeout(() => {
-        this.menuData = getAllMenuData();
-      }, 0);
-    },
-  },
-};
-</script>
 
 <style scoped>
 .jobMenu {
-  width: 270px;
-  height: 100%;
+  width: var(--jobs-menu-width);
+  height: calc(100% - var(--navBar-height));
   line-height: 1;
   margin-left: 5px;
 }
 
 .dbVersion {
-  position: absolute;
-  bottom: 60px;
-  left: 10px;
-  color: gray;
+  left: 4px;
 }
 </style>

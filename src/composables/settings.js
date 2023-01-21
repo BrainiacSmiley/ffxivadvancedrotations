@@ -1,5 +1,4 @@
 import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
-
 export function getReplaceLeveledUpActions() {
   return useFFXIVAdvancedRotationsStore().settings.replaceLeveledUpActions;
 }
@@ -12,8 +11,7 @@ export function getSortActionsByAcquiredLevel() {
 }
 
 export function setSortActionsByAcquiredLevel(newState) {
-  useFFXIVAdvancedRotationsStore().settings.sortActionsByAcquiredLevel =
-    newState;
+  useFFXIVAdvancedRotationsStore().settings.sortActionsByAcquiredLevel = newState;
 }
 
 export function getCharacterLevel() {

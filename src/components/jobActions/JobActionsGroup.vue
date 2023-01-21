@@ -1,130 +1,92 @@
-<template>
-  <div class="groupOfActions">
-    <fieldset class="actionGroup" :class="gridWidthClass">
-      <legend>{{ categoryNameWithOrWithoutAmount }}</legend>
-      <div class="actions">
-        <ActionIcon
-          v-for="action in actionIds"
-          :actionId="action.id"
-          :key="action.id"
-        />
-        <ItemIcon v-for="item in itemIds" :itemId="item.id" :key="item.id" />
-        <!--        <draggable-->
-        <!--          v-model="actionIds"-->
-        <!--          item-key="id"-->
-        <!--          :group="{ name: this.categoryName, pull: 'clone', put: false }"-->
-        <!--          :sort="false"-->
-        <!--        >-->
-        <!--          <template #item="{ element }">-->
-        <!--            <ActionIcon :actionId="element.id" :key="element.id"></ActionIcon>-->
-        <!--          </template>-->
-        <!--        </draggable>-->
-        <!--        <draggable-->
-        <!--          v-model="itemIds"-->
-        <!--          item-key="id"-->
-        <!--          :group="{ name: this.categoryName, pull: 'clone', put: false }"-->
-        <!--          :sort="false"-->
-        <!--        >-->
-        <!--          <template #item="{ element }">-->
-        <!--            <ItemIcon :itemId="element.id" :key="element.id"></ItemIcon>-->
-        <!--          </template>-->
-        <!--        </draggable>-->
-      </div>
-    </fieldset>
-  </div>
-</template>
-<script>
-// import draggable from "vuedraggable";
-import ActionIcon from "@/components/jobActions/ActionIcon.vue";
-import ItemIcon from "@/components/jobActions/ItemIcon.vue";
+<script setup>
+import ActionIcon from "@/components/jobActions/icons/ActionIcon.vue";
+import ItemIcon from "@/components/jobActions/icons/ItemIcon.vue";
+import { computed, toRefs } from "vue";
+import { useI18n } from "vue-i18n";
 
-export default {
-  name: "ActionGroup",
-  components: {
-    // draggable,
-    ActionIcon,
-    ItemIcon,
-  },
-  props: {
-    categoryName: { type: String, required: true },
-    ids: { type: Object, required: true },
-  },
-  computed: {
-    actionIds() {
-      if (typeof this.$props.ids.actionIds === "undefined") {
-        return [];
-      }
+const { t } = useI18n();
 
-      const actionIds = [];
-      this.$props.ids.actionIds.forEach((id) => {
-        actionIds.push({
-          id: id,
-        });
-      });
-      return actionIds;
-    },
-    itemIds() {
-      if (typeof this.$props.ids.itemIds === "undefined") {
-        return [];
-      }
+const props = defineProps({
+  categoryName: { type: String, required: true },
+  ids: { type: Object, required: true },
+});
 
-      const actionIds = [];
-      this.$props.ids.itemIds.forEach((id) => {
-        actionIds.push({
-          id: id,
-        });
-      });
-      return actionIds;
-    },
-    gridWidthClass() {
-      if (
-        this.categoryName === "actionGroupNames.job" ||
-        this.categoryName.indexOf("actionGroupNames.special.") === 0
-      ) {
-        return "fullGroupWidth";
-      } else if (
-        this.categoryName === "actionGroupNames.role" ||
-        this.categoryName === "actionGroupNames.tincture"
-      ) {
-        return "halfGroupWidth";
-      }
-      return "";
-    },
-    categoryNameWithOrWithoutAmount() {
-      let amount = Object.entries(this.$props.ids.actionIds).length;
-      if (typeof this.$props.ids.itemIds !== "undefined") {
-        amount += Object.entries(this.$props.ids.itemIds).length;
-      }
+const { ids, categoryName } = toRefs(props);
+const actionIds = computed(() => {
+  if (typeof ids.value.actionIds === "undefined") {
+    return [];
+  }
 
-      // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
-      const groupName = this.$t(this.categoryName);
-      if (process.env.VUE_APP_DEBUG_VERBOSE === "true") {
-        return `${groupName} (${amount})`;
-      } else {
-        return groupName;
-      }
-    },
-  },
-};
+  return ids.value.actionIds.map((id) => {
+    return { id };
+  });
+});
+const itemIds = computed(() => {
+  if (typeof ids.value.itemIds === "undefined") {
+    return [];
+  }
+
+  return ids.value.itemIds.map((id) => {
+    return { id };
+  });
+});
+
+const gridWidthClass = computed(() => {
+  if (
+      categoryName.value === "actionGroupNames.job" ||
+      categoryName.value.indexOf("actionGroupNames.special.") === 0
+  ) {
+    return "fullGroupWidth";
+  } else if (
+      categoryName.value === "actionGroupNames.role" ||
+      categoryName.value === "actionGroupNames.tincture"
+  ) {
+    return "halfGroupWidth";
+  }
+  return "";
+});
+const categoryNameWithOrWithoutAmount = computed(() => {
+  let amount = ids.value.actionIds.length;
+  if (typeof ids.value.itemIds !== "undefined") {
+    amount += ids.value.itemIds.length;
+  }
+
+  // eslint-disable-next-line @intlify/vue-i18n/no-dynamic-keys
+  const groupName = t(categoryName.value);
+  if (import.meta.env.VITE_APP_DEBUG_VERBOSE === "true") {
+    return `${groupName} (${amount})`;
+  } else {
+    return groupName;
+  }
+});
 </script>
+
+<template>
+  <fieldset class="actionGroup" :class="gridWidthClass">
+    <legend>{{ categoryNameWithOrWithoutAmount }}</legend>
+    <div class="actions">
+      <ActionIcon
+        v-for="action in actionIds"
+        :action-id="action.id"
+        :key="action.id"
+      />
+      <ItemIcon v-for="item in itemIds" :item-id="item.id" :key="item.id" />
+    </div>
+  </fieldset>
+</template>
 
 <!--suppress CssUnusedSymbol -->
 <style scoped>
-.groupOfActions {
-  display: contents;
-}
-
 .fullGroupWidth {
   width: 1468px;
   grid-column: 2 span;
 }
 
 .halfGroupWidth {
-  width: 708px;
+  width: 719px;
 }
 
 legend {
-  color: lightgray;
   font-size: 32px;
   border-radius: 5px;
   width: auto;
@@ -132,11 +94,12 @@ legend {
   margin-top: -32px;
   padding-left: 5px;
   padding-right: 6px;
+  background-color: var(--bs-body-bg);
 }
 
 .actionGroup {
   border-radius: 5px;
-  border: 2px solid gray;
+  border: 2px solid var(--bs-gray);
   padding: revert;
 }
 

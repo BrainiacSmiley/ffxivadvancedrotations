@@ -1,0 +1,10 @@
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "mdb-ui-kit/css/mdb.min.css";
+
+@font-face {
+  font-family: "FFXIV";
+  src: url("@/assets/fonts/FFXIV_Lodestone_SSF.ttf") format("truetype"),
+  url("@/assets/fonts/FFXIV_Lodestone_SSF.woff") format("woff");
+  unicode-range: U+E020-E0DB;
+}

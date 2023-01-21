@@ -1,62 +1,56 @@
+<script setup>
+import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
+import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
+import { getLocale } from "@/i18n";
+import { computed, toRefs } from "vue";
+import { useRouter } from "vue-router";
+
+const props = defineProps({
+  jobId: { type: Number, required: true },
+});
+
+const jobIcon = computed(() => {
+  return { backgroundImage: `url(${data["icon"]})` };
+});
+const name = computed(() => {
+  const locale = getLocale();
+  return data[`name_${locale}`];
+});
+const selected = computed(() => {
+  const ffxivAdvancedRotationsStore = useFFXIVAdvancedRotationsStore();
+  return ffxivAdvancedRotationsStore.selectedUIElements.jobId === props.jobId ? "btn-primary" : "btn-secondary";// "selected"
+});
+
+const router = useRouter();
+function changeSelectedJob(jobId) {
+  const locale = getLocale();
+  router.push(`/${locale}/jobActions/${jobId}`);
+}
+
+//data initialization
+let data;
+const { jobId } = toRefs(props);
+const init = async () => {
+  data = await getJobData(jobId.value);
+}
+await init();
+</script>
+
 <template>
   <div
-    class="job"
+    class="job btn"
     :class="selected"
     :key="jobId"
     @click="changeSelectedJob(jobId)"
   >
     <div
       class="jobIcon"
-      :style="{ backgroundImage: 'url(' + data.icon + ')' }"
+      :style="jobIcon"
     ></div>
     <div class="jobName">{{ name }}</div>
     <div class="jobLine"></div>
   </div>
 </template>
-
-<script>
-import { useFFXIVAdvancedRotationsStore } from "@/stores/ffxivadvancedrotations";
-import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
-import { getLocale } from "@/i18n";
-import { setJobId } from "@/composables/jobId";
-
-export default {
-  async setup(props) {
-    const data = await getJobData(props.jobId);
-    return {
-      data,
-    };
-  },
-  name: "JobEntry",
-  props: {
-    jobId: { type: Number, required: true },
-  },
-  data() {
-    return {
-      ffxivAdvancedRotationsStore: useFFXIVAdvancedRotationsStore(),
-    };
-  },
-  methods: {
-    changeSelectedJob(jobId) {
-      setJobId(jobId);
-      const locale = getLocale();
-      this.$router["push"](`/${locale}/jobActions/${jobId}`);
-    },
-  },
-  computed: {
-    name() {
-      const locale = getLocale();
-      return this.data[`name_${locale}`];
-    },
-    selected() {
-      return this.ffxivAdvancedRotationsStore.selectedUIElements.jobId ===
-        this.jobId
-        ? "selected"
-        : "";
-    },
-  },
-};
-</script>
 
 <style scoped>
 .job {
@@ -75,28 +69,33 @@ export default {
   background-size: cover;
   position: absolute;
   top: -9px;
+  left: -2px;
 }
 
 .jobName {
-  color: #c2c2c2;
   font-size: 21px;
   position: absolute;
-  top: 4px;
+  top: 0;
   left: 65px;
+  text-transform: none;
 }
 
 .jobLine {
   height: 10px;
-  width: 200px;
-  background-color: #595b5f;
+  width: 185px;
+  background-color: var(--mdb-primary);
   display: inline-block;
   position: absolute;
   top: 28px;
   left: 62px;
 }
 
-.job:hover .jobLine,
-.job.selected .jobLine {
-  background-color: #b0c3e0;
+.job:hover .jobLine {
+  background-color: var(--bs-primary);
+}
+
+.btn-primary:hover .jobLine,
+.btn-primary .jobLine {
+  background-color: var(--mdb-btn-hover-color);
 }
 </style>

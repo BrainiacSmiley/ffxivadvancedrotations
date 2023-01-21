@@ -1,3 +1,14 @@
+<script setup>
+import JobEntry from "@/components/jobsMenu/JobEntry.vue";
+import JobEntrySkeleton from "@/components/jobsMenu/JobEntrySkeleton.vue";
+
+const props = defineProps({
+  icon: { type: String, required: true, },
+  name: { type: String, required: true, },
+  jobIds: { type: Array, required: true, },
+});
+</script>
+
 <template>
   <div class="jobCategory">
     <div class="jobCategoryHeadline">
@@ -13,44 +24,20 @@
       <template #default>
         <JobEntry
           :key="jobId"
-          :jobId="jobId"
+          :job-id="jobId"
           v-for="jobId in jobIds"
         ></JobEntry>
       </template>
       <template #fallback>
         <JobEntrySkeleton
           :key="jobId"
-          :jobId="jobId"
+          :job-id="jobId"
           v-for="jobId in jobIds"
         ></JobEntrySkeleton>
       </template>
     </Suspense>
   </div>
 </template>
-
-<script>
-import JobEntry from "@/components/jobsMenu/JobEntry.vue";
-import JobEntrySkeleton from "@/components/jobsMenu/JobEntrySkeleton.vue";
-
-export default {
-  name: "RoleGroup",
-  components: { JobEntrySkeleton, JobEntry },
-  props: {
-    icon: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    jobIds: {
-      type: Array,
-      required: true,
-    },
-  },
-};
-</script>
 
 <style scoped>
 .jobCategory {
@@ -70,7 +57,6 @@ export default {
 }
 
 .jobTypesName {
-  color: #989898;
   display: inline-block;
   line-height: 28px;
   vertical-align: top;

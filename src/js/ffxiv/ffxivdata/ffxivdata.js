@@ -6,6 +6,7 @@ import { stripJobCategoryData } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategory
 import { stripActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
 import { stripItemData } from "@/js/ffxiv/ffxivdata/ffxivitemdata";
 import { getLocale } from "@/i18n";
+import Bottleneck from "bottleneck";
 const XIVAPILocale = getLocale();
 
 const XIVAPI = require("@xivapi/js");
@@ -16,6 +17,11 @@ const xiv = new XIVAPI({
 });
 const LOCAL_STORAGE_KEY_NAME = "ffxivadvancedrotations";
 let XIVAPI_DATA = { version: FFXIVVERSION, data: {} };
+
+const limiter = new Bottleneck({
+  maxConcurrent: 1,
+  minTime: 100
+});
 
 /**
  *
@@ -29,6 +35,13 @@ async function getXIVAPIData(key, id) {
     return data;
   }
 
+  data = await limiter.schedule(() => getXIVAPIDataCall(key, id));
+  writeToStoredLocal(key, id, data);
+  return data;
+}
+
+async function getXIVAPIDataCall(key, id) {
+  let data;
   if (key === "ClassJob" || key === "Action" || key === "Item") {
     // https://xivapi.com/{key}/{25488}
     data = await xiv.data.get(key, id);
@@ -40,7 +53,6 @@ async function getXIVAPIData(key, id) {
     data = data.results;
   }
   data = stripData(key, data);
-  writeToStoredLocal(key, id, data);
   return data;
 }
 

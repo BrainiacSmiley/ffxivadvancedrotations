@@ -1,3 +1,46 @@
+<script setup>
+import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
+import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
+import { getCharacterLevel } from "@/composables/settings";
+import { computed, ref, toRefs, watch } from "vue";
+import { getLocale } from "@/i18n";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
+const props = defineProps({
+  jobId: { type: Number, required: true },
+});
+
+const selectedJobIcon = computed(() => {
+  return { backgroundImage: `url(${data.value["icon"]})` };
+});
+const name = computed(() => {
+  const locale = getLocale();
+  const jobName = data.value[`name_${locale}`];
+  const jobLevel = getCharacterLevel();
+  const lvl = jobLevel !== FFXIVMAXLVL ? `${t("lvl")} ${jobLevel}` : t("maxLvl");
+  return `${jobName} (${lvl})`;
+});
+
+const { jobId } = toRefs(props);
+watch(jobId, (newJobId, oldJobId) => {
+  if (newJobId === oldJobId) {
+    return;
+  }
+  getJobData(newJobId).then((newData) => {
+    data.value = newData;
+  });
+});
+
+//data initialization
+let data;
+const init = async () => {
+  data = ref(await getJobData(jobId.value));
+}
+await init();
+</script>
+
 <template>
   <header class="jobActionsHeader">
     <div class="jobActionsIcon" :style="selectedJobIcon"></div>
@@ -5,57 +48,12 @@
   </header>
 </template>
 
-<script>
-import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
-import { getLocale } from "@/i18n";
-import { ref } from "vue";
-import { getCharacterLevel } from "@/composables/settings";
-import { FFXIVMAXLVL } from "@/js/ffxiv/ffxivconfigs";
-
-export default {
-  async setup(props) {
-    let data = ref(await getJobData(props.jobId));
-    return {
-      data,
-    };
-  },
-  name: "JobActionsHeader",
-  props: {
-    jobId: { type: Number, required: true },
-  },
-  computed: {
-    name() {
-      const locale = getLocale();
-      const jobName = this.data[`name_${locale}`];
-      const jobLevel = getCharacterLevel();
-      const lvl =
-        getCharacterLevel() !== FFXIVMAXLVL
-          ? `${this.$t("lvl")} ${jobLevel}`
-          : this.$t("maxLvl");
-      return `${jobName} (${lvl})`;
-    },
-    selectedJobIcon() {
-      return { backgroundImage: `url(${this.data["icon"]})` };
-    },
-  },
-  watch: {
-    jobId: {
-      deep: true,
-      handler(newJobId) {
-        getJobData(newJobId).then((newData) => {
-          this.data = newData;
-        });
-      },
-    },
-  },
-};
-</script>
-
 <style scoped>
 .jobActionsHeader {
-  margin: auto;
-  width: fit-content;
-  justify-self: flex-start;
+  grid-column: 3 span;
+  justify-self: center;
+  align-self: start;
+  margin-top: 15px;
 }
 
 .jobActionsIcon {
@@ -67,7 +65,6 @@ export default {
 }
 
 .jobActionsName {
-  color: #c2c2c2;
   display: inline-block;
   font-size: 36px;
   vertical-align: top;

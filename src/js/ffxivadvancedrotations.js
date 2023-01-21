@@ -1,5 +1,4 @@
 import {
-  getDoWDoMJobIds,
   getTankJobIds,
   getHealerJobIds,
   getMeleeJobIds,
@@ -7,18 +6,7 @@ import {
   getMagicalRangeJobIds,
 } from "@/js/ffxiv/ffxivhelper";
 import { FFXIVJobCategories } from "@/js/ffxiv/ffxivconfigs";
-import { getJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
 import { getCharacterLevel } from "@/composables/settings";
-
-function getAllJobsData() {
-  const allJobIds = getDoWDoMJobIds();
-  const allJobData = [];
-  allJobIds.forEach((jobId) => {
-    allJobData.push(getJobData(jobId));
-  });
-
-  return Promise.all(allJobData);
-}
 
 function getAllMenuData() {
   const actualLevel = getCharacterLevel();
@@ -67,4 +55,4 @@ function getAllMenuData() {
   ];
 }
 
-export { getAllJobsData, getAllMenuData };
+export { getAllMenuData };
