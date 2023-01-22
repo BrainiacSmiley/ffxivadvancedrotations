@@ -6,7 +6,8 @@
   "scripts": {
     "start": "vite",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vite build"
+    "build": "vite build",
+    "build discord": "vite build -c vite.config.discord.js"
   },
   "author": "",
   "license": "ISC",
@@ -34,6 +35,7 @@
     "mdb-ui-kit": "^6.0.1",
     "pinia": "^2.0.24",
     "sortablejs": "^1.15.0",
+    "vite-plugin-singlefile": "^0.13.2",
     "vue": "^3.2.13",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.1.6"
