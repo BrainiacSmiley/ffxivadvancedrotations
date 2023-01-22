@@ -5,19 +5,12 @@ import { stripJobData } from "@/js/ffxiv/ffxivdata/ffxivclassjobdata";
 import { stripJobCategoryData } from "@/js/ffxiv/ffxivdata/ffxivclassjobcategorydata";
 import { stripActionData } from "@/js/ffxiv/ffxivdata/ffxivactiondata";
 import { stripItemData } from "@/js/ffxiv/ffxivdata/ffxivitemdata";
-import { getLocale } from "@/i18n";
 import Bottleneck from "bottleneck";
-const XIVAPILocale = getLocale();
 
-const XIVAPI = require("@xivapi/js");
-const xiv = new XIVAPI({
-  // private_key: '',
-  language: XIVAPILocale,
-  snake_case: true,
-});
+const API_OPT = { mode: "cors" };
+const XIVAPI_GET_PARAMS = "snake_case=true&language=en";
 const LOCAL_STORAGE_KEY_NAME = "ffxivadvancedrotations";
 let XIVAPI_DATA = { version: FFXIVVERSION, data: {} };
-
 const limiter = new Bottleneck({
   maxConcurrent: 1,
   minTime: 100,
@@ -44,13 +37,18 @@ async function getXIVAPIDataCall(key, id) {
   let data;
   if (key === "ClassJob" || key === "Action" || key === "Item") {
     // https://xivapi.com/{key}/{25488}
-    data = await xiv.data.get(key, id);
+    data = await fetch(
+      `https://xivapi.com/${key}/${id}?${XIVAPI_GET_PARAMS}`,
+      API_OPT
+    );
+    data = await data.json();
   } else if (key === "ClassJobCategory") {
-    data = await xiv.search("", {
-      indexes: "Action",
-      filters: `ClassJobCategory.ID=${id}, IsPvP=0`,
-    });
-    data = data.results;
+    // https://xivapi.com/search?indexes=Action&filters=ClassJobCategory.ID=25,IsPvP=0
+    data = await fetch(
+      `https://xivapi.com/search?indexes=Action&filters=ClassJobCategory.ID=${id},IsPvP=0&${XIVAPI_GET_PARAMS}`,
+      API_OPT
+    );
+    data = (await data.json()).results;
   }
   data = stripData(key, data);
   return data;
