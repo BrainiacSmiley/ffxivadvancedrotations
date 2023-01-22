@@ -52,7 +52,7 @@ function hasNoData() {
   return Object.entries(data.value).length === 0;
 }
 
-const numberOfGridRows = ref(4);
+const numberOfGridRows = ref(3);
 const numberOfGridRowsChanged = useEventBus("numberOfGridRowsChanged");
 onMounted(() => {
   numberOfGridRowsChanged.on(setNumberOfGridRows);

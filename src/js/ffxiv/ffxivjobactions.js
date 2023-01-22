@@ -301,4 +301,5 @@ export {
   getJobActionsToReplaceThroughLevel,
   splitJobActionsIntoGeneralAndSpecialGroup,
   sortActionIds,
+  getSpecialActionGroup,
 };

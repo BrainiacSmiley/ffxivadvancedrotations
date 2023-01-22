@@ -7,15 +7,21 @@ import RotationPlanner from "@/components/jobActions/RotationPlanner.vue";
 import { setJobId } from "@/composables/jobId";
 import { onMounted, toRefs, watch } from "vue";
 import JobActionsGroupSkeleton from "@/components/jobActions/JobActionsGroupSkeleton.vue";
+import { useEventBus } from "@vueuse/core";
+import { getSpecialActionGroup } from "@/js/ffxiv/ffxivjobactions";
 
 const props = defineProps({
   jobId: { type: Number, required: true, defaultValue: 19 },
   rotation: { type: String, required: false, default: null },
 });
 
+const numberOfGridRowsChanged = useEventBus("numberOfGridRowsChanged");
 const { jobId } = toRefs(props);
 function storeJobId(jobId) {
   setJobId(jobId);
+  if (getSpecialActionGroup(jobId) !== null) {
+    numberOfGridRowsChanged.emit(4);
+  }
 }
 onMounted(() => {
   storeJobId(jobId.value);
