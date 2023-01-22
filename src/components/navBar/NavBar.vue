@@ -10,7 +10,7 @@ const title = import.meta.env.VITE_APP_TITLE;
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">{{ title }}</a>
+      <a class="navbar-brand" href="/">{{ title }}</a>
       <form class="d-flex" role="search">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <LanguageSelector />

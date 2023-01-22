@@ -82,5 +82,7 @@
     "copyActualRotation": "aktuelle Rotation in Zwischenablage kopieren",
     "copyActualRotationPredefined": "aktuelle Rotation als abgespeicherte in die Zwischenablage kopieren",
     "copiedSuccessful": "erfolgreich kopiert!"
-  }
+  },
+  "versionHistory": "Versionshistorie",
+  "newsHeader": "{0} ({1})"
 }

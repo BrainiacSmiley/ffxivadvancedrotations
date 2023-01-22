@@ -82,5 +82,7 @@
     "copyActualRotation": "?copy actual rotation to clipboard",
     "copyActualRotationPredefined": "?copy actual rotation predefined to clipboard",
     "copiedSuccessful": "?copied successful!"
-  }
+  },
+  "versionHistory": "?versions history",
+  "newsHeader": "{0} ({1})"
 }

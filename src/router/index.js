@@ -6,8 +6,7 @@ import {
   createWebHistory,
 } from "vue-router";
 import { setLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from "@/i18n/";
-import NavBarTesting from "../components/views/NavBarTesting.vue";
-// import NewsVersion from "@/components/views/NewsVersion.vue";
+import NewsVersion from "@/components/views/NewsVersion.vue";
 import JobActions from "@/components/views/JobActions.vue";
 
 const castParams = (casts) => {
@@ -72,7 +71,7 @@ const router = createRouter({
     },
     {
       path: "/:locale",
-      component: NavBarTesting,
+      component: NewsVersion,
     },
   ],
 });
