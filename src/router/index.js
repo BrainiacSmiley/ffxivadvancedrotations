@@ -6,8 +6,6 @@ import {
   createWebHistory,
 } from "vue-router";
 import { setLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from "@/i18n/";
-import NewsVersion from "@/components/views/NewsVersion.vue";
-import JobActions from "@/components/views/JobActions.vue";
 
 const castParams = (casts) => {
   return (route) => {
@@ -58,7 +56,7 @@ const router = createRouter({
     {
       name: "jobActions",
       path: "/:locale/jobActions/:jobId/:rotation?",
-      component: JobActions,
+      component: () => import("@/components/views/JobActions.vue"),
       props: castParams({
         locale: "String",
         jobId: "Number",
@@ -71,7 +69,11 @@ const router = createRouter({
     },
     {
       path: "/:locale",
-      component: NewsVersion,
+      component: () => import("@/components/views/NewsVersion.vue"),
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      redirect: `/${DEFAULT_LOCALE}`,
     },
   ],
 });
@@ -85,7 +87,7 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  if (Object.keys(!SUPPORTED_LOCALES).includes(newLocale)) {
+  if (!Object.keys(SUPPORTED_LOCALES).includes(newLocale)) {
     next(`/${DEFAULT_LOCALE}`);
   }
 
