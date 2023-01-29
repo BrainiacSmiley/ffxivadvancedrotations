@@ -84,7 +84,7 @@ export const tooltipPopover = {
     el.addEventListener("shown.bs.tooltip", () => {
       $(el).on("click", () => {
         $(el).off("click");
-        $(el).tooltip("dispose");
+        Tooltip.getOrCreateInstance(el).dispose();
         const popover = new Popover(el, popoverConfig);
         registerPopoverButtons(el);
         const handleHiddenBsPopoverEvent = () => {
@@ -92,7 +92,7 @@ export const tooltipPopover = {
             "hidden.bs.popover",
             handleHiddenBsPopoverEvent
           );
-          $(el).popover("dispose");
+          Popover.getOrCreateInstance(el).dispose();
           new Tooltip(el, tooltipConfig);
         };
         el.addEventListener("hidden.bs.popover", handleHiddenBsPopoverEvent);
