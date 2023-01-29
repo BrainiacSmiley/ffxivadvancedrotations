@@ -117,5 +117,14 @@ legend {
   .halfGroupWidth {
     width: calc((1600px - var(--tooltip-width) - 4rem) / 2);
   }
+
+  legend {
+    font-size: 24px;
+    margin-top: -26px;
+  }
+
+  .actions {
+    margin-bottom: -15px;
+  }
 }
 </style>

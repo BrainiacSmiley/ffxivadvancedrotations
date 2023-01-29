@@ -24,7 +24,6 @@ function storeJobId(jobId) {
   }
 }
 onMounted(() => {
-  debugger;
   storeJobId(jobId.value);
 });
 watch(jobId, (newJobId) => {
@@ -78,7 +77,7 @@ watch(jobId, (newJobId) => {
   .jobActions {
     margin-left: -800px;
     width: 1600px;
-    grid-template-rows: 29px 113px 150px 1fr auto;
+    grid-template-rows: 29px 87px 150px 1fr auto;
   }
 }
 </style>

@@ -99,8 +99,8 @@ await init();
 
   .rotaActionOGCD {
     transform: scale(0.4);
-    margin-left: 0;
-    margin-right: -1px;
+    margin-left: 5px;
+    margin-right: -50px;
   }
 }
 </style>

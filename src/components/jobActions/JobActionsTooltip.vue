@@ -493,6 +493,7 @@ watch(
   grid-column-start: 3;
   display: grid;
   grid-template-columns: repeat(9, 1fr);
+  background-color: var(--bs-body-bg);
 }
 
 .actionIconTooltip {

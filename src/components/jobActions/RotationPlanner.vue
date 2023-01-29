@@ -267,6 +267,14 @@ const predefinedRotations = computed(() => {
   return getPredefinedRotations(jobId);
 });
 
+const hasPredefinedRotations = computed(() => {
+  return predefinedRotations.value.size > 0;
+});
+
+const rotationInfosGridRow = computed(() =>
+  hasPredefinedRotations.value ? { gridRowStart: 3 } : { gridRowStart: 2 }
+);
+
 function loadPredefinedRotation(rotationId) {
   const jobId = getJobId();
   const predefinedRotations = getPredefinedRotations(jobId);
@@ -348,9 +356,12 @@ function showAndAutoHideSuccessAlert() {
       </div>
     </div>
   </fieldset>
-  <fieldset class="actionGroup predefinedRotations">
+  <fieldset
+    class="actionGroup predefinedRotations"
+    v-if="hasPredefinedRotations"
+  >
     <legend>{{ $t("predefinedRotations") }}</legend>
-    <div>
+    <div class="predefinedActions">
       <PredefinedRotationIcon
         :icon="rotation.getIcon()"
         :name="rotation.getName()"
@@ -361,7 +372,7 @@ function showAndAutoHideSuccessAlert() {
       />
     </div>
   </fieldset>
-  <fieldset class="actionGroup rotationInfos">
+  <fieldset class="actionGroup rotationInfos" :style="rotationInfosGridRow">
     <legend>{{ $t("rotationInfos") }}</legend>
     <ul class="list-unstyled rotationValuesPosition">
       <li>
@@ -438,10 +449,12 @@ legend {
 .actions {
   margin-top: 35px;
   height: inherit;
+  margin-bottom: -20px;
 }
 
 .actualRotation {
   padding: 0 10px;
+  overflow: visible;
 }
 
 .rotationUiActionIcon {
@@ -473,6 +486,7 @@ legend {
   display: inline-block;
   margin-right: 5px;
   min-width: 180px;
+  overflow: visible;
 }
 
 .gcdGroupMarker {
@@ -488,7 +502,6 @@ legend {
 .rotationInfos {
   position: relative;
   grid-column-start: 3;
-  grid-row-start: 3;
   align-self: start;
   width: 470px;
   height: 150px;
@@ -527,6 +540,28 @@ legend {
 @media screen and (max-width: 1920px) {
   .jobRotation {
     width: calc(1600px - var(--tooltip-width) - 2rem);
+  }
+
+  legend {
+    font-size: 24px;
+    margin-top: -26px;
+  }
+
+  .gcdGroup {
+    min-width: 140px;
+    margin-top: 15px;
+  }
+
+  .actions {
+    margin-top: 20px;
+  }
+
+  .predefinedActions {
+    margin-bottom: -20px;
+  }
+
+  .gcdGroupMarker {
+    bottom: 15px;
   }
 }
 </style>

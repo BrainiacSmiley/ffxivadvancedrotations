@@ -1,8 +1,9 @@
 const v092Content = new Map();
-// v091Content.set("Features", ["added new PLD rotation"]);
-v092Content.set("BugFixes", [
+v092Content.set("Features", [
   "reworked different resolutions for 1080P and 1440P",
+  "predefined Rotations only visible when defined",
 ]);
+// v092Content.set("BugFixes", [""]);
 const v092 = new Map();
 v092.set("version", "0.9.2");
 v092.set("date", new Date("2023-01-29"));

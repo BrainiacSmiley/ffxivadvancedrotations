@@ -67,6 +67,7 @@ await init();
   display: inline-block;
   background-color: black;
   background-size: contain;
+  overflow: visible;
 }
 
 .actionIcon:hover {
