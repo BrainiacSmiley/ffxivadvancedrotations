@@ -15,54 +15,48 @@ const HEAL3_ICON = "i/066000/066143_hr1.png";
 const predefinedRotations = new Map();
 
 const PLD_ROTATIONS = new Map();
-const rotation1 = new JobRotation(
-  "120s Rotation",
+const PLDRotation1 = new JobRotation(
+  "Opener",
   TANK1_ICON,
   FFXIVJobIds.PLD,
   90,
   [
-    { id: 9, type: "action", position: 1 },
-    { id: 37840, type: "item", position: 2 },
-    { id: 15, type: "action", position: 3 },
-    { id: 20, type: "action", position: 4 },
-    { id: 3539, type: "action", position: 5 },
-    { id: 23, type: "action", position: 6 },
-    { id: 7384, type: "action", position: 7 },
-    { id: 25747, type: "action", position: 8 },
-    { id: 16461, type: "action", position: 9 },
-    { id: 3538, type: "action", position: 10 },
-    { id: 7383, type: "action", position: 11 },
-    { id: 16461, type: "action", position: 12 },
-    { id: 16459, type: "action", position: 13 },
-    { id: 25748, type: "action", position: 14 },
-    { id: 25749, type: "action", position: 15 },
-    { id: 25750, type: "action", position: 16 },
-    { id: 16460, type: "action", position: 17 },
-    { id: 16460, type: "action", position: 18 },
-    { id: 16460, type: "action", position: 19 },
-    { id: 7384, type: "action", position: 20 },
-    { id: 7384, type: "action", position: 21 },
-    { id: 7384, type: "action", position: 22 },
-    { id: 23, type: "action", position: 23 },
-    { id: 9, type: "action", position: 24 },
-    { id: 25747, type: "action", position: 25 },
-    { id: 15, type: "action", position: 26 },
-    { id: 3539, type: "action", position: 27 },
-    { id: 16460, type: "action", position: 28 },
-    { id: 16460, type: "action", position: 29 },
-    { id: 16460, type: "action", position: 30 },
-    { id: 7384, type: "action", position: 31 },
+    { type: "action", id: 9, position: 1 },
+    { type: "item", id: 37840, position: 2 },
+    { type: "action", id: 15, position: 3 },
+    { type: "action", id: 3539, position: 4 },
+    { type: "action", id: 20, position: 5 },
+    { type: "action", id: 7383, position: 6 },
+    { type: "action", id: 3538, position: 7 },
+    { type: "action", id: 23, position: 8 },
+    { type: "action", id: 25747, position: 9 },
+    { type: "action", id: 16459, position: 10 },
+    { type: "action", id: 16461, position: 11 },
+    { type: "action", id: 25748, position: 12 },
+    { type: "action", id: 16461, position: 13 },
+    { type: "action", id: 25749, position: 14 },
+    { type: "action", id: 25750, position: 15 },
+    { type: "action", id: 7384, position: 16 },
+    { type: "action", id: 16460, position: 17 },
+    { type: "action", id: 16460, position: 18 },
+    { type: "action", id: 16460, position: 19 },
   ]
 );
-const rotation2 = new JobRotation(
-  "60s Rotation",
-  TANK2_ICON,
-  FFXIVJobIds.PLD,
-  90,
-  []
-);
-PLD_ROTATIONS.set("rotation1", rotation1);
-PLD_ROTATIONS.set("rotation2", rotation2);
+const PLDRotation2 = new JobRotation("Burst", TANK2_ICON, FFXIVJobIds.PLD, 90, [
+  { type: "action", id: 20, position: 1 },
+  { type: "action", id: 7383, position: 2 },
+  { type: "action", id: 3538, position: 3 },
+  { type: "action", id: 23, position: 4 },
+  { type: "action", id: 25747, position: 5 },
+  { type: "action", id: 16459, position: 6 },
+  { type: "action", id: 16461, position: 7 },
+  { type: "action", id: 25748, position: 8 },
+  { type: "action", id: 16461, position: 9 },
+  { type: "action", id: 25749, position: 10 },
+  { type: "action", id: 25750, position: 11 },
+]);
+PLD_ROTATIONS.set("rotation1", PLDRotation1);
+PLD_ROTATIONS.set("rotation2", PLDRotation2);
 predefinedRotations.set(FFXIVJobIds.PLD, PLD_ROTATIONS);
 
 function getPredefinedRotations(jobId) {
