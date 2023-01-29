@@ -34,4 +34,12 @@
   width: 150px;
   height: 32px;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .jobActionsHeaderSkeleton {
+    margin-top: 0;
+    height: 51px;
+  }
+}
 </style>

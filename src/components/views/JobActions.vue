@@ -24,6 +24,7 @@ function storeJobId(jobId) {
   }
 }
 onMounted(() => {
+  debugger;
   storeJobId(jobId.value);
 });
 watch(jobId, (newJobId) => {
@@ -60,15 +61,24 @@ watch(jobId, (newJobId) => {
   bottom: 0;
   left: 50%;
   margin-left: -980px;
-  width: 1960px;
+  width: 1972px;
   display: grid;
   gap: 2rem;
   grid-template-columns: 1fr 1fr var(--tooltip-width);
-  grid-template-rows: 72px 130px 150px 1fr auto 135px;
+  grid-template-rows: 72px 130px 150px 1fr auto;
   align-items: end;
   justify-self: flex-end;
   margin-bottom: 15px;
   /*noinspection CssInvalidPropertyValue*/
   height: -webkit-fill-available;
+}
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .jobActions {
+    margin-left: -800px;
+    width: 1600px;
+    grid-template-rows: 29px 113px 150px 1fr auto;
+  }
 }
 </style>

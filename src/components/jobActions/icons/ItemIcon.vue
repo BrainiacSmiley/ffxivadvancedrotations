@@ -78,4 +78,13 @@ await init();
   background-image: url("@/assets/pics/HQOverlay.png");
   background-color: transparent;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .itemIcon {
+    transform: scale(0.6);
+    margin-right: -18px;
+    margin-top: -18px;
+  }
+}
 </style>

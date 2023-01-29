@@ -88,6 +88,21 @@ await init();
   transform-origin: top left;
   margin-right: -30px;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .rotationIcon {
+    transform: scale(0.6);
+    margin-right: -18px;
+    margin-top: -18px;
+  }
+
+  .rotaActionOGCD {
+    transform: scale(0.4);
+    margin-left: 0;
+    margin-right: -1px;
+  }
+}
 </style>
 
 <style>

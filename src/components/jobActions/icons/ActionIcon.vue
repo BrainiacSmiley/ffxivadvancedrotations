@@ -46,7 +46,7 @@ await init();
     :style="actionIcon"
     :data-bs-title="name"
     v-tooltip
-    class="predefinedRotationIcon"
+    class="actionIcon"
     draggable="true"
     @mouseenter="changeSelectedIcon(actionId, 'action')"
     @mouseleave="changeSelectedIcon(null, 'action')"
@@ -59,7 +59,7 @@ await init();
 
 <!--suppress CssUnusedSymbol -->
 <style scoped>
-.predefinedRotationIcon {
+.actionIcon {
   width: 80px;
   height: 80px;
   transform: scale(0.8);
@@ -69,7 +69,7 @@ await init();
   background-size: contain;
 }
 
-.predefinedRotationIcon:hover {
+.actionIcon:hover {
   border: solid var(--bs-primary) 3px;
 }
 
@@ -89,5 +89,14 @@ await init();
   height: 80px;
   background-color: black;
   opacity: 0.5;
+}
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .actionIcon {
+    transform: scale(0.6);
+    margin-right: -18px;
+    margin-top: -18px;
+  }
 }
 </style>

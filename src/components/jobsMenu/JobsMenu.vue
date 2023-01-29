@@ -55,4 +55,11 @@ watch(
 .dbVersion {
   left: 4px;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .jobMenu {
+    width: var(--jobs-menu-width-1080p);
+  }
+}
 </style>

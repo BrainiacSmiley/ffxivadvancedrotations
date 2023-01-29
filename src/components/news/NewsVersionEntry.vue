@@ -36,4 +36,8 @@ const { entry } = toRefs(props);
 .newsHeader {
   margin-left: var(--news-margin-left);
 }
+
+.header ~ .header {
+  margin-top: 3rem;
+}
 </style>

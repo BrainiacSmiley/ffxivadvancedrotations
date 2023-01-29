@@ -32,7 +32,7 @@ onMounted(() => {
   eventBusJobIdChanged.on(deleteActualRotation);
 });
 
-const draggedRotation = ref({});
+const draggedRotation = ref({ ids: [], lvl: 0, jobId: 0 });
 
 const numberOfGCDS = ref(0);
 const numberOfOGCDS = ref(0);
@@ -432,6 +432,7 @@ legend {
   border: 2px solid var(--bs-gray);
   padding: revert;
   position: relative;
+  overflow: visible;
 }
 
 .actions {
@@ -509,11 +510,10 @@ legend {
   grid-column-start: 3;
   grid-row-start: 2;
   align-self: start;
-  height: 130px;
 }
 
 .predefinedRotations > div {
-  display: inline-block;
+  display: block;
 }
 
 .copy-success-alert {
@@ -521,5 +521,12 @@ legend {
   width: 100%;
   left: 0;
   top: 0;
+}
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .jobRotation {
+    width: calc(1600px - var(--tooltip-width) - 2rem);
+  }
 }
 </style>

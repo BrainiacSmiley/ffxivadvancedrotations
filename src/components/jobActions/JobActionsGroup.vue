@@ -101,13 +101,21 @@ legend {
   border-radius: 5px;
   border: 2px solid var(--bs-gray);
   padding: revert;
+  overflow: visible;
 }
 
 .actions > div {
   display: inline-block;
 }
 
-.actions {
-  min-height: 88px;
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .fullGroupWidth {
+    width: calc(1600px - var(--tooltip-width) - 2rem);
+  }
+
+  .halfGroupWidth {
+    width: calc((1600px - var(--tooltip-width) - 4rem) / 2);
+  }
 }
 </style>

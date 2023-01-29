@@ -60,4 +60,15 @@ import SkeletonIcon from "@/components/jobActions/icons/SkeletonIcon.vue";
 .skeletonActions {
   min-height: 88px;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .fullGroupWidth {
+    width: calc(1600px - var(--tooltip-width) - 2rem);
+  }
+
+  .halfGroupWidth {
+    width: calc((1600px - var(--tooltip-width) - 4rem) / 2);
+  }
+}
 </style>

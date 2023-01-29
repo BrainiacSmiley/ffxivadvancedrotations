@@ -71,4 +71,12 @@ await init();
   vertical-align: top;
   margin-top: 4px;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .jobActionsHeader {
+    margin-top: 0;
+    height: 51px;
+  }
+}
 </style>

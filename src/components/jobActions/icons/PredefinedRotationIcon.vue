@@ -31,4 +31,13 @@ const props = defineProps({
 .predefinedRotationIcon:hover {
   border: solid var(--bs-primary) 3px;
 }
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .predefinedRotationIcon {
+    transform: scale(0.6);
+    margin-right: -18px;
+    margin-top: -18px;
+  }
+}
 </style>

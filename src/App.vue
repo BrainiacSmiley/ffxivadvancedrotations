@@ -5,6 +5,7 @@ import JobsMenu from "@/components/jobsMenu/JobsMenu.vue";
 import { useEventBus } from "@vueuse/core";
 
 const eventBusRotationElementDropped = useEventBus("rotationElementDropped");
+
 function deleteFromRotation(event) {
   const from = event.dataTransfer.getData("source");
   if (from === "job") {
@@ -16,17 +17,19 @@ function deleteFromRotation(event) {
 </script>
 
 <template>
-  <NavBar />
-  <div class="jobsMenu p-3">
-    <JobsMenu />
-  </div>
-  <div
-    class="routerPanel"
-    @drop="deleteFromRotation($event)"
-    @dragenter.prevent
-    @dragover.prevent
-  >
-    <router-view />
+  <div class="ffxivadvancedrotations">
+    <NavBar />
+    <div class="jobsMenu p-3">
+      <JobsMenu />
+    </div>
+    <div
+      class="routerPanel"
+      @drop="deleteFromRotation($event)"
+      @dragenter.prevent
+      @dragover.prevent
+    >
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -35,6 +38,8 @@ function deleteFromRotation(event) {
   --jobs-menu-width: 320px;
   --navBar-height: 56px;
   --tooltip-width: 470px;
+  --jobs-menu-width-1080p: 290px;
+  overflow: hidden;
 }
 
 .ffxivadvancedrotation-black-tooltip {
@@ -44,6 +49,7 @@ function deleteFromRotation(event) {
   --bs-tooltip-padding-x: 1rem;
   font-weight: 500;
 }
+
 .ffxivadvancedrotation-black-tooltip > .tooltip-inner {
   max-width: none;
 }
@@ -66,8 +72,11 @@ function deleteFromRotation(event) {
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  overflow: hidden;
+.ffxivadvancedrotations {
+  position: relative;
+  width: 2560px;
+  height: 1311px;
+  margin: auto;
 }
 
 .jobsMenu {
@@ -85,5 +94,28 @@ body {
   left: var(--jobs-menu-width);
   width: calc(100% - var(--jobs-menu-width));
   height: calc(100% - var(--navBar-height));
+}
+
+/* (1920x1080) Full HD Display */
+@media screen and (max-width: 1920px) {
+  .ffxivadvancedrotations {
+    position: relative;
+    width: 1920px;
+    height: 961px;
+    margin: auto;
+  }
+
+  .jobsMenu {
+    transform: scale(0.75);
+    left: -35px;
+    width: var(--jobs-menu-width-1080p);
+    margin-top: -155px;
+    height: auto;
+  }
+
+  .routerPanel {
+    left: calc(var(--jobs-menu-width-1080p) - 60px);
+    width: calc(100% - calc(var(--jobs-menu-width-1080p) - 60px));
+  }
 }
 </style>
