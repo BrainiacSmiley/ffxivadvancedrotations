@@ -1,0 +1,42 @@
+/**
+ * Design tokens for the FFXIV Advanced Rotations look.
+ *
+ * The visual language is ported from the Bootstrap-based reference UI
+ * (dark FFXIV theme) but expressed as framework-agnostic custom properties
+ * so it layers cleanly on top of Vuetify's theme instead of fighting it.
+ */
+
+:root {
+  /* Layout */
+  --fx-navbar-height: 56px;
+  --fx-sidebar-width: 320px;
+  --fx-sidebar-width-compact: 264px;
+
+  /* Panel / fieldset look */
+  --fx-panel-radius: 8px;
+  --fx-panel-border-width: 2px;
+
+  /* Rhythm */
+  --fx-gap-xs: 4px;
+  --fx-gap-sm: 8px;
+  --fx-gap-md: 16px;
+  --fx-gap-lg: 24px;
+
+  /* Motion */
+  --fx-duration-fast: 120ms;
+  --fx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/**
+ * Semantic surface/border colors are derived from the active Vuetify theme
+ * (`--v-theme-*`, `--v-border-color`) so they follow the light/dark toggle
+ * automatically instead of being hardcoded per theme.
+ */
+:root {
+  --fx-panel-border: rgba(var(--v-border-color), 0.55);
+  --fx-panel-bg: rgb(var(--v-theme-surface));
+  /* Legend background matches the panel fill so the title cleanly interrupts
+     the border line (a gap) instead of cutting a darker notch into the box. */
+  --fx-legend-bg: rgb(var(--v-theme-surface));
+  --fx-accent: rgb(var(--v-theme-primary));
+}

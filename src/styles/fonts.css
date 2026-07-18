@@ -1,0 +1,16 @@
+/**
+ * FFXIV Lodestone glyph font.
+ *
+ * The `unicode-range` scopes this face to the private-use block that holds the
+ * FFXIV job/role glyphs (U+E020–E0DB). Regular Latin text is unaffected and
+ * falls through to the app font stack, so we can list "FFXIV" first in the
+ * global font-family without overriding normal typography.
+ */
+@font-face {
+  font-family: 'FFXIV';
+  src:
+    url('@/assets/fonts/FFXIV_Lodestone_SSF.woff') format('woff'),
+    url('@/assets/fonts/FFXIV_Lodestone_SSF.ttf') format('truetype');
+  font-display: swap;
+  unicode-range: U+E020-E0DB;
+}

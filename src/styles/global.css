@@ -1,0 +1,193 @@
+/**
+ * Global look for the FFXIV Advanced Rotations app.
+ *
+ * Loaded after Vuetify styles so these rules layer on top of the theme.
+ * Reusable structural classes live here; component-specific styling stays
+ * scoped inside each SFC.
+ */
+
+/* "FFXIV" first so private-use glyphs render in the Lodestone face; Latin text
+   falls through to the readable UI stack (see fonts.css unicode-range). */
+:root {
+  --fx-font-family: 'FFXIV', 'Inter', 'Avenir', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.v-application,
+.v-application .v-app-bar-title {
+  font-family: var(--fx-font-family);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Fieldset / legend panel — the signature bordered box with an overlapping    */
+/* title, replacing the reference UI's <fieldset>/<legend> pattern.            */
+/* -------------------------------------------------------------------------- */
+.fx-panel {
+  border: var(--fx-panel-border-width) solid var(--fx-panel-border);
+  border-radius: var(--fx-panel-radius);
+  padding: var(--fx-gap-sm) var(--fx-gap-md) var(--fx-gap-md);
+  background: var(--fx-panel-bg);
+  margin: 0;
+  /* Override the UA default `min-inline-size: min-content` on fieldsets so the
+     panel can shrink inside flex/grid layouts. */
+  min-inline-size: 0;
+}
+
+/* Real <legend>: the browser interrupts the top border around it natively. */
+.fx-legend {
+  margin-inline-start: var(--fx-gap-xs);
+  padding: 0 var(--fx-gap-sm);
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Job list accent bar (the reference UI's ".jobLine").                        */
+/* -------------------------------------------------------------------------- */
+.fx-job-line {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--fx-accent);
+  opacity: 0.55;
+  transition: opacity var(--fx-duration-fast) var(--fx-ease);
+}
+
+.fx-job-entry:hover .fx-job-line,
+.fx-job-entry.is-active .fx-job-line {
+  opacity: 1;
+}
+
+/* Inline FFXIV glyph runs (level/number displays via utils/gameGlyphs).
+   The font-family must be set explicitly here: Vuetify components override the
+   inherited family with Roboto, which lacks these private-use glyphs. Since the
+   @font-face is scoped to U+E020–E0DB, only glyph characters use the game font. */
+.fx-glyph {
+  font-family: 'FFXIV', 'Roboto', sans-serif;
+  font-size: 1.15em;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Large skill tooltip. The tooltip renders in a detached overlay, so these     */
+/* rules live in the global sheet and target the v-tooltip content-class.       */
+/* -------------------------------------------------------------------------- */
+.v-overlay__content.skill-tooltip {
+  max-width: 340px;
+  padding: 0;
+  background: rgb(var(--v-theme-surface-bright));
+  color: rgb(var(--v-theme-on-surface));
+  border: 2px solid var(--fx-panel-border);
+  border-radius: var(--fx-panel-radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Skill tooltip — FFXIV game styling ported 1:1 from the reference project     */
+/* (9-column grid, gray border, stat bars, muted labels).                       */
+/* -------------------------------------------------------------------------- */
+.v-overlay__content.skill-tooltip-game {
+  width: 470px;
+  max-width: 470px;
+  padding: 15px;
+  border: 2px solid gray;
+  border-radius: 5px;
+  color: #fff;
+  background: rgb(var(--v-theme-background));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+.game-tip {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  align-items: start;
+}
+.game-tip-icon {
+  grid-row: 1 / span 2;
+  grid-column: 1 / span 2;
+  width: 72px;
+  height: 72px;
+}
+.game-tip-name {
+  grid-column: 3 / span 7;
+  align-self: center;
+  font-size: 23px;
+  color: #e2e2e2;
+}
+.game-tip-category {
+  grid-row: 2;
+  grid-column: 3 / span 4;
+  color: #b6b09a;
+}
+.game-tip-rangeradius {
+  grid-row: 2;
+  grid-column: 7 / span 3;
+  display: inline-flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+.game-tip-muted {
+  color: gray;
+  margin-right: 5px;
+}
+.game-tip-crc {
+  grid-column: 1 / span 9;
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.game-tip-crc-item {
+  display: flex;
+  flex-direction: column;
+}
+.game-tip-crc-name {
+  color: rgb(182, 176, 154);
+  font-size: 16px;
+}
+.game-tip-crc-value {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.1;
+}
+.game-tip-crc-bar {
+  height: 5px;
+  width: 135px;
+  background: gray;
+  border-radius: 2px;
+  margin-top: 3px;
+}
+.game-tip-desc {
+  grid-column: 1 / span 9;
+  margin-top: 15px;
+  white-space: pre-line;
+}
+.game-tip-acquired,
+.game-tip-affinity {
+  grid-column: 1 / span 9;
+  margin-top: 8px;
+}
+.game-tip-label {
+  display: inline-block;
+  width: 100px;
+  color: #b6b09a;
+}
+
+/* Thin, unobtrusive scrollbars for the scrollable surfaces. */
+.fx-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--fx-panel-border) transparent;
+}
+.fx-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.fx-scroll::-webkit-scrollbar-thumb {
+  background: var(--fx-panel-border);
+  border-radius: 4px;
+}
